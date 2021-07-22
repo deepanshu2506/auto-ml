@@ -23,14 +23,14 @@ class DatasetFeatureMetrics(EmbeddedDocument):
     stdDeviation = FloatField()
     uniqueValues = IntField()
     missingValues = IntField()
-    samples = ListField(StringField(), max_length=5)
+    samples = ListField(max_length=5)
 
 
 class DatasetFeature(EmbeddedDocument):
     columnOrder = IntField()
     columnName = StringField()
     dataType = EnumField(DataTypes)
-    colmnDescription = StringField()
+    columnDescription = StringField()
     metrics = EmbeddedDocumentField(DatasetFeatureMetrics)
     pass
 
