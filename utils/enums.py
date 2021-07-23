@@ -9,3 +9,12 @@ class DatasetType(enum.Enum):
 class DataTypes(enum.Enum):
     NUMBER = "NUMBER"
     STRING = "STRING"
+
+
+class AggregationMethods(enum.Enum):
+    SUM = "sum"
+    MEAN = "mean"
+    COUNT = "count"
+    MIN = "min"
+    MAX = "max"
+    UNIQUE = "unique"

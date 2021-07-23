@@ -4,7 +4,7 @@ from utils.exceptions import DatasetNotFound
 from numpy import not_equal
 import numpy
 from pandas.core.series import Series
-from utils.pdUtils import get_datatype
+from utils.pdUtils import get_datatype, perform_aggregation
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
 from pandas import DataFrame
@@ -89,3 +89,21 @@ class DatasetService:
         dataset = self.find_by_id(id, user_id)
         dataset.isDeleted = True
         dataset.save()
+
+    def perform_aggregation(
+        self, dataset_id, aggregate_method, groupby_field, aggregate_by_field
+    ):
+        dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
+        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
+            dataset.datasetLocation
+        )
+
+        aggregated_df = perform_aggregation(
+            dataset_frame.groupby(groupby_field)[aggregate_by_field],
+            aggregate_func=aggregate_method,
+        )
+        aggregation_result = list(aggregated_df.iteritems())
+        aggregation_result.insert(
+            0, (groupby_field, f"{aggregate_by_field}_{aggregate_method.value}")
+        )
+        return aggregation_result

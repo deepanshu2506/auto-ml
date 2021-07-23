@@ -21,4 +21,8 @@ def initialize(api: Api) -> None:
         resource_class_kwargs={"datasetService": datasetService},
     )
 
-    api.add_resource(PerformAggregationAPI, f"{API_PREFIX}/<id>/perform_aggregation")
+    api.add_resource(
+        PerformAggregationAPI,
+        f"{API_PREFIX}/<id>/perform_aggregation",
+        resource_class_kwargs={"datasetService": datasetService},
+    )

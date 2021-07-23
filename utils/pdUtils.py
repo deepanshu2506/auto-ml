@@ -1,5 +1,7 @@
 from numpy.core.numerictypes import issubdtype
-from utils.enums import DataTypes
+from pandas.core import series
+from pandas.core.frame import DataFrame
+from utils.enums import AggregationMethods, DataTypes
 import numpy
 
 
@@ -8,3 +10,9 @@ def get_datatype(dtype):
         return DataTypes.NUMBER
     else:
         return DataTypes.STRING
+
+
+def perform_aggregation(df: DataFrame, aggregate_func: AggregationMethods) -> DataFrame:
+    func = getattr(df, aggregate_func.value)
+    return func()
+    pass

@@ -17,7 +17,7 @@ class FileService:
         dataset.to_csv(file_path)
         return file_path, os.stat(file_path).st_size
 
-    def get_dataset_from_url(self, url):
+    def get_dataset_from_url(self, url) -> DataFrame:
         return pd.read_csv(url)
 
 
