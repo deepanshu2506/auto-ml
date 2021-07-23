@@ -6,3 +6,6 @@ NewDatasetRequestParser.add_argument(
     "file", type=FileStorage, location="files", required=True
 )
 NewDatasetRequestParser.add_argument("dataset_name", type=str, required=True)
+
+
+aggregationRequestParser = reqparse.RequestParser()

@@ -17,6 +17,9 @@ class FileService:
         dataset.to_csv(file_path)
         return file_path, os.stat(file_path).st_size
 
+    def get_dataset_from_url(self, url):
+        return pd.read_csv(url)
+
 
 class MockFileService(FileService):
     path = "C:\\Users\\deepa\\Desktop\\winequalityN.csv"

@@ -1,7 +1,10 @@
+import datetime
 from mongoengine.base.fields import ObjectIdField
 from mongoengine.document import EmbeddedDocument
 from utils.enums import DataTypes, DatasetType
 from mongoengine.fields import (
+    BooleanField,
+    DateTimeField,
     EmbeddedDocumentField,
     EmbeddedDocumentListField,
     EnumField,
@@ -47,3 +50,6 @@ class Dataset(Document):
     datasetFields = EmbeddedDocumentListField(DatasetFeature)
     info = EmbeddedDocumentField(DatasetInfo)
     createdBy = ObjectIdField()
+    createdAt = DateTimeField(default=datetime.datetime.utcnow)
+
+    isDeleted = BooleanField(default=False)

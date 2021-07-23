@@ -1,4 +1,5 @@
 from typing import List
+from utils.exceptions import DatasetNotFound
 
 from numpy import not_equal
 import numpy
@@ -74,3 +75,17 @@ class DatasetService:
         dataset.datasetFields = self._extract_fields(dataset_raw)
         dataset = dataset.save()
         return dataset
+
+    def get_datasets(self, user_id) -> List[Dataset]:
+        return Dataset.objects(createdBy=user_id, isDeleted=False)
+
+    def find_by_id(self, id, user_id) -> Dataset:
+        datasets = Dataset.objects(createdBy=user_id, id=id, isDeleted=False)
+        if len(datasets) == 0:
+            raise DatasetNotFound
+        return datasets[0]
+
+    def delete_dataset(self, id, user_id) -> None:
+        dataset = self.find_by_id(id, user_id)
+        dataset.isDeleted = True
+        dataset.save()
