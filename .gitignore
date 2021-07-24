@@ -19,6 +19,8 @@ _mailinglist
 docs/_build/
 .vscode
 
+uploads
+
 
 
 # Coverage reports
