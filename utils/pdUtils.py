@@ -16,3 +16,15 @@ def perform_aggregation(df: DataFrame, aggregate_func: AggregationMethods) -> Da
     func = getattr(df, aggregate_func.value)
     return func()
     pass
+
+
+def build_query(query: dict) -> str:
+    if "lhs" in query and "rhs" in query:
+        rhs = query["rhs"]
+        try:
+            rhs = float(rhs)
+        except ValueError:
+            rhs = '"' + rhs + '"'
+        return f"`{query['lhs']}` {query['op']} {rhs}"
+    else:
+        return f"{build_query(query['expr1'])} {query['op'].lower()} {build_query(query['expr2'])}"

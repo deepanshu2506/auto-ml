@@ -17,3 +17,4 @@ aggregationRequestParser.add_argument(
 aggregationRequestParser.add_argument("groupby_field", type=str, required=True)
 aggregationRequestParser.add_argument("aggregate_by_field", type=str, required=True)
 
+aggregationRequestParser.add_argument("filter", type=dict)

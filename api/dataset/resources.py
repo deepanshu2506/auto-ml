@@ -65,9 +65,9 @@ class PerformAggregationAPI(Resource):
 
     def post(self, id):
         body = aggregationRequestParser.parse_args()
-        aggregation_result = self.datasetService.perform_aggregation(id, **body)
+        headers, values = self.datasetService.perform_aggregation(id, **body)
         return jsonify(
             {
-                "data": aggregation_result,
+                "data": {"headers": headers, "values": values},
             }
         )

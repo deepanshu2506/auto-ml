@@ -1,10 +1,11 @@
 from typing import List
+from utils.enums import AggregationMethods
 from utils.exceptions import DatasetNotFound
 
 from numpy import not_equal
 import numpy
 from pandas.core.series import Series
-from utils.pdUtils import get_datatype, perform_aggregation
+from utils.pdUtils import build_query, get_datatype, perform_aggregation
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
 from pandas import DataFrame
@@ -91,19 +92,28 @@ class DatasetService:
         dataset.save()
 
     def perform_aggregation(
-        self, dataset_id, aggregate_method, groupby_field, aggregate_by_field
+        self,
+        dataset_id,
+        aggregate_method: AggregationMethods,
+        groupby_field: str,
+        aggregate_by_field: str,
+        filter: dict,
     ):
         dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
             dataset.datasetLocation
         )
-
+        if filter:
+            filter_query = build_query(filter)
+            print(filter_query)
+            dataset_frame: DataFrame = dataset_frame.query(filter_query)
         aggregated_df = perform_aggregation(
             dataset_frame.groupby(groupby_field)[aggregate_by_field],
             aggregate_func=aggregate_method,
         )
         aggregation_result = list(aggregated_df.iteritems())
-        aggregation_result.insert(
-            0, (groupby_field, f"{aggregate_by_field}_{aggregate_method.value}")
+        headers = (
+            groupby_field,
+            f"{aggregate_by_field.replace(' ' , '_')}_{aggregate_method.value}",
         )
-        return aggregation_result
+        return headers, aggregation_result
