@@ -18,3 +18,8 @@ class AggregationMethods(enum.Enum):
     MIN = "min"
     MAX = "max"
     UNIQUE = "unique"
+
+
+class Coltype(enum.Enum):
+    DISCRETE = "discrete"
+    CONTINOUS = "continous"

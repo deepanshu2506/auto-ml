@@ -1,7 +1,7 @@
 import datetime
 from mongoengine.base.fields import ObjectIdField
 from mongoengine.document import EmbeddedDocument
-from utils.enums import DataTypes, DatasetType
+from utils.enums import Coltype, DataTypes, DatasetType
 from mongoengine.fields import (
     BooleanField,
     DateTimeField,
@@ -35,6 +35,7 @@ class DatasetFeature(EmbeddedDocument):
     dataType = EnumField(DataTypes)
     columnDescription = StringField()
     metrics = EmbeddedDocumentField(DatasetFeatureMetrics)
+    colType = EnumField(Coltype)
 
 
 class DatasetInfo(EmbeddedDocument):
