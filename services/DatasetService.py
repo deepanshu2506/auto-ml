@@ -1,11 +1,11 @@
 from typing import List
-from utils.enums import AggregationMethods
+from utils.enums import AggregationMethods, Coltype, DataTypes
 from utils.exceptions import DatasetNotFound
 
 from numpy import not_equal
 import numpy
 from pandas.core.series import Series
-from utils.pdUtils import build_query, get_datatype, perform_aggregation
+from utils.pdUtils import build_query, get_col_type, get_datatype, perform_aggregation
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
 from pandas import DataFrame
@@ -43,20 +43,23 @@ class DatasetService:
         dataset_metrics = dataset.describe()
 
         for idx, (columnName, dataType) in enumerate(zip(columnNames, dataTypes)):
-            colType = get_datatype(dataType)
+            colDataType: DataTypes = get_datatype(dataType)
+            colData: Series = dataset.iloc[:, idx]
+            colType: Coltype = get_col_type(colData, colDataType)
             datasetFeature = DatasetFeature(
                 columnOrder=idx + 1,
                 columnName=columnName,
-                dataType=colType,
+                dataType=colDataType,
+                colType=colType,
             )
-            cols_with_metrics = dataset_metrics.columns.tolist()
+            cols_with_metrics: list = dataset_metrics.columns.tolist()
             raw_column_metrics = (
                 dataset_metrics.iloc[:, cols_with_metrics.index(columnName)]
                 if columnName in cols_with_metrics
                 else None
             )
             datasetFeature.metrics = self._build_column_metrics(
-                raw_column_metrics, dataset.iloc[:, idx]
+                raw_column_metrics, colData
             )
             datasetFields.append(datasetFeature)
         return datasetFields
