@@ -35,7 +35,6 @@ class DatasetFeature(EmbeddedDocument):
     dataType = EnumField(DataTypes)
     columnDescription = StringField()
     metrics = EmbeddedDocumentField(DatasetFeatureMetrics)
-    pass
 
 
 class DatasetInfo(EmbeddedDocument):
