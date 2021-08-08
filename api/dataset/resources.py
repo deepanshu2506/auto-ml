@@ -5,7 +5,11 @@ from flask import Response, jsonify
 from mongoengine.errors import ValidationError
 from services.DatasetService import DatasetService
 from werkzeug.datastructures import FileStorage
-from api.dataset.requestParsers import NewDatasetRequestParser, aggregationRequestParser
+from api.dataset.requestParsers import (
+    NewDatasetRequestParser,
+    aggregationRequestParser,
+    colDetailsRequestParser,
+)
 from flask_restful import Resource, marshal_with
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.dataset.responseTypes import getUserDatasetsAPIResponse, userDatasetDetails
@@ -71,3 +75,18 @@ class PerformAggregationAPI(Resource):
                 "data": {"headers": headers, "values": values},
             }
         )
+
+
+class DatasetColDetailsAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    def __init__(self, datasetService: DatasetService) -> None:
+        super().__init__()
+        self.datasetService = datasetService
+
+    def get(self, id):
+        user_id = get_jwt_identity()
+        body = colDetailsRequestParser.parse_args()
+
+        cols = self.datasetService.get_discrete_col_details(id, user_id, **body)
+        return jsonify({"data": cols})

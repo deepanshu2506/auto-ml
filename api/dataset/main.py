@@ -1,6 +1,11 @@
 from services.DatasetService import DatasetService
 from services.FileService import FileService, MockFileService
-from api.dataset.resources import DataSetsAPI, DatasetAPI, PerformAggregationAPI
+from api.dataset.resources import (
+    DataSetsAPI,
+    DatasetAPI,
+    DatasetColDetailsAPI,
+    PerformAggregationAPI,
+)
 from flask_restful import Api
 
 
@@ -24,5 +29,10 @@ def initialize(api: Api) -> None:
     api.add_resource(
         PerformAggregationAPI,
         f"{API_PREFIX}/<id>/perform_aggregation",
+        resource_class_kwargs={"datasetService": datasetService},
+    )
+    api.add_resource(
+        DatasetColDetailsAPI,
+        f"{API_PREFIX}/<id>/col_details",
         resource_class_kwargs={"datasetService": datasetService},
     )

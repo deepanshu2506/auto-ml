@@ -28,11 +28,23 @@ def get_col_type(column_data: Series, col_dtype: DataTypes) -> Coltype:
         top_n_unique_ratio = (
             1.0 * column_data.value_counts(normalize=True).head(TOP_N_COUNT).sum()
         )
+        print(
+            unique_ratio,
+            top_n_unique_ratio,
+            Coltype.DISCRETE
+            if (
+                unique_ratio < UNIQUE_RATIO_THRESHOLD
+                or top_n_unique_ratio > MAX_TOP_N_UNIQUE_RATIO_THRESHOLD
+            )
+            else Coltype.CONTINOUS,
+        )
         return (
             Coltype.DISCRETE
-            if unique_ratio < UNIQUE_RATIO_THRESHOLD
-            or top_n_unique_ratio > MAX_TOP_N_UNIQUE_RATIO_THRESHOLD
-            else Coltype.DISCRETE
+            if (
+                unique_ratio < UNIQUE_RATIO_THRESHOLD
+                or top_n_unique_ratio > MAX_TOP_N_UNIQUE_RATIO_THRESHOLD
+            )
+            else Coltype.CONTINOUS
         )
 
 

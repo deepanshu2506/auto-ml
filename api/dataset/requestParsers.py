@@ -18,3 +18,9 @@ aggregationRequestParser.add_argument("groupby_field", type=str, required=True)
 aggregationRequestParser.add_argument("aggregate_by_field", type=str, required=True)
 
 aggregationRequestParser.add_argument("filter", type=dict)
+
+
+colDetailsRequestParser = reqparse.RequestParser()
+colDetailsRequestParser.add_argument(
+    "num_samples", type=enum_validator(AggregationMethods), default=10
+)

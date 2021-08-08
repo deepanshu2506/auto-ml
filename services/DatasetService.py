@@ -67,9 +67,12 @@ class DatasetService:
     def createDataset(self, dataset_raw_file: FileStorage, datasetName: str) -> Dataset:
         user_id = get_jwt_identity()
         dataset_raw = self.fileService.convert_to_dataset(dataset_raw_file)
-        dataset = Dataset(createdBy=user_id, name=datasetName)
+        dataset = Dataset(
+            createdBy=user_id,
+            name=datasetName,
+        )
 
-        # dataset = dataset.save()
+        dataset = dataset.save()
         file_path, file_size = self.fileService.save_dataset(
             dataset_raw, user_id=user_id, dataset_id=dataset.id
         )
@@ -93,6 +96,27 @@ class DatasetService:
         dataset = self.find_by_id(id, user_id)
         dataset.isDeleted = True
         dataset.save()
+
+    def get_discrete_col_details(self, id, user_id, num_samples=10) -> None:
+        dataset = self.find_by_id(id, user_id)
+        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
+            dataset.datasetLocation
+        )
+
+        discrete_cols = list(
+            filter(lambda col: col.colType == Coltype.DISCRETE, dataset.datasetFields)
+        )
+        discrete_col_names = list(map(lambda col: col.columnName, discrete_cols))
+        discrete_data: DataFrame = dataset_frame[discrete_col_names]
+        col_details = {}
+        for col in discrete_data:
+            unique_vals = discrete_data[col].unique()
+            col_details[col] = {
+                "values": unique_vals[:num_samples].tolist(),
+                "unique_count": unique_vals.size,
+                "total_count": discrete_data[col].size,
+            }
+        return col_details
 
     def perform_aggregation(
         self,
