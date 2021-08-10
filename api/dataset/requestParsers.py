@@ -1,4 +1,4 @@
-from utils.enums import AggregationMethods
+from utils.enums import AggregationMethods, SingleColImputationMethods
 from utils.validators import enum_validator
 from flask_restful import reqparse
 from werkzeug.datastructures import FileStorage
@@ -21,6 +21,12 @@ aggregationRequestParser.add_argument("filter", type=dict)
 
 
 colDetailsRequestParser = reqparse.RequestParser()
-colDetailsRequestParser.add_argument(
-    "num_samples", type=enum_validator(AggregationMethods), default=10
+colDetailsRequestParser.add_argument("num_samples", type=int, default=10)
+
+
+singleColImputationRequestParser = reqparse.RequestParser()
+singleColImputationRequestParser.add_argument("col_name", type=str, required=True)
+singleColImputationRequestParser.add_argument(
+    "impute_type", type=enum_validator(SingleColImputationMethods), required=True
 )
+singleColImputationRequestParser.add_argument("value", type=str)

@@ -1,3 +1,4 @@
+from api.dataset.imputationResources import DatasetSingleColImputation
 from services.DatasetService import DatasetService
 from services.FileService import FileService, MockFileService
 from api.dataset.resources import (
@@ -34,5 +35,10 @@ def initialize(api: Api) -> None:
     api.add_resource(
         DatasetColDetailsAPI,
         f"{API_PREFIX}/<id>/col_details",
+        resource_class_kwargs={"datasetService": datasetService},
+    )
+    api.add_resource(
+        DatasetSingleColImputation,
+        f"{API_PREFIX}/<id>/impute_advanced",
         resource_class_kwargs={"datasetService": datasetService},
     )

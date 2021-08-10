@@ -12,9 +12,17 @@ class FileService:
     def convert_to_dataset(self, file: FileStorage):
         return pd.read_csv(file)
 
-    def save_dataset(self, dataset: DataFrame, user_id: str, dataset_id: str) -> str:
-        file_path = os.path.join(Config.UPLOAD_DIRECTORY, f"{user_id}_{dataset_id}.csv")
-        dataset.to_csv(file_path)
+    def save_dataset(
+        self,
+        dataset: DataFrame,
+        user_id: str = None,
+        dataset_id: str = None,
+        dataset_path=None,
+    ) -> str:
+        file_path = dataset_path or (
+            os.path.join(Config.UPLOAD_DIRECTORY, f"{user_id}_{dataset_id}.csv")
+        )
+        dataset.to_csv(file_path, index=False)
         return file_path, os.stat(file_path).st_size
 
     def get_dataset_from_url(self, url) -> DataFrame:

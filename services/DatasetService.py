@@ -1,3 +1,4 @@
+from lib.imputer import Imputer, ImputerFactory
 from typing import List
 from utils.enums import AggregationMethods, Coltype, DataTypes
 from utils.exceptions import DatasetNotFound
@@ -144,3 +145,23 @@ class DatasetService:
             f"{aggregate_by_field.replace(' ' , '_')}_{aggregate_method.value}",
         )
         return headers, aggregation_result
+
+    def impute_col(self, dataset_id, col_name, impute_type, value=None):
+        dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
+        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
+            dataset.datasetLocation
+        )
+        null_count = dataset_frame[col_name].isnull().sum()
+
+        imputer: Imputer = ImputerFactory.get_imputer(
+            impute_type, column_name=col_name, value=value
+        )
+        print(imputer)
+        imputed_dataset = imputer.impute(dataset_frame)
+        print(imputed_dataset)
+        self.fileService.save_dataset(
+            imputed_dataset, dataset_path=dataset.datasetLocation
+        )
+        # print(imputed_dataset[col_name].isnull().sum())
+
+        pass

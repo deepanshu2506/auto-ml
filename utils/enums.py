@@ -23,3 +23,11 @@ class AggregationMethods(enum.Enum):
 class Coltype(enum.Enum):
     DISCRETE = "discrete"
     CONTINOUS = "continous"
+
+
+class SingleColImputationMethods(enum.Enum):
+    MEAN = "mean"
+    MEDIAN = "median"
+    VALUE = "value"
+    KNN = "knn"
+    MAX_FREQUENCY = "max_freq"
