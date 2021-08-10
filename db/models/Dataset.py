@@ -1,7 +1,7 @@
 import datetime
 from mongoengine.base.fields import ObjectIdField
-from mongoengine.document import EmbeddedDocument
-from utils.enums import Coltype, DataTypes, DatasetType
+from mongoengine.document import DynamicEmbeddedDocument, EmbeddedDocument
+from utils.enums import Coltype, DataTypes, DatasetStates, DatasetType, JobTypes
 from mongoengine.fields import (
     BooleanField,
     DateTimeField,
@@ -43,13 +43,27 @@ class DatasetInfo(EmbeddedDocument):
     tupleCount = IntField()
 
 
+class JobStats(DynamicEmbeddedDocument):
+    jobStart = DateTimeField()
+    jobEnd = DateTimeField()
+    pass
+
+
+class DatasetJob(EmbeddedDocument):
+    jobType = EnumField(JobTypes)
+    stats = EmbeddedDocumentField(JobStats)
+    runOn = DateTimeField(default=datetime.datetime.utcnow)
+
+
 class Dataset(Document):
     type = EnumField(DatasetType, default=DatasetType.CSV)
     name = StringField()
+    state = EnumField(DatasetStates, default=DatasetStates.RAW)
     datasetLocation = StringField()
     datasetFields = EmbeddedDocumentListField(DatasetFeature)
     info = EmbeddedDocumentField(DatasetInfo)
     createdBy = ObjectIdField()
     createdAt = DateTimeField(default=datetime.datetime.utcnow)
+    jobs = EmbeddedDocumentListField(DatasetJob)
 
     isDeleted = BooleanField(default=False)

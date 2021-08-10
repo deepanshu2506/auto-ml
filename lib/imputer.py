@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Union
-from utils.enums import SingleColImputationMethods
+from utils.enums import ImputationMethods
 from pandas import DataFrame
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.impute import KNNImputer as KNNImputerBase
@@ -15,7 +15,7 @@ class Imputer(ABC):
 
 class ImputerFactory:
     @staticmethod
-    def get_imputer(type: Union[SingleColImputationMethods], **kwargs) -> Imputer:
+    def get_imputer(type: ImputationMethods, **kwargs) -> Imputer:
         if type == SingleColImputationMethods.MEAN:
             return MeanImputer(column_name=kwargs["column_name"])
         elif type == SingleColImputationMethods.MEDIAN:

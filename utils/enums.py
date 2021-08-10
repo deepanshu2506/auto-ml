@@ -25,9 +25,20 @@ class Coltype(enum.Enum):
     CONTINOUS = "continous"
 
 
-class SingleColImputationMethods(enum.Enum):
+class ImputationMethods(enum.Enum):
     MEAN = "mean"
     MEDIAN = "median"
     VALUE = "value"
     KNN = "knn"
     MAX_FREQUENCY = "max_freq"
+
+
+class DatasetStates(enum.Enum):
+    RAW = "raw"
+    IMPUTED = "imputed"
+    PARTIALLY_IMPUTED = "partially_imputed"
+
+
+class JobTypes(enum.Enum):
+    SINGLE_COL_IMPUTATION = "single_col_impute"
+    MULTI_COL_IMPUTATION = "multi_col_impute"

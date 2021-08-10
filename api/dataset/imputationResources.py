@@ -15,4 +15,5 @@ class DatasetSingleColImputation(Resource):
     def post(self, id):
         user_id = get_jwt_identity()
         args = singleColImputationRequestParser.parse_args()
-        self.datasetService.impute_col(id, **args)
+        imputation_result_stats = self.datasetService.impute_col(id, **args)
+        return {"data": imputation_result_stats}

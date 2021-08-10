@@ -1,6 +1,7 @@
+from datetime import datetime
 from lib.imputer import Imputer, ImputerFactory
 from typing import List
-from utils.enums import AggregationMethods, Coltype, DataTypes
+from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetStates, JobTypes
 from utils.exceptions import DatasetNotFound
 
 from numpy import not_equal
@@ -16,6 +17,8 @@ from db.models.Dataset import (
     DatasetFeature,
     DatasetFeatureMetrics,
     DatasetInfo,
+    DatasetJob,
+    JobStats,
 )
 
 
@@ -147,6 +150,7 @@ class DatasetService:
         return headers, aggregation_result
 
     def impute_col(self, dataset_id, col_name, impute_type, value=None):
+        job_start_time = datetime.utcnow()
         dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
             dataset.datasetLocation
@@ -156,12 +160,29 @@ class DatasetService:
         imputer: Imputer = ImputerFactory.get_imputer(
             impute_type, column_name=col_name, value=value
         )
-        print(imputer)
         imputed_dataset = imputer.impute(dataset_frame)
-        print(imputed_dataset)
         self.fileService.save_dataset(
-            imputed_dataset, dataset_path=dataset.datasetLocation
+            imputed_dataset,
+            dataset_path=dataset.datasetLocation,
         )
-        # print(imputed_dataset[col_name].isnull().sum())
+        job_end_time = datetime.utcnow()
 
-        pass
+        dataset.datasetFields = self._extract_fields(imputed_dataset)
+        imputed_col_stats = [
+            {
+                "col_name": col_name,
+                "imputed_count": null_count,
+            }
+        ]
+
+        job_stats = JobStats(jobStart=job_start_time, jobEnd=job_end_time)
+        job_stats.colsImputed = 1
+        job_stats.imputationType = impute_type
+        job_stats.cols = imputed_col_stats
+        imputation_job = DatasetJob(
+            jobType=JobTypes.SINGLE_COL_IMPUTATION, stats=job_stats
+        )
+        dataset.jobs.append(imputation_job)
+        Dataset.state = DatasetStates.PARTIALLY_IMPUTED
+        dataset.save()
+        return imputed_col_stats
