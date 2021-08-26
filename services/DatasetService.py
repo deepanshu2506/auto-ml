@@ -1,4 +1,5 @@
 from datetime import datetime
+from lib.Preprocessor import DataFrameOrdinalencoder
 from lib.imputer import Imputer, ImputerFactory
 from typing import List
 from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetStates, JobTypes
@@ -186,3 +187,11 @@ class DatasetService:
         Dataset.state = DatasetStates.PARTIALLY_IMPUTED
         dataset.save()
         return imputed_col_stats
+
+    def impute_dataset(self, dataset_id, target_col):
+        dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
+        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
+            dataset.datasetLocation
+        )
+        ordinalEncoder = DataFrameOrdinalencoder(dataset_meta=dataset)
+        preprocessed_frame = ordinalEncoder.fit(dataset_frame)

@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Union
 from utils.enums import ImputationMethods
 from pandas import DataFrame
 from sklearn.preprocessing import OrdinalEncoder
@@ -16,15 +15,15 @@ class Imputer(ABC):
 class ImputerFactory:
     @staticmethod
     def get_imputer(type: ImputationMethods, **kwargs) -> Imputer:
-        if type == SingleColImputationMethods.MEAN:
+        if type == ImputationMethods.MEAN:
             return MeanImputer(column_name=kwargs["column_name"])
-        elif type == SingleColImputationMethods.MEDIAN:
+        elif type == ImputationMethods.MEDIAN:
             return MedianImputer(column_name=kwargs["column_name"])
-        elif type == SingleColImputationMethods.MAX_FREQUENCY:
+        elif type == ImputationMethods.MAX_FREQUENCY:
             return MaxFrequencyImputer(column_name=kwargs["column_name"])
-        elif type == SingleColImputationMethods.KNN:
+        elif type == ImputationMethods.KNN:
             return KNNImputer(column_name=kwargs["column_name"])
-        elif type == SingleColImputationMethods.VALUE:
+        elif type == ImputationMethods.VALUE:
             return ValueImputer(
                 column_name=kwargs["column_name"], value=kwargs["value"]
             )
@@ -102,3 +101,12 @@ class KNNImputer(Imputer):
         )
         dataframe[self.column_name] = df_temp[self.column_name]
         return dataframe
+
+
+class IterativeImputer(Imputer):
+    def __init__(self, target_col) -> None:
+        self.target_col = target_col
+
+    def impute(self, dataframe: DataFrame) -> DataFrame:
+        X = dataframe.loc[:, ~dataframe.columns.isin([self.target_col])]
+        Y = dataframe[self.target_col]
