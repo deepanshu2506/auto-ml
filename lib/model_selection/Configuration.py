@@ -1,3 +1,5 @@
+from enum import Enum
+from lib.Logger.Logger import Logger
 from lib.model_selection.ann_encoding import ProblemType
 
 
@@ -22,10 +24,13 @@ class Configuration:
         verbose_individuals=False,
         show_model=False,
         verbose_training=0,
+        logger=None,
     ):
 
         self._architecture_type = architecture_type
-        self._problem_type:ProblemType = problem_type  # 1 for regression, 2 for classification
+        self._problem_type: ProblemType = (
+            problem_type  # 1 for regression, 2 for classification
+        )
         self._input_shape = input_shape
         self._output_shape = output_shape  # If regression applies, number of classes
         self._cross_val = cross_val
@@ -42,6 +47,7 @@ class Configuration:
         self._verbose_individuals = verbose_individuals
         self._verbose_training = verbose_training
         self._show_model = show_model
+        self._logger: Logger = logger
 
     @property
     def architecture_type(self):
@@ -52,11 +58,11 @@ class Configuration:
         self._architecture_type = architecture_type
 
     @property
-    def problem_type(self)->ProblemType:
+    def problem_type(self) -> ProblemType:
         return self._problem_type
 
     @problem_type.setter
-    def problem_type(self, problem_type:ProblemType):
+    def problem_type(self, problem_type: ProblemType):
         self._problem_type = problem_type
 
     @property
@@ -186,3 +192,19 @@ class Configuration:
     @show_model.setter
     def show_model(self, show_model):
         self._show_model = show_model
+
+    @property
+    def logger(self) -> Logger:
+        return self._logger
+
+    @logger.setter
+    def show_model(self, logger):
+        self._logger = logger
+
+
+class Phases(Enum):
+    PREPROCESS = "PREPROCESS"
+    INIT = "INIT"
+    RUNNING_EXPT = "RUNNING_EXPT"
+    CROSS_VALIDATION = "CROSS_VALIDATION"
+    COMPILING_BEST = "COMPILING BEST"

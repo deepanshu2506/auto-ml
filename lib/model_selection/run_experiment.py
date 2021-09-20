@@ -14,6 +14,7 @@ def evaluate_population(
     Y: DataFrame,
     population: List[Individual],
     configuration: Configuration,
+    generation_count: int = 0,
 ) -> Tuple[Individual, Individual, int]:
     best_model = nn_evolutionary.Individual(
         configuration.pop_size * 2, configuration.problem_type, [], [], fitness=10 ** 8
@@ -27,6 +28,8 @@ def evaluate_population(
     raw_scores = np.zeros((pop_size))
     normalized_scores = None
     population_to_keras(population, input_shape=configuration.input_shape)
+
+    configuration.logger.info(f"Evaluating models for generation {generation_count}")
     for i, ind in enumerate(population):
         ind.compute_raw_scores(X, Y, configuration.epochs, configuration.cross_val)
         raw_scores[i] = ind.raw_score
@@ -38,7 +41,7 @@ def evaluate_population(
             ind.normalized_score = raw_scores[i]
         else:  # For regression we used normalized RMSE
             ind.normalized_score = normalized_scores[i]
-        ind.compute_fitness(0.7)
+        ind.compute_fitness(configuration.size_scaler)
     if ind.fitness < best_model.fitness:
         best_model = ind
 
@@ -63,16 +66,15 @@ def run_experiment(
     experiment_number,
 ):
     """Run one experiment. An experiment consists of running the evolutionary algorithm for n generations"""
-
+    configuration.logger.info(f"starting experiment no - {experiment_number}")
     launch_new_generation = True  # First generation is always launched
     experiment_best = None
     generation_count = 0
 
-    # parent_pop = []
     elite_archive = []  # Archive to store the best individuals in each generation
 
     # Log the information of this experiment
-    print(
+    configuration.logger.info(
         "Starting model optimization: Problem type {}, Architecture type {}".format(
             configuration.problem_type, configuration.architecture_type
         )
@@ -91,7 +93,7 @@ def run_experiment(
     #         configuration.size_scaler,
     #     )
     # )
-
+    configuration.logger.info("Generating initial population")
     population = nn_evolutionary.initial_population(
         configuration.pop_size,
         configuration.problem_type,
@@ -134,21 +136,8 @@ def run_experiment(
 
         # Assess the fitness of the inidividuals in the population
         best_model, worst_model, worst_index = evaluate_population(
-            X,
-            Y,
-            population,
-            configuration,
+            X, Y, population, configuration, generation_count=generation_count + 1
         )
-
-        # # Save worst and best models. Also append best model to elite archive
-        # print("\nPopulation at generation " + str(generation_count + 1))
-        # print_pop(population, logger=True)
-
-        # print("\nGeneration Best model")
-        # print(best_model)
-
-        # print("\nGeneration worst model")
-        # print(worst_model)
 
         if generation_count > 0:  # At least one generation so to have one best model
 
