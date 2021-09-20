@@ -8,6 +8,9 @@ from lib.model_selection.ann_encoding import Layers, ProblemType
 import pandas as pd
 from sklearn.model_selection import KFold
 from tensorflow import keras
+import tensorflow as tf
+
+print(tf.__version__)
 
 dataset = pd.read_csv("C:\\Users\\deepa\\Desktop\\train.csv")
 Y = dataset["price_range"]
