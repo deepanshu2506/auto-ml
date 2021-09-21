@@ -10,10 +10,12 @@ import numpy as np
 
 
 def evaluate_population(
-    X: DataFrame,
-    Y: DataFrame,
+    dataset: DataFrame,
+    target_var: str,
     population: List[Individual],
     configuration: Configuration,
+    input_layer,
+    preprocessing_layer,
     generation_count: int = 0,
 ) -> Tuple[Individual, Individual, int]:
     best_model = nn_evolutionary.Individual(
@@ -27,11 +29,17 @@ def evaluate_population(
     pop_size = len(population)
     raw_scores = np.zeros((pop_size))
     normalized_scores = None
-    population_to_keras(population, input_shape=configuration.input_shape)
+    population_to_keras(
+        population,
+        input_layer=input_layer,
+        preprocessing_layer=preprocessing_layer,
+    )
 
     configuration.logger.info(f"Evaluating models for generation {generation_count}")
     for i, ind in enumerate(population):
-        ind.compute_raw_scores(X, Y, configuration.epochs, configuration.cross_val)
+        ind.compute_raw_scores(
+            dataset, target_var, configuration.epochs, configuration.cross_val
+        )
         raw_scores[i] = ind.raw_score
 
         normalization_factor = np.linalg.norm(raw_scores)
@@ -60,10 +68,12 @@ def print_pop(parent_pool, logger=False):
 
 
 def run_experiment(
-    X,
-    Y,
+    dataset,
+    target_var,
     configuration: Configuration,
     experiment_number,
+    input_layer,
+    preprocessoring_layer,
 ):
     """Run one experiment. An experiment consists of running the evolutionary algorithm for n generations"""
     configuration.logger.info(f"starting experiment no - {experiment_number}")
@@ -82,7 +92,6 @@ def run_experiment(
     # print("Parameters:")
     # print(
     #     "Input shape: {}, Output shape: {}, cross_val ratio: {}, Generations: {}, Population size: {}, Tournament size: {}, Binary selection: {}, Mutation ratio: {}, Size scaler: {}".format(
-    #         configuration.input_shape,
     #         configuration.output_shape,
     #         configuration.cross_val,
     #         configuration.max_generations,
@@ -136,7 +145,13 @@ def run_experiment(
 
         # Assess the fitness of the inidividuals in the population
         best_model, worst_model, worst_index = evaluate_population(
-            X, Y, population, configuration, generation_count=generation_count + 1
+            dataset,
+            target_var,
+            population,
+            configuration,
+            generation_count=generation_count + 1,
+            input_layer=input_layer,
+            preprocessing_layer=preprocessoring_layer,
         )
 
         if generation_count > 0:  # At least one generation so to have one best model

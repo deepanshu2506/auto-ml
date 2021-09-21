@@ -1,3 +1,9 @@
+from lib.Preprocessor import (
+    df_to_dataset,
+    get_category_encoding_layer,
+    get_normalization_layer,
+)
+from lib.Logger.Logger import Logger
 from lib.model_selection.run_experiment import run_experiment
 from lib.model_selection.Configuration import Configuration
 from pandas.core.frame import DataFrame
@@ -10,23 +16,61 @@ from sklearn.model_selection import KFold
 from tensorflow import keras
 import tensorflow as tf
 
-print(tf.__version__)
 
 dataset = pd.read_csv("C:\\Users\\deepa\\Desktop\\train.csv")
 Y = dataset["price_range"]
-X: DataFrame = dataset.loc[:, dataset.columns != "price_range"]
-for column in X.columns:
-    X[column] = (X[column] - X[column].min()) / (X[column].max() - X[column].min())
-input_shape = X.shape[1:]
+# for column in X.columns:
+#     X[column] = (X[column] - X[column].min()) / (X[column].max() - X[column].min())
 output_shape = len(list(Y.value_counts()))  # applies only if classification
 architecture_type = Layers.FullyConnected
 problem_type = ProblemType.Classification
 size_scaler = 0.1
 
+all_inputs = []
+encoded_features = []
+for header in [
+    "battery_power",
+    "clock_speed",
+    "int_memory",
+    "m_dep",
+    "mobile_wt",
+    "pc",
+    "px_height",
+    "px_width",
+    "ram",
+    "sc_h",
+    "sc_w",
+    "talk_time",
+]:
+    numeric_col = tf.keras.Input(shape=(1,), name=header)
+    normalization_layer = get_normalization_layer(header, dataset)
+    encoded_numeric_col = normalization_layer(numeric_col)
+    all_inputs.append(numeric_col)
+    encoded_features.append(encoded_numeric_col)
+for header in [
+    "blue",
+    "dual_sim",
+    "three_g",
+    "four_g",
+    "fc",
+    "n_cores",
+    "touch_screen",
+    "wifi",
+]:
+    col = tf.keras.Input(shape=(1,), name=header, dtype="int64")
+    encoding_layer = get_category_encoding_layer(
+        header, dataset, dtype="int64", max_tokens=5
+    )
+    encoded_age_col = encoding_layer(col)
+    all_inputs.append(col)
+    encoded_features.append(encoded_age_col)
+
+all_features = tf.keras.layers.concatenate(encoded_features)
+
+
 config = Configuration(
     architecture_type,
     problem_type,
-    input_shape,
     output_shape,
     pop_size=5,
     tournament_size=3,
@@ -42,12 +86,10 @@ config = Configuration(
     verbose_individuals=True,
     show_model=True,
     verbose_training=1,
+    logger=Logger(),
 )
 num_experiments = 5
 
-Y = pd.get_dummies(Y)
-X = X.values
-Y = Y.values
 
 exp_results = []
 
@@ -55,24 +97,33 @@ METRICS = []
 
 for i in range(0, num_experiments):
     print(f"Experiment {i+1}")
-    best = run_experiment(X, Y, configuration=config, experiment_number=i)
+    best = run_experiment(
+        dataset,
+        "price_range",
+        configuration=config,
+        experiment_number=i,
+        input_layer=all_inputs,
+        preprocessoring_layer=all_features,
+    )
 
     kf = KFold(n_splits=5, random_state=None, shuffle=False)
 
     scores = []
 
-    for train_index, test_index in kf.split(X):
+    for train_index, test_index in kf.split(dataset):
         best_model = create_tunable_model(
             best.stringModel,
             config.problem_type,
-            config.input_shape,
             1,
             metrics=METRICS,
+            input_layer=all_inputs,
+            preprocessing_layer=all_features,
         )
-        X_train, X_test = X[train_index], X[test_index]
-        y_train, y_test = Y[train_index], Y[test_index]
-        history = best_model.fit(X_train, y_train, epochs=20)
-        score = best_model.evaluate(X_test, y_test)
+        train, test = dataset.iloc[train_index], dataset.iloc[test_index]
+        train_ds = df_to_dataset(train, target_variable="price_range")
+        test_ds = df_to_dataset(test, target_variable="price_range")
+        history = best_model.fit(train_ds, epochs=20)
+        score = best_model.evaluate(test_ds)
 
         scores.append(score)
 

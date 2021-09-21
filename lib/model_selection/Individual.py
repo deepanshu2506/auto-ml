@@ -1,5 +1,7 @@
+from lib.Preprocessor import df_to_dataset
 import numpy as np
 import math
+import tensorflow as tf
 from tensorflow.keras.models import Model
 from sklearn.model_selection import train_test_split
 import lib.model_selection.ann_encoding as ann_encoding
@@ -30,8 +32,8 @@ class Individual:
 
     def compute_raw_scores(
         self,
-        X,
-        Y,
+        dataset,
+        target_var,
         epochs,
         cross_validation_ratio,
     ):
@@ -43,8 +45,8 @@ class Individual:
         self._raw_size = trainable_count
 
         scores = self.partial_run(
-            X,
-            Y,
+            dataset,
+            target_var,
             cross_validation_ratio,
             epochs,
         )
@@ -112,35 +114,28 @@ class Individual:
 
     def partial_run(
         self,
-        X,
-        Y,
+        dataset,
+        target_var,
         cross_validation_ratio=0.2,
         epochs=20,
     ):
 
-        X_train, X_test, Y_train, Y_test = train_test_split(
-            X, Y, test_size=cross_validation_ratio
-        )
+        train, test = train_test_split(dataset, test_size=cross_validation_ratio)
+        train_ds = df_to_dataset(train, target_variable=target_var)
+        test_ds = df_to_dataset(test, target_variable=target_var)
+
+        # print(X_train.shape)
 
         self.tModel.fit(
-            X_train,
-            Y_train,
+            train_ds,
             epochs=epochs,
             verbose=1,
         )
         scores = self._tModel.evaluate(
-            X_test,
-            Y_test,
+            test_ds,
             verbose=1,
         )
         return scores
-        # print(cScores)
-
-        """
-		self._tModel.evaluate_model(cross_validation=False)
-		cScores = self._tModel.scores
-		#print(cScores)
-		"""
 
     def __str__(self):
 

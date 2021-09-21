@@ -14,7 +14,7 @@ class ModelGenerator:
     def _get_dataset():
         pass
 
-    def _preprocess():
+    def _build_preprocessing_layers():
         pass
 
     def _get_metadata():

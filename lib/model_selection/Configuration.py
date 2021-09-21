@@ -8,7 +8,6 @@ class Configuration:
         self,
         architecture_type,
         problem_type,
-        input_shape,
         output_shape,
         pop_size,
         tournament_size,
@@ -31,7 +30,6 @@ class Configuration:
         self._problem_type: ProblemType = (
             problem_type  # 1 for regression, 2 for classification
         )
-        self._input_shape = input_shape
         self._output_shape = output_shape  # If regression applies, number of classes
         self._cross_val = cross_val
         self._more_layers_prob = more_layers_prob
@@ -64,14 +62,6 @@ class Configuration:
     @problem_type.setter
     def problem_type(self, problem_type: ProblemType):
         self._problem_type = problem_type
-
-    @property
-    def input_shape(self):
-        return self._input_shape
-
-    @input_shape.setter
-    def input_shape(self, input_shape):
-        self._input_shape = input_shape
 
     @property
     def output_shape(self):
