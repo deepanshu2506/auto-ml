@@ -1,7 +1,6 @@
 from lib.Preprocessor import df_to_dataset
 import numpy as np
 import math
-import tensorflow as tf
 from tensorflow.keras.models import Model
 from sklearn.model_selection import train_test_split
 import lib.model_selection.ann_encoding as ann_encoding

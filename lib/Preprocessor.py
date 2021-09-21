@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Dict, List
-from utils.enums import DataTypes, ImputationMethods
+from utils.enums import DataTypes
 
 import numpy as np
 from numpy.lib.function_base import select
