@@ -1,3 +1,4 @@
+from db.models.ModelSelectionJobs import ModelSelectionConfiguration
 from enum import Enum
 from lib.Logger.Logger import Logger
 from lib.model_selection.ann_encoding import ProblemType
@@ -190,6 +191,24 @@ class Configuration:
     @logger.setter
     def show_model(self, logger):
         self._logger = logger
+
+    def get_serializable(self) -> ModelSelectionConfiguration:
+        return ModelSelectionConfiguration(
+            architecture_type=self._architecture_type,
+            problem_type=self._problem_type,
+            output_shape=self._output_shape,
+            pop_size=self._pop_size,
+            tournament_size=self._tournament_size,
+            max_similar=self._max_similar,
+            size_scaler=self._size_scaler,
+            epochs=self._epochs,
+            cross_val=self.cross_val,
+            more_layers_prob=self._more_layers_prob,
+            max_generations=self._max_generations,
+            binary_selection=self._binary_selection,
+            mutation_ratio=self._mutation_ratio,
+            similarity_threshold=self._similarity_threshold,
+        )
 
 
 class Phases(Enum):

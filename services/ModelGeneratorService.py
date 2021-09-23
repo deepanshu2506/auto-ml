@@ -1,33 +1,70 @@
+from datetime import datetime
+import threading
+from tensorflow.python.keras.metrics import accuracy
+from db.models.ModelSelectionJobs import (
+    GeneratedModel,
+    ModelSelectionJob,
+    ModelSelectionJobResult,
+)
+from lib.model_selection.Configuration import Configuration
+from lib.model_selection.model_selection import ModelGenerator
+from lib.Logger.SocketLogger import SocketLogger
+from services.DatasetService import DatasetService
+from services.FileService import FileService
+from db.models.Dataset import Dataset
 from lib.Logger.Logger import Logger
 
 
-class ModelGenerator:
-    def __init__(self, dataset_id, target_feature, logger: Logger) -> None:
-        self.dataset_id = dataset_id
-        self.target_feature = target_feature
-        self.logger = logger
-        self.results = []
+class ModelGeneratorService:
+    def __init__(
+        self, fileService: FileService, datasetService: DatasetService
+    ) -> None:
+        self.datasetService = datasetService
+        self.fileService = fileService
 
-    def fit():
-        pass
+    def generateModels(self, user_id, dataset_id, target_col):
+        print("starting")
+        modelThread = threading.Thread(
+            target=self._generateModel, args=(user_id, dataset_id, target_col)
+        )
+        modelThread.start()
 
-    def _get_dataset():
-        pass
+    def _generateModel(self, user_id, dataset_id, target_col):
+        print("here")
+        dataset = self.datasetService.find_by_id(dataset_id, user_id)
+        raw_dataset = self.fileService.get_dataset_from_url(dataset.datasetLocation)
+        modelSelectionJob = ModelSelectionJob()
+        modelSelectionJob.dataset = dataset
+        logger = SocketLogger(user_id)
+        modelGenerator = ModelGenerator(
+            dataset=dataset,
+            raw_dataset=raw_dataset,
+            target_feature=target_col,
+            logger=logger,
+        )
+        modelGenerator.build()
+        algo_config = modelGenerator.config
 
-    def _build_preprocessing_layers():
-        pass
+        modelSelectionJob.architecture_type = algo_config.architecture_type
+        modelSelectionJob.problemType = algo_config.problem_type
+        modelSelectionJob.num_classes = algo_config.output_shape
+        modelSelectionJob.configuration = algo_config.get_serializable()
 
-    def _get_metadata():
-        pass
+        results = modelGenerator.fit()
 
-    def _generate_configuration():
-        pass
+        def get_generatedModel(res):
+            generatedModel = GeneratedModel(
+                accuracy=res[0],
+                precision=res[2],
+                recall=res[3],
+                fitness_score=res[3].fitness_score,
+            )
+            generatedModel.accuracy_dev = res[1]
+            generatedModel.model_arch = res[3].stringModel
+            generatedModel.trainable_params = res[3]._raw_size
+            return generatedModel
 
-    def _run_experiment():
-        pass
-
-    def _cross_validate():
-        pass
-
-    def _select_best_model():
-        pass
+        generatedModels = map(get_generatedModel, results)
+        modelSelectionJob.results = ModelSelectionJobResult(models=generatedModels)
+        modelSelectionJob.jobEndtime = datetime.utcnow()
+        modelSelectionJob.save()

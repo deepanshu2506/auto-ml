@@ -1,150 +1,210 @@
-from pandas.core.frame import DataFrame
-from pandas.core.series import Series
-from tensorflow.python.keras.models import Model
+from numpy.core.numeric import cross
 from lib.model_selection.Individual import Individual
 from lib.model_selection.fetch_to_keras import create_tunable_model
-from typing import List, Tuple, Union
-from lib.model_selection.ann_encoding import Layers, ProblemType
-from lib.model_selection.Configuration import Configuration
 from lib.model_selection.run_experiment import run_experiment
+from lib.model_selection.Configuration import Configuration
+from lib.model_selection.ann_encoding import Layers, ProblemType
+from lib.Preprocessor import (
+    df_to_dataset,
+    get_category_encoding_layer,
+    get_normalization_layer,
+)
+from typing import Any, List, Tuple
+
+from utils.enums import Coltype, DataTypes
+from pandas.core.frame import DataFrame
+from db.models.Dataset import Dataset, DatasetFeature
+from lib.Logger.Logger import Logger
+from tensorflow.keras import Input, layers
 from sklearn.model_selection import KFold
-import pandas as pd
+
+# TODO - write logs to logger
 
 
-class ModelSelection:
+class ModelGenerator:
     def __init__(
         self,
-        problem_type: ProblemType,
-        architecture_type: Layers,
-        num_experiments: int = 5,
-        size_scaler: float = 0.7,
-        tournament_size=3,
-        max_similar=3,
-        epochs=5,
-        cross_val=0.2,
-        max_generations=10,
-        more_layers_prob=0.8,
-                    cv_training_epochs = 20
-
+        dataset: Dataset,
+        raw_dataset: DataFrame,
+        target_feature,
+        logger: Logger,
+        experiment_count=5,
     ) -> None:
-        self.config = Configuration(
+        self.dataset = dataset
+        self.raw_dataset = raw_dataset
+        self.target_feature = target_feature
+        self.logger = logger
+        self._exp_results = []
+        self._experiment_count = experiment_count
+        self.config = None
+        self._input_layers = None
+        self.preprocessing_layer = None
+
+    def build(self):
+        input_layers, preprocessing_layer = self._get_input_preprocessing_layers()
+        self._input_layers = input_layers
+        self._preprocessing_layer = preprocessing_layer
+        config = self._generate_configuration()
+        self.config = config
+
+    def fit(self) -> List[Tuple[float, float, float, float, Individual]]:
+        self._exp_results = []
+
+        if (
+            self.config == None
+            or self._input_layers == None
+            or self._preprocessing_layer == None
+        ):
+            raise RuntimeError("build is not called")
+
+        for i in range(self._experiment_count):
+            best = run_experiment(
+                self.raw_dataset,
+                self.target_feature,
+                configuration=self.config,
+                experiment_number=i,
+                input_layer=self._input_layers,
+                preprocessoring_layer=self._preprocessing_layer,
+            )
+
+            cross_val_scores = self._cross_validate(best)
+            experiment_result = self.get_experiment_scores(cross_val_scores, best)
+            self._exp_results.append(experiment_result)
+        return self._exp_results
+
+    def _get_discrete_cols(self) -> List[DatasetFeature]:
+        dataset_features = self.dataset.datasetFields
+        return filter(
+            lambda x: x.columnName != self.target_feature
+            and x.colType == Coltype.DISCRETE,
+            dataset_features,
+        )
+
+    def _get_continous_cols(self) -> List[DatasetFeature]:
+        dataset_features = self.dataset.datasetFields
+        return filter(
+            lambda x: x.columnName != self.target_feature
+            and x.colType == Coltype.CONTINOUS,
+            dataset_features,
+        )
+
+    def _build_input_layer(self, col: DatasetFeature) -> Input:
+        input_prop = None
+        if col.colType == Coltype.CONTINOUS:
+            input_prop = Input(shape=(1,), name=col.columnName)
+        else:
+            dtype = "string" if col.dataType == DataTypes.STRING else None
+            input_prop = Input(shape=(1,), name=col.columnName, dtype=dtype)
+        return input_prop
+
+    def _build_discrete_preprocessor(self, col: DatasetFeature):
+        input_layer = self._build_input_layer(col)
+        dtype = "string" if col.dataType == DataTypes.STRING else "int64"
+        encoding_layer = get_category_encoding_layer(
+            col.columnName, self.raw_dataset, dtype=dtype, max_tokens=5
+        )
+        encoded_col = encoding_layer(input_layer)
+        return input_layer, encoded_col
+
+    def _build_continous_preprocessor(self, col: DatasetFeature):
+        input_layer = self._build_input_layer(col)
+        normalization_layer = get_normalization_layer(col.columnName, self.raw_dataset)
+        encoded_col = normalization_layer(input_layer)
+        return input_layer, encoded_col
+
+    def _get_input_preprocessing_layers(self) -> Tuple[List[Input], Any]:
+
+        all_inputs = []
+        encoded_features = []
+        discrete_cols = self._get_discrete_cols()
+        continous_cols = self._get_continous_cols()
+
+        for col in continous_cols:
+            input_layer, preprocessing_layer = self._build_continous_preprocessor(col)
+            all_inputs.append(input_layer)
+            encoded_features.append(preprocessing_layer)
+
+        for col in discrete_cols:
+            input_layer, preprocessing_layer = self._build_discrete_preprocessor(col)
+            all_inputs.append(input_layer)
+            encoded_features.append(preprocessing_layer)
+
+        all_features = layers.concatenate(encoded_features)
+
+        return all_inputs, all_features
+
+    def _get_metadata(self):
+        pass
+
+    def _generate_configuration(self):
+        Y = self.raw_dataset[self.target_feature]
+        output_shape = len(list(Y.value_counts()))  # applies only if classification
+        architecture_type = Layers.FullyConnected
+        problem_type = ProblemType.Classification
+        size_scaler = 0.1
+        config = Configuration(
             architecture_type,
             problem_type,
+            output_shape,
             pop_size=5,
-            tournament_size=tournament_size,
-            max_similar=max_similar,
-            epochs=epochs,
-            cross_val=cross_val,
+            tournament_size=3,
+            max_similar=3,
+            epochs=5,
+            cross_val=0.2,
             size_scaler=size_scaler,
-            max_generations=max_generations,
+            max_generations=10,
             binary_selection=True,
             mutation_ratio=0.8,
             similarity_threshold=0.2,
-            more_layers_prob=more_layers_prob,
+            more_layers_prob=0.8,
             verbose_individuals=True,
             show_model=True,
             verbose_training=1,
+            logger=self.logger,
         )
-        self.num_experiments = num_experiments
-        self.metrics = []
-        self.training_epochs = cv_training_epochs
+        return config
 
-    def _generate_folds(self,X, Y, splits=5):
-        kf = KFold(n_splits=splits, random_state=None, shuffle=False)
-        for train_index, test_index in kf.split():
-            X_train, X_test = X[train_index], X[test_index]
-            y_train, y_test = Y[train_index], Y[test_index]
-            yield X_train, X_test, y_train, y_test
+    def _cross_validate(self, best: Individual):
+        kf = KFold(n_splits=5, random_state=None, shuffle=False)
 
-    def process_scores(self,scores)->DataFrame:
-        scores_df = pd.DataFrame(
-                data=scores, columns=["loss", "accuracy", "precision", "recall"]
+        scores = []
+
+        for train_index, test_index in kf.split(self.raw_dataset):
+            best_model = create_tunable_model(
+                best.stringModel,
+                self.config.problem_type,
+                1,
+                metrics=[],
+                input_layer=self._input_layers,
+                preprocessing_layer=self._preprocessing_layer,
             )
+            train, test = (
+                self.raw_dataset.iloc[train_index],
+                self.raw_dataset.iloc[test_index],
+            )
+            train_ds = df_to_dataset(train, target_variable="price_range")
+            test_ds = df_to_dataset(test, target_variable="price_range")
+            history = best_model.fit(train_ds, epochs=20)
+            score = best_model.evaluate(test_ds)
+
+            scores.append(score)
+
+        scores_df = DataFrame(
+            data=scores, columns=["loss", "accuracy", "precision", "recall"]
+        )
         scores_df["accuracy"] = scores_df["accuracy"] * 100
         scores_df["precision"] = scores_df["precision"] * 100
         scores_df["recall"] = scores_df["recall"] * 100
         return scores_df
 
-    def _evaluate_model(self,model:Model , X_train,y_train,X_test,y_test)->DataFrame:
-        model.fit(X_train, y_train, epochs=self.training_epochs)
-        metric_scores = model.evaluate(X_test, y_test)
-        return metric_scores
-
-    def fit(self, X: DataFrame, Y: Union[DataFrame, Series]) -> List[Individual]:
-        self.config.input_shape = X.shape[1:]
-        self.X = X
-        self.Y = Y
-
-        if self.config.problem_type == ProblemType.Classification:
-            self.config.output_shape = len(list(Y.value_counts()))
-
-        exp_results = []
-        for i in range(0, self.num_experiments):
-            print(f"Experiment {i+1}")
-            best = run_experiment(X, Y, configuration=self.config, experiment_number=i)
-
-            scores = []
-            for  X_train, X_test, y_train, y_test in self._generate_folds(X,Y):
-                best_model = create_tunable_model(
-                    best.stringModel,
-                    self.config.problem_type,
-                    self.config.input_shape,
-                    1,
-                    metrics=self.metrics,
-                )
-                score =self._evaluate_model(best_model , X_train,y_train,X_test,y_test)
-                scores.append(score)
-
-            scores_df = self.process_scores(scores)
-            self.print_scores(scores_df)
-            exp_results.append(
-                (
-                    scores_df["accuracy"].mean(),
-                    scores_df["accuracy"].std(),
-                    scores_df["precision"].mean(),
-                    scores_df["recall"].mean(),
-                    best,
-                )
-            )
-        self.print_exp_results(exp_results)
-
-        self.best_models = exp_results
-        return exp_results[:][-1]
-
-    
-    def print_scores(self,scores_df)->None:
-        if self.config.verbose_training == 0: 
-            return
-        print(
-                "------------------------------------------------------------------------"
-            )
-        print("Score per fold")
-        for i, row in scores_df.iterrows():
-            print(
-                "------------------------------------------------------------------------"
-            )
-            print(
-                f"> Fold {i+1} - Loss: {row['loss']} - Accuracy: {row['accuracy']}% - precision: {row['precision']}% recall: {row['recall']}%"
-            )
-        print(
-            "------------------------------------------------------------------------"
+    def get_experiment_scores(self, scores_df, best_model):
+        return (
+            scores_df["accuracy"].mean(),
+            scores_df["accuracy"].std(),
+            scores_df["precision"].mean(),
+            scores_df["recall"].mean(),
+            best_model,
         )
-        print("Average scores for all folds:")
-        print(
-            f"> Accuracy: {scores_df['accuracy'].mean()} (+- {scores_df['accuracy'].std()})"
-        )
-        print(f"> Loss: {scores_df['loss'].mean()}")
-        print(
-                "------------------------------------------------------------------------"
-            )
 
-    def print_exp_results(self,exp_results):
-        if self.config.verbose_training == 0: 
-            return
-        for i, exp in enumerate(exp_results):
-            print(
-                f"experiment {i+1} - > Accuracy: {exp[0]} (+- {exp[1]}) precision: {exp[2]} recall{exp[3]} params: {exp[-1].raw_size}"
-            )
-        print(
-            "------------------------------------------------------------------------"
-        )
+    def get_best_model():
+        pass
