@@ -7,7 +7,6 @@ from db.init import DBUtils
 from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
-from flask_socketio import SocketIO
 
 app = Flask(__name__)
 
@@ -17,10 +16,11 @@ api = Api(app, errors=RestfulErrors)
 DBUtils.init()
 jwt = JWTManager(app)
 
-register(api)
-print("Service listening")
-
 socketio = SocketServer.create_socket_server(app, cors_allowed_origins="*")
 socketio.run(app)
 setup_events()
+
 print("socket listening")
+
+register(api)
+print("Service listening")

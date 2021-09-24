@@ -3,9 +3,10 @@ from flask_socketio import SocketIO
 
 class SocketInitializer:
     def __init__(self) -> None:
-        socketio = None
+        self.socketio = None
 
     def create_socket_server(self, app, **kwargs) -> SocketIO:
+        print("here creating socekt server")
         self.socketio = SocketIO(app, **kwargs)
         return self.socketio
 

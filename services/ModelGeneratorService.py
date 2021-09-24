@@ -1,6 +1,5 @@
 from datetime import datetime
 import threading
-from tensorflow.python.keras.metrics import accuracy
 from db.models.ModelSelectionJobs import (
     GeneratedModel,
     ModelSelectionJob,
@@ -11,8 +10,6 @@ from lib.model_selection.model_selection import ModelGenerator
 from lib.Logger.SocketLogger import SocketLogger
 from services.DatasetService import DatasetService
 from services.FileService import FileService
-from db.models.Dataset import Dataset
-from lib.Logger.Logger import Logger
 
 
 class ModelGeneratorService:
