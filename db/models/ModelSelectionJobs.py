@@ -1,4 +1,5 @@
 from datetime import datetime
+from utils.enums import ModelSelectionJobStates
 from db.models.Dataset import Dataset
 
 from mongoengine.document import DynamicEmbeddedDocument
@@ -52,6 +53,7 @@ class ModelSelectionJobResult(DynamicEmbeddedDocument):
 class ModelSelectionJob(Document):
     dataset = ReferenceField(Dataset)
     startedAt = DateTimeField(default=datetime.utcnow)
+    state = EnumField(ModelSelectionJobStates)
     jobEndtime = DateTimeField()
     architecture_type = EnumField(Layers)
     problemType = EnumField(ProblemType)

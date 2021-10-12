@@ -1,4 +1,3 @@
-from numpy.core.numeric import cross
 from lib.model_selection.Individual import Individual
 from lib.model_selection.fetch_to_keras import create_tunable_model
 from lib.model_selection.run_experiment import run_experiment
@@ -55,7 +54,7 @@ class ModelGenerator:
             or self._input_layers == None
             or self._preprocessing_layer == None
         ):
-            raise RuntimeError("build is not called")
+            self.logger.error("build is not called")
 
         for i in range(self._experiment_count):
             best = run_experiment(

@@ -42,3 +42,11 @@ class DatasetStates(enum.Enum):
 class JobTypes(enum.Enum):
     SINGLE_COL_IMPUTATION = "single_col_impute"
     MULTI_COL_IMPUTATION = "multi_col_impute"
+
+class ModelSelectionJobStates(enum.Enum):
+    SUBMITTED = 'submitted'
+    RUNNING = "running"
+    ERROR = "error"
+    ABORTED = "aborted"
+    COMPLETED = "completed"
+    
