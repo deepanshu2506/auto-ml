@@ -47,7 +47,20 @@ def get_col_type(column_data: Series, col_dtype: DataTypes) -> Coltype:
             else Coltype.CONTINOUS
         )
 
+def is_discrete_auto_impute(column_data) : 
+  
+    # unique_count / total_count
+    unique_ratio = 1.0 * column_data.nunique() / column_data.count()
 
+    # top n values freq / total_count
+    top_n_unique_ratio = (
+        1.0 * column_data.value_counts(normalize=True).head(TOP_N_COUNT).sum()
+    )
+    return (     
+            unique_ratio < UNIQUE_RATIO_THRESHOLD
+            or top_n_unique_ratio > MAX_TOP_N_UNIQUE_RATIO_THRESHOLD,unique_ratio,top_n_unique_ratio 
+    )
+    
 def perform_aggregation(df: DataFrame, aggregate_func: AggregationMethods) -> DataFrame:
     func = getattr(df, aggregate_func.value)
     return func()

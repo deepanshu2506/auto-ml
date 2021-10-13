@@ -30,3 +30,7 @@ singleColImputationRequestParser.add_argument(
     "impute_type", type=enum_validator(ImputationMethods), required=True
 )
 singleColImputationRequestParser.add_argument("value", type=str)
+
+autoImputationRequestParser = reqparse.RequestParser()
+autoImputationRequestParser.add_argument("target_col_name", type=str, required=True)
+
