@@ -1,7 +1,7 @@
 from datetime import datetime
-
-from lib.Preprocessor import DataFrameOrdinalencoder
+from lib.Preprocessor import DataFrameOrdinalencoder,OrdinalEncoderProps
 from lib.imputer import Imputer, ImputerFactory
+from lib.auto_imputer import AutoImputerFactory,DecisionTreeImputer,BayesianRidgeImputer,MedianImputer,KNeighborsRegressorImputer,ExtraTreesRegressorImputer,MeanImputer
 from typing import List
 from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetStates, JobTypes
 from utils.exceptions import DatasetNotFound
@@ -14,6 +14,8 @@ from pandas import DataFrame
 import numpy as np
 from werkzeug.datastructures import FileStorage
 import random 
+import pickle
+from sklearn.preprocessing import OrdinalEncoder
 from db.models.Dataset import (
     Dataset,
     DatasetFeature,
@@ -87,7 +89,7 @@ class DatasetService:
         dataset.info = DatasetInfo(fileSize=file_size, tupleCount=tupleCount)
         dataset.datasetFields = self._extract_fields(dataset_raw)
         dataset = dataset.save()
-        return dataset
+        return dataset.id
 
     def get_datasets(self, user_id) -> List[Dataset]:
         return Dataset.objects(createdBy=user_id, isDeleted=False)
@@ -198,6 +200,7 @@ class DatasetService:
     def calc_null(self,df):
         null_val=df.isnull().sum().sum()
         print(null_val)
+        return null_val
 
 
     def impute_dataset(self, dataset_id, target_col_name):
@@ -215,21 +218,52 @@ class DatasetService:
         discrete_count=0
         continous_count=0
         null_count=0
+        print("-----Before df without Null------")
+        print(dataset_frame.head())
         dataset_frame=self.add_null(dataset_frame)
+        # features_string=[]
         for i in range(features['cols_count']):
             null_count+=dataset_fields[i]['metrics']['missingValues']
             if(dataset_fields[i]['colType']==Coltype.DISCRETE):
                 discrete_count+=1
             else:
                 continous_count+=1
-      
-        features['percent_null']=(null_count/features['rows_count'])*100
+            # if(dataset_fields[i]['dataType'])==DataTypes.STRING:
+            #     features_string.append(dataset_fields[i]['columnName'])
+            
+        perc_null=(null_count/features['rows_count'])*100
+        print("Before null=",perc_null)
+        null_count=self.calc_null(dataset_frame)
+        perc_null=(null_count/features['rows_count'])*100
+        print("After null=",perc_null)
+        features['percent_null']=perc_null
         features['discrete_count']=discrete_count
         features['continous_count']=continous_count
         print(features)
-        self.calc_null(dataset_frame)
-        # ordinalEncoder = DataFrameOrdinalencoder(dataset_meta=dataset)
-        # preprocessed_frame = ordinalEncoder.fit(dataset_frame)
+        EncoderProps=[]
+        for col in dataset.datasetFields:
+            obj=OrdinalEncoderProps(col.columnName)
+            EncoderProps.append(obj)
+
+        print("-----Before df with Null------")
+        print(dataset_frame.head())
+        encodingObj=DataFrameOrdinalencoder(dataset,EncoderProps)
+        dataframe_encoded= encodingObj.fit(dataset_frame)
+
+        print("-----Encoded df------")
+        print(dataframe_encoded.head())
+        dataframe_imputed=AutoImputerFactory.get_auto_imputer(features,dataframe_encoded)
+        # dataframe_imputed=ExtraTreesRegressorImputer.impute(dataframe_encoded)
+
+        print("-----Imputed df------")
+        print(dataframe_imputed.head())
+        dataframe_decoded= encodingObj.inverse_transform(dataframe_imputed)
+      
+        print("-----Decoded df------")
+        print(dataframe_decoded.head())
+        # imputed_df=AutoImputerFactory.get_auto_imputer(features,dataset_frame)
+        
+      
 
 
 
