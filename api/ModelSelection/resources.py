@@ -50,15 +50,19 @@ class ModelSelectionJobResource(Resource):
 
 
 class ExportGeneratedModelResource(Resource):
-    def __init__(self, modelGenerationService: ModelGeneratorService) -> None:
+    def __init__(
+        self,
+        modelGenerationService: ModelGeneratorService,
+        modelSelectionJobService: ModelSelectionJobService,
+    ) -> None:
         super().__init__()
         self.modelGenerationService = modelGenerationService
+        self.modelSelectionJobService = modelSelectionJobService
 
     method_decorators = [jwt_required()]
 
     def post(self, model_selection_job_id, model_id):
         user_id = get_jwt_identity()
-        self.modelGenerationService.exportModel(
-            job_id=model_selection_job_id, model_id=model_id, user_id=user_id
-        )
+        job = self.modelSelectionJobService.find_by_id(model_selection_job_id, user_id)
+        self.modelGenerationService.exportModel(job, model_id)
         pass

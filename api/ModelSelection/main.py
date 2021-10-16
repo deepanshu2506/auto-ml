@@ -39,4 +39,8 @@ def initialize(api: Api) -> None:
     api.add_resource(
         ExportGeneratedModelResource,
         f"{API_PREFIX}/<model_selection_job_id>/export/<model_id>",
+        resource_class_kwargs={
+            "modelGenerationService": modelGeneratorService,
+            "modelSelectionJobService": modelSelectionJobService,
+        },
     )
