@@ -149,6 +149,7 @@ class ModelGeneratorService:
                 name=model_name,
                 state=TrainingStates.SUBMITTED,
                 features=features,
+                architecture=model.model_arch,
             )
             savedModel.save()
 

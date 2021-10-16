@@ -3,6 +3,7 @@ from mongoengine import Document
 from mongoengine.document import EmbeddedDocument
 from mongoengine.fields import (
     DateTimeField,
+    DynamicField,
     EmbeddedDocumentListField,
     EnumField,
     IntField,
@@ -41,6 +42,7 @@ class SavedModel(Document):
     created_at = DateTimeField(default=datetime.utcnow())
     name = StringField()
     state = EnumField(TrainingStates)
+    architecture = DynamicField()
 
     @classmethod
     def to_output(cls):
