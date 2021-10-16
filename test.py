@@ -14,6 +14,26 @@ import pandas as pd
 from sklearn.model_selection import KFold
 import tensorflow as tf
 
+# sample = {
+#     "Type": "Cat",
+#     "Age": 3,
+#     "Breed1": "Tabby",
+#     "Gender": "Male",
+#     "Color1": "Black",
+#     "Color2": "White",
+#     "MaturitySize": "Small",
+#     "FurLength": "Short",
+#     "Vaccinated": "No",
+#     "Sterilized": "No",
+#     "Health": "Healthy",
+#     "Fee": 100,
+#     "PhotoAmt": 2,
+# }
+
+# input_dict = {name: tf.convert_to_tensor([value]) for name, value in sample.items()}
+
+# print(input_dict)
+
 
 dataset = pd.read_csv("C:\\Users\\deepa\\Desktop\\train.csv")
 Y = dataset["price_range"]

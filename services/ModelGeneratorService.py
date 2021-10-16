@@ -1,10 +1,14 @@
 from datetime import datetime
 import threading
-from db.models.Dataset import Dataset
+from pandas.core.frame import DataFrame
+
+from tensorflow._api.v2 import data
+from db.models.Dataset import Dataset, DatasetFeature
+from db.models.SavedModels import ModelFeatures, SavedModel
 from lib.Preprocessor import KerasPreProcessingEncoder, df_to_dataset
 from lib.model_selection.ann_encoding import Layers, ProblemType
 from lib.model_selection.fetch_to_keras import create_tunable_model
-from utils.enums import ModelSelectionJobStates
+from utils.enums import Coltype, ModelSelectionJobStates, TrainingStates
 from db.models.ModelSelectionJobs import (
     GeneratedModel,
     ModelSelectionJob,
@@ -104,39 +108,96 @@ class ModelGeneratorService:
         print(job.target_col)
         model: GeneratedModel = None
 
+        def _buildModelFeature(
+            datasetFeature: DatasetFeature, raw_dataset: DataFrame
+        ) -> ModelFeatures:
+            modelFeature = ModelFeatures(
+                name=datasetFeature.columnName,
+                dataType=datasetFeature.dataType,
+                type=datasetFeature.colType,
+            )
+            if datasetFeature.colType == Coltype.DISCRETE:
+
+                modelFeature.allowed_Values = list(
+                    map(
+                        lambda x: str(x),
+                        raw_dataset[datasetFeature.columnName].unique(),
+                    )
+                )
+            return modelFeature
+
         for model in job.results.models:
             if str(model.model_id) == model_id:
                 model = model
 
         if model:
+            epochs = kwargs.get("epochs", 20)
             dataset: Dataset = job.dataset
             raw_dataset = self.fileService.get_dataset_from_url(dataset.datasetLocation)
+            features = list(
+                map(
+                    lambda field: _buildModelFeature(field, raw_dataset),
+                    dataset.datasetFields,
+                )
+            )
+            model_name = kwargs.get("model_name", f"{dataset.name}_model")
 
-            model_arch = self._decode_model(model.model_arch)
+            savedModel = SavedModel(
+                epochs=epochs,
+                target_col=job.target_col,
+                job=job,
+                name=model_name,
+                state=TrainingStates.SUBMITTED,
+                features=features,
+            )
+            savedModel.save()
+
             input_encoder = KerasPreProcessingEncoder(
                 dataset=dataset, target_feature=job.target_col, raw_dataset=raw_dataset
             )
 
-            (
-                input_layers,
-                preprocessing_layer,
-            ) = input_encoder.get_input_preprocessing_layers()
-            best_model = create_tunable_model(
-                model_arch,
-                ProblemType.Classification,
-                1,
-                metrics=[],
-                input_layer=input_layers,
-                preprocessing_layer=preprocessing_layer,
+            modelThread = threading.Thread(
+                target=self._train_model,
+                args=(model.model_arch, raw_dataset, job, input_encoder, savedModel),
+                kwargs=kwargs,
             )
-            train_ds = df_to_dataset(
-                dataframe=raw_dataset,
-                target_variable=job.target_col,
-            )
-            epochs = kwargs.get("epochs", 20)
-            best_model.fit(train_ds, epochs=epochs)
-            model_location = self.fileService.save_model(best_model)
-            model_name = kwargs.get("model_name", f"{dataset.name}_model")
+            modelThread.start()
+            return savedModel
 
         else:
             raise ModelNotFound
+
+    def _train_model(
+        self,
+        model_arch,
+        dataset,
+        job,
+        encoder: KerasPreProcessingEncoder,
+        savedModel: SavedModel,
+        **kwargs,
+    ):
+        savedModel.state = TrainingStates.STARTED
+        savedModel.save()
+        model_arch = self._decode_model(model_arch)
+        (
+            input_layers,
+            preprocessing_layer,
+        ) = encoder.get_input_preprocessing_layers()
+        model = create_tunable_model(
+            model_arch,
+            ProblemType.Classification,
+            1,
+            metrics=[],
+            input_layer=input_layers,
+            preprocessing_layer=preprocessing_layer,
+        )
+        train_ds = df_to_dataset(
+            dataframe=dataset,
+            target_variable=job.target_col,
+        )
+        epochs = kwargs.get("epochs", 20)
+        model.fit(train_ds, epochs=epochs)
+        model_location = self.fileService.save_model(model, job.id, savedModel.id)
+        savedModel.model_location = model_location
+        savedModel.state = TrainingStates.COMPLETED
+        savedModel.save()

@@ -24,6 +24,7 @@ html
 json
 lib/visualization/datasets
 data
+/models
 
 
 

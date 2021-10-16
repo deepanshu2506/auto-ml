@@ -1,10 +1,11 @@
 from http import HTTPStatus
 from flask_jwt_extended.utils import get_jwt_identity
 from flask_restful import Resource, marshal_with
-from flask import Response, jsonify
+from flask import Response, jsonify, send_file
 from flask_jwt_extended import jwt_required
 from werkzeug.wrappers import response
 from db.models.ModelSelectionJobs import ModelSelectionJob
+from db.models.SavedModels import SavedModel
 from services.ModelGeneratorService import ModelGeneratorService
 from api.ModelSelection.requestParsers import modelSelectionRequestParser
 from services.ModelSelectionJobService import ModelSelectionJobService
@@ -59,10 +60,10 @@ class ExportGeneratedModelResource(Resource):
         self.modelGenerationService = modelGenerationService
         self.modelSelectionJobService = modelSelectionJobService
 
-    method_decorators = [jwt_required()]
-
+    @jwt_required()
+    @marshal_with(SavedModel.to_output())
     def post(self, model_selection_job_id, model_id):
         user_id = get_jwt_identity()
         job = self.modelSelectionJobService.find_by_id(model_selection_job_id, user_id)
-        self.modelGenerationService.exportModel(job, model_id)
-        pass
+        savedModel: SavedModel = self.modelGenerationService.exportModel(job, model_id)
+        return savedModel
