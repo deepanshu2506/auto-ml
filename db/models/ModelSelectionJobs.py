@@ -18,6 +18,7 @@ from mongoengine.fields import (
     FloatField,
     IntField,
     ReferenceField,
+    StringField,
 )
 
 
@@ -65,6 +66,7 @@ class ModelSelectionJob(Document):
     architecture_type = EnumField(Layers)
     problemType = EnumField(ProblemType)
     num_classes = IntField(min_value=1)
+    target_col = StringField()
     configuration = EmbeddedDocumentField(ModelSelectionConfiguration)
     results = EmbeddedDocumentField(ModelSelectionJobResult)
 
