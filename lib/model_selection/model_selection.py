@@ -151,7 +151,7 @@ class ModelGenerator:
             epochs=5,
             cross_val=0.2,
             size_scaler=size_scaler,
-            max_generations=1,
+            max_generations=10,
             binary_selection=True,
             mutation_ratio=0.8,
             similarity_threshold=0.2,
@@ -164,7 +164,7 @@ class ModelGenerator:
         return config
 
     def _cross_validate(self, best: Individual):
-        kf = KFold(n_splits=2, random_state=None, shuffle=False)
+        kf = KFold(n_splits=5, random_state=None, shuffle=False)
 
         scores = []
 
@@ -181,8 +181,8 @@ class ModelGenerator:
                 self.raw_dataset.iloc[train_index],
                 self.raw_dataset.iloc[test_index],
             )
-            train_ds = df_to_dataset(train, target_variable="price_range")
-            test_ds = df_to_dataset(test, target_variable="price_range")
+            train_ds = df_to_dataset(train, target_variable=self.target_feature)
+            test_ds = df_to_dataset(test, target_variable=self.target_feature)
             history = best_model.fit(train_ds, epochs=20)
             score = best_model.evaluate(test_ds)
 
