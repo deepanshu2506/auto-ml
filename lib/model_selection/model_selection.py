@@ -151,7 +151,7 @@ class ModelGenerator:
             epochs=5,
             cross_val=0.2,
             size_scaler=size_scaler,
-            max_generations=10,
+            max_generations=1,
             binary_selection=True,
             mutation_ratio=0.8,
             similarity_threshold=0.2,
@@ -164,7 +164,7 @@ class ModelGenerator:
         return config
 
     def _cross_validate(self, best: Individual):
-        kf = KFold(n_splits=5, random_state=None, shuffle=False)
+        kf = KFold(n_splits=2, random_state=None, shuffle=False)
 
         scores = []
 

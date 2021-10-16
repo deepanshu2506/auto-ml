@@ -110,7 +110,6 @@ def run_experiment(
         number_classes=configuration.output_shape,
         more_layers_prob=configuration.more_layers_prob,
     )
-
     while (
         launch_new_generation == True
         and generation_count < configuration.max_generations
