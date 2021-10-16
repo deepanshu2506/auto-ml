@@ -7,7 +7,7 @@ class ModelSelectionJobService:
         pass
 
     def find_by_id(self, id, user_id) -> ModelSelectionJob:
-        jobs = ModelSelectionJob.objects(createdBy=user_id, id=id, isDeleted=False)
+        jobs = ModelSelectionJob.objects(created_by=user_id, id=id)
         if len(jobs) == 0:
             raise ModelSelectionJobNotFound
         return jobs[0]

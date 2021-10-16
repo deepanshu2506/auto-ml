@@ -1,6 +1,9 @@
 from datetime import datetime
 import threading
-from lib.model_selection.ann_encoding import Layers
+from db.models.Dataset import Dataset
+from lib.Preprocessor import KerasPreProcessingEncoder, df_to_dataset
+from lib.model_selection.ann_encoding import Layers, ProblemType
+from lib.model_selection.fetch_to_keras import create_tunable_model
 from utils.enums import ModelSelectionJobStates
 from db.models.ModelSelectionJobs import (
     GeneratedModel,
@@ -12,6 +15,7 @@ from lib.model_selection.model_selection import ModelGenerator
 from lib.Logger.SocketLogger import SocketLogger
 from services.DatasetService import DatasetService
 from services.FileService import FileService
+from utils.exceptions import ModelNotFound
 
 
 class ModelGeneratorService:
@@ -33,7 +37,7 @@ class ModelGeneratorService:
             raw_dataset=raw_dataset,
             target_feature=target_col,
             logger=logger,
-            experiment_count=1,
+            experiment_count=5,
         )
         modelGenerator.build()
         algo_config = modelGenerator.config
@@ -43,6 +47,7 @@ class ModelGeneratorService:
         modelSelectionJob.num_classes = algo_config.output_shape
         modelSelectionJob.configuration = algo_config.get_serializable()
         modelSelectionJob.state = ModelSelectionJobStates.SUBMITTED
+        modelSelectionJob.target_col = target_col
 
         modelSelectionJob.save()
         modelThread = threading.Thread(
@@ -95,5 +100,43 @@ class ModelGeneratorService:
             encoded.append([Layers(layer[0]), *layer[1:]])
         return encoded
 
-    def exportModel(self, job_id: str, model_id, user_id):
-        pass
+    def exportModel(self, job: ModelSelectionJob, model_id, **kwargs):
+        print(job.target_col)
+        model: GeneratedModel = None
+
+        for model in job.results.models:
+            if str(model.model_id) == model_id:
+                model = model
+
+        if model:
+            dataset: Dataset = job.dataset
+            raw_dataset = self.fileService.get_dataset_from_url(dataset.datasetLocation)
+
+            model_arch = self._decode_model(model.model_arch)
+            input_encoder = KerasPreProcessingEncoder(
+                dataset=dataset, target_feature=job.target_col, raw_dataset=raw_dataset
+            )
+
+            (
+                input_layers,
+                preprocessing_layer,
+            ) = input_encoder.get_input_preprocessing_layers()
+            best_model = create_tunable_model(
+                model_arch,
+                ProblemType.Classification,
+                1,
+                metrics=[],
+                input_layer=input_layers,
+                preprocessing_layer=preprocessing_layer,
+            )
+            train_ds = df_to_dataset(
+                dataframe=raw_dataset,
+                target_variable=job.target_col,
+            )
+            epochs = kwargs.get("epochs", 20)
+            best_model.fit(train_ds, epochs=epochs)
+            model_location = self.fileService.save_model(best_model)
+            model_name = kwargs.get("model_name", f"{dataset.name}_model")
+
+        else:
+            raise ModelNotFound
