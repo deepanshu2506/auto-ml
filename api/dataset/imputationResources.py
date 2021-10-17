@@ -29,6 +29,5 @@ class DatasetAutoImputation(Resource):
     def post(self, id):
         user_id = get_jwt_identity()
         args = autoImputationRequestParser.parse_args()
-        print(args)
         imputation_result_stats = self.datasetService.impute_dataset(id, **args)
-        return {"data": ""}
+        return {"data": imputation_result_stats}

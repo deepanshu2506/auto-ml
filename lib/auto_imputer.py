@@ -28,23 +28,29 @@ class AutoImputerFactory:
         simplefilter("ignore", category=ConvergenceWarning)
         if predicted_imputer_ind==0:
             print("DecisionTreeImputer")
+            imputation_type="DecisionTreeImputer"
             imputed_df=DecisionTreeImputer.impute(df)
         elif predicted_imputer_ind==1:
             print("BayesianRidgeImputer")
+            imputation_type="BayesianRidgeImputer"
             imputed_df=BayesianRidgeImputer.impute(df)
         elif predicted_imputer_ind==2:
             print("MedianImputer")
+            imputation_type="MedianImputer"
             imputed_df=MedianImputer.impute(df)
         elif predicted_imputer_ind==3:
             print("KNeighborsRegressorImputer")
+            imputation_type="KNeighborsRegressorImputer"
             imputed_df=KNeighborsRegressorImputer.impute(df)
         elif predicted_imputer_ind==4:
             print("ExtraTreesRegressorImputer")
+            imputation_type="ExtraTreesRegressor"
             imputed_df=ExtraTreesRegressorImputer.impute(df)
         else:
             print("MeanImputer")
+            imputation_type="MeanImputer"
             imputed_df=MeanImputer.impute(df)
-        return imputed_df
+        return imputed_df,imputation_type
 
 class DecisionTreeImputer():
     @staticmethod
@@ -52,7 +58,7 @@ class DecisionTreeImputer():
         # dataframe_np= dataframe.to_numpy()
         imp = IterativeImputer(estimator=DecisionTreeRegressor(max_features='sqrt',random_state=0),missing_values=np.nan, )
         imputed_np=imp.fit_transform(dataframe)
-        df = pd.DataFrame(imputed_np,columns=[dataframe.columns])
+        df = pd.DataFrame(imputed_np,columns=dataframe.columns)
         return df
 
 class BayesianRidgeImputer():

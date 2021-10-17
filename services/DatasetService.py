@@ -10,11 +10,12 @@ from pandas.core.series import Series
 from utils.pdUtils import build_query, get_col_type, get_datatype, perform_aggregation,is_discrete_auto_impute
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
-from pandas import DataFrame
+from pandas import DataFrame,read_csv
 import numpy as np
 from werkzeug.datastructures import FileStorage
 import random 
 import pickle
+from sklearn import metrics
 from sklearn.preprocessing import OrdinalEncoder
 from db.models.Dataset import (
     Dataset,
@@ -160,7 +161,8 @@ class DatasetService:
             dataset.datasetLocation
         )
         null_count = dataset_frame[col_name].isnull().sum()
-
+        if(null_count==0):
+            return 'No need of data imputation for column '+col_name +'!!'
         imputer: Imputer = ImputerFactory.get_imputer(
             impute_type, column_name=col_name, value=value
         )
@@ -187,7 +189,7 @@ class DatasetService:
             jobType=JobTypes.SINGLE_COL_IMPUTATION, stats=job_stats
         )
         dataset.jobs.append(imputation_job)
-        Dataset.state = DatasetStates.PARTIALLY_IMPUTED
+        dataset.state = DatasetStates.PARTIALLY_IMPUTED
         dataset.save()
         return imputed_col_stats
 
@@ -199,17 +201,9 @@ class DatasetService:
 
     def calc_null(self,df):
         null_val=df.isnull().sum().sum()
-        print(null_val)
         return null_val
-
-
-    def impute_dataset(self, dataset_id, target_col_name):
-        dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
-        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
-            dataset.datasetLocation
-        )
-        print("Auto Imputation")
-        # print(dataset_frame)
+    
+    def get_features(self,dataset,dataset_frame,target_col_name):
         features={}
         features['rows_count']=dataset.info.tupleCount
         dataset_fields=dataset.datasetFields
@@ -218,51 +212,91 @@ class DatasetService:
         discrete_count=0
         continous_count=0
         null_count=0
-        print("-----Before df without Null------")
+        print("-----Before imputation df ------")
         print(dataset_frame.head())
-        dataset_frame=self.add_null(dataset_frame)
-        # features_string=[]
+    
+        # dataset_frame_null=self.add_null(dataset_frame)
+        # print("-----Df with Null------")
+        # print(dataset_frame_null.head())
+        imputed_col_stats = []
+              
         for i in range(features['cols_count']):
-            null_count+=dataset_fields[i]['metrics']['missingValues']
+            null=dataset_fields[i]['metrics']['missingValues']
+            if(null!=0):
+                null_count+=null
+                c={
+                "col_name": dataset_fields[i]['columnName'],
+                "imputed_count": null,
+                }
+                imputed_col_stats.append(c)
             if(dataset_fields[i]['colType']==Coltype.DISCRETE):
                 discrete_count+=1
             else:
                 continous_count+=1
-            # if(dataset_fields[i]['dataType'])==DataTypes.STRING:
-            #     features_string.append(dataset_fields[i]['columnName'])
-            
+
         perc_null=(null_count/features['rows_count'])*100
-        print("Before null=",perc_null)
-        null_count=self.calc_null(dataset_frame)
-        perc_null=(null_count/features['rows_count'])*100
-        print("After null=",perc_null)
+        print("Before null count=",null_count)
+        # null_count=self.calc_null(dataset_frame_null)
+        # perc_null=(null_count/features['rows_count'])*100
+        # print("After null count=",null_count)
         features['percent_null']=perc_null
         features['discrete_count']=discrete_count
         features['continous_count']=continous_count
-        print(features)
+        print("Features",features)
+        return features,dataset,dataset_frame,imputed_col_stats,null_count
+
+    def impute_dataset(self, dataset_id, target_col_name):
+        job_start_time = datetime.utcnow()
+        dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
+        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
+            dataset.datasetLocation
+        )
+        # dataset_frame = read_csv('horse-colic.csv', na_values='?')
+        # dataset_frame=dataset_frame.replace(to_replace=np.NaN,value='?')
+        print("Auto Imputation")
+        features,dataset,dataset_frame_null,imputed_col_stats,null_count=self.get_features(dataset,dataset_frame,target_col_name)
+        if(null_count==0):
+            return 'No need of data imputation!!'
         EncoderProps=[]
         for col in dataset.datasetFields:
             obj=OrdinalEncoderProps(col.columnName)
             EncoderProps.append(obj)
 
-        print("-----Before df with Null------")
-        print(dataset_frame.head())
+     
         encodingObj=DataFrameOrdinalencoder(dataset,EncoderProps)
-        dataframe_encoded= encodingObj.fit(dataset_frame)
+        dataframe_encoded= encodingObj.fit(dataset_frame_null.copy(deep=True))
 
-        print("-----Encoded df------")
-        print(dataframe_encoded.head())
-        dataframe_imputed=AutoImputerFactory.get_auto_imputer(features,dataframe_encoded)
+        # print("-----Encoded df------")
+        # print(dataframe_encoded.head())
+        dataframe_imputed,impute_type=AutoImputerFactory.get_auto_imputer(features,dataframe_encoded)
         # dataframe_imputed=ExtraTreesRegressorImputer.impute(dataframe_encoded)
 
-        print("-----Imputed df------")
-        print(dataframe_imputed.head())
-        dataframe_decoded= encodingObj.inverse_transform(dataframe_imputed)
+        # print("-----Encoded Imputed df------")
+        # print(dataframe_imputed.head())
+        imputed_dataset= encodingObj.inverse_transform(dataframe_imputed)
       
-        print("-----Decoded df------")
-        print(dataframe_decoded.head())
-        # imputed_df=AutoImputerFactory.get_auto_imputer(features,dataset_frame)
-        
+        print("-----Final imputed df-----")
+        print(imputed_dataset.head())
+      
+      
+        self.fileService.save_dataset(
+            imputed_dataset,
+            dataset_path=dataset.datasetLocation,
+        )
+        job_end_time = datetime.utcnow()
+        dataset.datasetFields = self._extract_fields(imputed_dataset)
+        job_stats = JobStats(jobStart=job_start_time, jobEnd=job_end_time)
+        job_stats.colsImputed =len(imputed_col_stats)
+        job_stats.imputationType = impute_type
+        job_stats.cols = imputed_col_stats
+        imputation_job = DatasetJob(
+            jobType=JobTypes.MULTI_COL_IMPUTATION, stats=job_stats
+        )
+        dataset.jobs.append(imputation_job)
+        dataset.state = DatasetStates.IMPUTED
+        dataset.save()
+        return imputed_col_stats
+
       
 
 
