@@ -1,7 +1,7 @@
 from datetime import datetime
 import threading
 from pandas.core.frame import DataFrame
-
+import pandas as pd
 from tensorflow._api.v2 import data
 from db.models.Dataset import Dataset, DatasetFeature
 from db.models.SavedModels import ModelFeatures, SavedModel
@@ -141,7 +141,7 @@ class ModelGeneratorService:
                 )
             )
             model_name = kwargs.get("model_name", f"{dataset.name}_model")
-
+            classes = pd.get_dummies(raw_dataset[job.target_col]).columns.tolist()
             savedModel = SavedModel(
                 epochs=epochs,
                 target_col=job.target_col,
@@ -150,6 +150,7 @@ class ModelGeneratorService:
                 state=TrainingStates.SUBMITTED,
                 features=features,
                 architecture=model.model_arch,
+                classes=classes,
             )
             savedModel.save()
 
@@ -191,6 +192,7 @@ class ModelGeneratorService:
             metrics=[],
             input_layer=input_layers,
             preprocessing_layer=preprocessing_layer,
+            prod=True,
         )
         train_ds = df_to_dataset(
             dataframe=dataset,
