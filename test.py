@@ -14,7 +14,59 @@ import pandas as pd
 from sklearn.model_selection import KFold
 import tensorflow as tf
 
+# sample = {
+#     "Type": "Cat",
+#     "Age": 3,
+#     "Breed1": "Tabby",
+#     "Gender": "Male",
+#     "Color1": "Black",
+#     "Color2": "White",
+#     "MaturitySize": "Small",
+#     "FurLength": "Short",
+#     "Vaccinated": "No",
+#     "Sterilized": "No",
+#     "Health": "Healthy",
+#     "Fee": 100,
+#     "PhotoAmt": 2,
+# }
 
+#
+
+# print(input_dict)
+
+sample = {
+    "battery_power": 1021,
+    "blue": 1,
+    "clock_speed": 0.5,
+    "dual_sim": 1,
+    "fc": 0,
+    "four_g": 1,
+    "int_memory": 53,
+    "m_dep": 0.7,
+    "mobile_wt": 136,
+    "n_cores": 3,
+    "pc": 6,
+    "px_height": 905,
+    "px_width": 1988,
+    "ram": 2631,
+    "sc_h": 17,
+    "sc_w": 3,
+    "talk_time": 7,
+    "three_g": 1,
+    "touch_screen": 1,
+    "wifi": 0,
+}
+
+model = tf.keras.models.load_model(
+    "./models/616a89a06cc4ba2f6bc66d10_616bce880f773d1b0c3ab0ee",
+)
+
+# infer = model.signatures["serving_default"]
+input_dict = {name: tf.convert_to_tensor([value]) for name, value in sample.items()}
+res = model.predict(input_dict)
+
+# res = infer(**input_dict)
+print(res)
 dataset = pd.read_csv("C:\\Users\\deepa\\Desktop\\train.csv")
 Y = dataset["price_range"]
 # for column in X.columns:

@@ -1,6 +1,9 @@
 from datetime import datetime
+
+from mongoengine.base.fields import ObjectIdField
 from utils.enums import ModelSelectionJobStates
 from db.models.Dataset import Dataset
+from bson.objectid import ObjectId
 
 from mongoengine.document import DynamicEmbeddedDocument
 from lib.model_selection.ann_encoding import Layers, ProblemType
@@ -15,6 +18,7 @@ from mongoengine.fields import (
     FloatField,
     IntField,
     ReferenceField,
+    StringField,
 )
 
 
@@ -42,6 +46,10 @@ class GeneratedModel(DynamicEmbeddedDocument):
     fitness_score = FloatField()
     model_arch = DynamicField()
     trainable_params = IntField()
+    model_id = ObjectIdField(
+        required=True, default=ObjectId, unique=True, primary_key=True, sparse=True
+    )
+
     pass
 
 
@@ -58,6 +66,9 @@ class ModelSelectionJob(Document):
     architecture_type = EnumField(Layers)
     problemType = EnumField(ProblemType)
     num_classes = IntField(min_value=1)
+    target_col = StringField()
     configuration = EmbeddedDocumentField(ModelSelectionConfiguration)
     results = EmbeddedDocumentField(ModelSelectionJobResult)
+
+    created_by = ObjectIdField()
     pass

@@ -13,8 +13,18 @@ class UserExistsError(HTTPException):
 class DatasetNotFound(HTTPException):
     pass
 
+
+class ModelSelectionJobNotFound(HTTPException):
+    pass
+
+class ModelNotFound(HTTPException):
+    pass
+
+
+
 class InsufficientPrivilegesError(HTTPException):
     pass
+
 
 RestfulErrors = {
     "UserExistsError": {
@@ -23,6 +33,14 @@ RestfulErrors = {
     },
     "DatasetNotFound": {
         "message": "Dataset Not found",
+        "status": 404,
+    },
+    "ModelSelectionJobNotFound": {
+        "message": "Model Selection Job Not found",
+        "status": 404,
+    },
+    "ModelNotFound": {
+        "message": "Model Not found",
         "status": 404,
     },
 }

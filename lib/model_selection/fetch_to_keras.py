@@ -13,6 +13,7 @@ def create_tunable_model(
     input_layer,
     preprocessing_layer,
     metrics=None,
+    prod=False,
 ):
     model_name = (
         ("categorical" if problem_type == ProblemType.Classification else "regression")
@@ -25,7 +26,11 @@ def create_tunable_model(
     model = Model(input_layer, model_output)
 
     model = get_compiled_model(
-        model, problem_type, optimizer_params=[], metrics=metrics
+        model,
+        problem_type,
+        optimizer_params=[],
+        metrics=metrics,
+        prod=prod,
     )
 
     return model
@@ -132,7 +137,13 @@ def array_to_layer(
     return klayer
 
 
-def get_compiled_model(model, problem_type, optimizer_params=[], metrics=None):
+def get_compiled_model(
+    model,
+    problem_type,
+    optimizer_params=[],
+    metrics=None,
+    prod=False,
+):
     """Obtain a keras compiled model"""
 
     # Shared parameters for the models
@@ -156,6 +167,10 @@ def get_compiled_model(model, problem_type, optimizer_params=[], metrics=None):
         return
 
     # Create and compile the models
-    model.compile(optimizer=optimizer, loss=lossFunction, metrics=all_metrics)
+    model.compile(
+        optimizer=optimizer,
+        loss=lossFunction,
+        metrics=all_metrics if not prod else [],
+    )
 
     return model

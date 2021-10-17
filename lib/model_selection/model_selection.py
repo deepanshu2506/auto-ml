@@ -181,8 +181,8 @@ class ModelGenerator:
                 self.raw_dataset.iloc[train_index],
                 self.raw_dataset.iloc[test_index],
             )
-            train_ds = df_to_dataset(train, target_variable="price_range")
-            test_ds = df_to_dataset(test, target_variable="price_range")
+            train_ds = df_to_dataset(train, target_variable=self.target_feature)
+            test_ds = df_to_dataset(test, target_variable=self.target_feature)
             history = best_model.fit(train_ds, epochs=20)
             score = best_model.evaluate(test_ds)
 

@@ -50,3 +50,7 @@ class ModelSelectionJobStates(enum.Enum):
     ABORTED = "aborted"
     COMPLETED = "completed"
     
+class TrainingStates(enum.Enum):
+    SUBMITTED = 'submitted'
+    STARTED = 'started'
+    COMPLETED = 'completed'
