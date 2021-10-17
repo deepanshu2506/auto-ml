@@ -60,7 +60,8 @@ def get_category_encoding_layer(name, dataset, dtype, max_tokens=None):
 
 def df_to_dataset(dataframe, shuffle=True, batch_size=32, target_variable="target"):
     dataframe = dataframe.copy()
-    labels = pd.get_dummies(dataframe.pop(target_variable))
+    target = dataframe.pop(target_variable)
+    labels = pd.get_dummies(target)
     ds = tf.data.Dataset.from_tensor_slices((dict(dataframe), labels))
     if shuffle:
         ds = ds.shuffle(buffer_size=len(dataframe))
