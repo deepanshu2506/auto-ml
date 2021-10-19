@@ -18,10 +18,10 @@ from warnings import simplefilter
 from sklearn.exceptions import ConvergenceWarning
 class AutoImputerFactory:   
     @staticmethod
-    def get_auto_imputer(features,df: DataFrame) -> DataFrame:
+    def get_auto_imputer(features,df: DataFrame,loaded_model) -> DataFrame:
         # load the model from disk
-        filename="randomforest_model.sav"
-        loaded_model = pickle.load(open(filename, 'rb'))
+        # filename="randomforest_model.sav"
+        # loaded_model = pickle.load(open(filename, 'rb'))
         #predicted_imputer_ind=loaded_model.predict([False,5.0,1000,7,2,5,0.081,0.293])
         predicted_imputer_ind=loaded_model.predict([[ features['is_classification'],features['percent_null'],features['rows_count'],features['cols_count'],features['continous_count'],features['discrete_count'],features['unique_ratio'],features['top_n_unique_ratio'] ]])
         print(predicted_imputer_ind)
