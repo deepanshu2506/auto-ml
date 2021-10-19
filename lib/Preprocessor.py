@@ -85,7 +85,6 @@ class OrdinalEncoderProps:
         self.handle_unknown = handle_unknown
         self.unknown_value = unknown_value
 
-
 class DataFrameOrdinalencoder:
     def __init__(
         self, dataset_meta: Dataset, EncoderProps: List[OrdinalEncoderProps] = []
@@ -97,7 +96,7 @@ class DataFrameOrdinalencoder:
         self.dataset_meta = dataset_meta
         self.encoders = {}
 
-    def _gen_ordinal_encoder(
+    def _gen_ordinal_encoder(self,
         encoder_props: OrdinalEncoderProps = None,
     ) -> OrdinalEncoder:
         params = encoder_props.__dict__ or {}
@@ -111,7 +110,7 @@ class DataFrameOrdinalencoder:
             if col.dataType is DataTypes.STRING:
                 series = df[col.columnName]
                 non_nulls = np.array(series.dropna()).reshape(-1, 1)
-                encoder = self._gen_ordinal_encoder()
+                encoder = self._gen_ordinal_encoder(self.encoder_props[col.columnName])
                 ordinal_encoded = encoder.fit_transform(non_nulls)
                 self.encoders[col.columnName] = encoder
                 series.loc[series.notnull()] = np.squeeze(ordinal_encoded)

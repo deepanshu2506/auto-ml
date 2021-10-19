@@ -25,7 +25,8 @@ class DataSetsAPI(Resource):
     def post(self):
         body = NewDatasetRequestParser.parse_args()
         datasetFile: FileStorage = body["file"]
-        self.datasetService.createDataset(datasetFile, datasetName=body["dataset_name"])
+        datasetId=self.datasetService.createDataset(datasetFile, datasetName=body["dataset_name"])
+        print("DatasetId:",datasetId)
         return Response(status=HTTPStatus.CREATED)
 
     @marshal_with(getUserDatasetsAPIResponse)

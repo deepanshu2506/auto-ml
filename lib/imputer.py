@@ -5,7 +5,6 @@ from sklearn.preprocessing import OrdinalEncoder
 from sklearn.impute import KNNImputer as KNNImputerBase
 import numpy as np
 
-
 class Imputer(ABC):
     @abstractmethod
     def impute(self, dataframe: DataFrame) -> DataFrame:
@@ -29,8 +28,7 @@ class ImputerFactory:
             )
         else:
             raise ValueError("Invalid Imputer type")
-
-
+        
 class MeanImputer(Imputer):
     def __init__(self, column_name) -> None:
         super().__init__()

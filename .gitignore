@@ -14,7 +14,7 @@ build/
 _mailinglist
 .tox/
 .cache/
-.pytest_cache/
+.py_cache/
 .idea/
 docs/_build/
 .vscode
