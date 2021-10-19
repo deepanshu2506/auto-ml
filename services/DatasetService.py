@@ -3,7 +3,14 @@ from datetime import datetime
 from lib.Preprocessor import DataFrameOrdinalencoder
 from lib.imputer import Imputer, ImputerFactory
 from typing import List
-from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetStates, JobTypes
+from utils.enums import (
+    AggregationMethods,
+    Coltype,
+    DataTypes,
+    DatasetStates,
+    ImputationMethods,
+    JobTypes,
+)
 from utils.exceptions import DatasetNotFound
 import numpy
 from pandas.core.series import Series
@@ -158,7 +165,9 @@ class DatasetService:
         )
         return headers, aggregation_result
 
-    def impute_col(self, dataset_id, col_name, impute_type, value=None):
+    def impute_col(
+        self, dataset_id, col_name, impute_type: ImputationMethods, value=None
+    ):
         job_start_time = datetime.utcnow()
         dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
@@ -186,7 +195,7 @@ class DatasetService:
 
         job_stats = JobStats(jobStart=job_start_time, jobEnd=job_end_time)
         job_stats.colsImputed = 1
-        job_stats.imputationType = impute_type
+        job_stats.imputationType = impute_type.value
         job_stats.cols = imputed_col_stats
         imputation_job = DatasetJob(
             jobType=JobTypes.SINGLE_COL_IMPUTATION, stats=job_stats
