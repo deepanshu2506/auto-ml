@@ -1,39 +1,19 @@
-from datetime import datetime
-
-from lib.Preprocessor import DataFrameOrdinalencoder
-from lib.imputer import Imputer, ImputerFactory
 from typing import List
-from utils.enums import (
-    AggregationMethods,
-    Coltype,
-    DataTypes,
-    DatasetStates,
-    ImputationMethods,
-    JobTypes,
-)
+from utils.enums import AggregationMethods, Coltype, DataTypes
 from utils.exceptions import DatasetNotFound
 import numpy
 from pandas.core.series import Series
-from utils.pdUtils import (
-    build_query,
-    get_col_type,
-    get_datatype,
-    perform_aggregation,
-    is_discrete_auto_impute,
-)
+from utils.pdUtils import build_query, get_col_type, get_datatype, perform_aggregation
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
 from pandas import DataFrame
 import numpy as np
 from werkzeug.datastructures import FileStorage
-import random
 from db.models.Dataset import (
     Dataset,
     DatasetFeature,
     DatasetFeatureMetrics,
     DatasetInfo,
-    DatasetJob,
-    JobStats,
 )
 
 
@@ -100,7 +80,7 @@ class DatasetService:
         dataset.info = DatasetInfo(fileSize=file_size, tupleCount=tupleCount)
         dataset.datasetFields = self._extract_fields(dataset_raw)
         dataset = dataset.save()
-        return dataset
+        return dataset.id
 
     def get_datasets(self, user_id) -> List[Dataset]:
         return Dataset.objects(createdBy=user_id, isDeleted=False)
@@ -164,88 +144,3 @@ class DatasetService:
             f"{aggregate_by_field.replace(' ' , '_')}_{aggregate_method.value}",
         )
         return headers, aggregation_result
-
-    def impute_col(
-        self, dataset_id, col_name, impute_type: ImputationMethods, value=None
-    ):
-        job_start_time = datetime.utcnow()
-        dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
-        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
-            dataset.datasetLocation
-        )
-        null_count = dataset_frame[col_name].isnull().sum()
-
-        imputer: Imputer = ImputerFactory.get_imputer(
-            impute_type, column_name=col_name, value=value
-        )
-        imputed_dataset = imputer.impute(dataset_frame)
-        self.fileService.save_dataset(
-            imputed_dataset,
-            dataset_path=dataset.datasetLocation,
-        )
-        job_end_time = datetime.utcnow()
-
-        dataset.datasetFields = self._extract_fields(imputed_dataset)
-        imputed_col_stats = [
-            {
-                "col_name": col_name,
-                "imputed_count": null_count,
-            }
-        ]
-
-        job_stats = JobStats(jobStart=job_start_time, jobEnd=job_end_time)
-        job_stats.colsImputed = 1
-        job_stats.imputationType = impute_type.value
-        job_stats.cols = imputed_col_stats
-        imputation_job = DatasetJob(
-            jobType=JobTypes.SINGLE_COL_IMPUTATION, stats=job_stats
-        )
-        dataset.jobs.append(imputation_job)
-        Dataset.state = DatasetStates.PARTIALLY_IMPUTED
-        dataset.save()
-        return imputed_col_stats
-
-    def add_null(self, df):
-        ix = [(row, col) for row in range(df.shape[0]) for col in range(df.shape[1])]
-        for row, col in random.sample(ix, int(round(0.1 * len(ix)))):
-            df.iat[row, col] = np.nan
-        return df
-
-    def calc_null(self, df):
-        null_val = df.isnull().sum().sum()
-        print(null_val)
-
-    def impute_dataset(self, dataset_id, target_col_name):
-        dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
-        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
-            dataset.datasetLocation
-        )
-        print("Auto Imputation")
-        # print(dataset_frame)
-        features = {}
-        features["rows_count"] = dataset.info.tupleCount
-        dataset_fields = dataset.datasetFields
-        features["cols_count"] = len(dataset_fields)
-        (
-            features["is_classification"],
-            features["unique_ratio"],
-            features["top_n_unique_ratio"],
-        ) = is_discrete_auto_impute(dataset_frame[target_col_name])
-        discrete_count = 0
-        continous_count = 0
-        null_count = 0
-        dataset_frame = self.add_null(dataset_frame)
-        for i in range(features["cols_count"]):
-            null_count += dataset_fields[i]["metrics"]["missingValues"]
-            if dataset_fields[i]["colType"] == Coltype.DISCRETE:
-                discrete_count += 1
-            else:
-                continous_count += 1
-
-        features["percent_null"] = (null_count / features["rows_count"]) * 100
-        features["discrete_count"] = discrete_count
-        features["continous_count"] = continous_count
-        print(features)
-        self.calc_null(dataset_frame)
-        # ordinalEncoder = DataFrameOrdinalencoder(dataset_meta=dataset)
-        # preprocessed_frame = ordinalEncoder.fit(dataset_frame)
