@@ -3,7 +3,9 @@ from utils.enums import ImputationMethods
 from pandas import DataFrame
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.impute import KNNImputer as KNNImputerBase
+from db.models.Dataset import Dataset
 import numpy as np
+from lib.Preprocessor import DataFrameOrdinalencoder, OrdinalEncoderProps
 
 class Imputer(ABC):
     @abstractmethod
@@ -84,20 +86,17 @@ class KNNImputer(Imputer):
         self.ordinalEncoder = OrdinalEncoder()
         self.knn = KNNImputerBase(n_neighbors=5)
 
-    def impute(self, dataframe: DataFrame) -> DataFrame:
-        series = dataframe[self.column_name]
-        non_nulls = np.array(series.dropna()).reshape(-1, 1)
-        ordinal_encoded = self.ordinalEncoder.fit_transform(non_nulls)
-        series.loc[series.notnull()] = np.squeeze(ordinal_encoded)
-        dataframe[self.column_name] = series
-        imputed_data = self.knn.fit_transform(dataframe)
-        df_temp = DataFrame(imputed_data, columns=dataframe.columns)
-        df_temp[self.column_name] = np.squeeze(
-            self.ordinalEncoder.inverse_transform(
-                np.array(df_temp[self.column_name]).reshape(-1, 1)
-            )
-        )
-        dataframe[self.column_name] = df_temp[self.column_name]
+    def impute(self, dataset:Dataset,dataframe: DataFrame) -> DataFrame:
+        EncoderProps = []
+        for col in dataframe.columns:
+            obj = OrdinalEncoderProps(col)
+            EncoderProps.append(obj)
+        encodingObj = DataFrameOrdinalencoder(dataset, EncoderProps)
+        dataframe_encoded = encodingObj.fit(dataframe.copy(deep=True))
+        imputed_data = self.knn.fit_transform(dataframe_encoded)
+        df_temp = DataFrame(imputed_data, columns=dataframe.columns) 
+        imputed_dataset = encodingObj.inverse_transform(df_temp)      
+        dataframe[self.column_name] = imputed_dataset[self.column_name]
         return dataframe
 
 

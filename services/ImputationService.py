@@ -45,7 +45,7 @@ class ImputationService:
         imputer: Imputer = ImputerFactory.get_imputer(
             impute_type, column_name=col_name, value=value
         )
-        imputed_dataset = imputer.impute(dataset_frame)
+        imputed_dataset = imputer.impute(dataset,dataset_frame)
         self.fileService.save_dataset(
             imputed_dataset,
             dataset_path=dataset.datasetLocation,
@@ -143,7 +143,8 @@ class ImputationService:
             null_count,
         ) = self.get_features(dataset, dataset_frame, target_col_name)
         if null_count == 0:
-            return "No need of data imputation!!"
+            return ["Null","No need of data imputation!!"]
+
         EncoderProps = []
         for col in dataset.datasetFields:
             obj = OrdinalEncoderProps(col.columnName)
@@ -177,4 +178,4 @@ class ImputationService:
         dataset.jobs.append(imputation_job)
         dataset.state = DatasetStates.IMPUTED
         dataset.save()
-        return imputed_col_stats
+        return [impute_type,imputed_col_stats]

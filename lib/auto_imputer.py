@@ -41,7 +41,7 @@ class BayesianRidgeImputer(AutoImputer):
             missing_values=np.nan,
         )
         imputed_np = imp.fit_transform(dataframe)
-        df = pd.DataFrame(imputed_np, columns=[dataframe.columns])
+        df = pd.DataFrame(imputed_np, columns=dataframe.columns)
         return df
 
 
@@ -62,7 +62,7 @@ class KNeighborsRegressorImputer(AutoImputer):
             missing_values=np.nan,
         )
         imputed_np = imp.fit_transform(dataframe)
-        df = pd.DataFrame(imputed_np, columns=[dataframe.columns])
+        df = pd.DataFrame(imputed_np, columns=dataframe.columns)
         return df
 
 
@@ -73,7 +73,7 @@ class ExtraTreesRegressorImputer(AutoImputer):
             missing_values=np.nan,
         )
         imputed_np = imp.fit_transform(dataframe)
-        df = pd.DataFrame(imputed_np, columns=[dataframe.columns])
+        df = pd.DataFrame(imputed_np, columns=dataframe.columns)
         return df
 
 
