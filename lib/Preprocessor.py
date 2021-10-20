@@ -7,6 +7,7 @@ from numpy.lib.function_base import select
 from db.models.Dataset import Dataset, DatasetFeature
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import OrdinalEncoder
+
 from tensorflow.keras.layers.experimental.preprocessing import (
     Normalization,
     StringLookup,
@@ -76,14 +77,11 @@ class OrdinalEncoderProps:
         col_name,
         categories="auto",
         dtype=np.float64,
-        handle_unknown="error",
-        unknown_value=None,
+
     ) -> None:
         self.col_name = col_name
         self.categories = categories
         self.dtype = dtype
-        self.handle_unknown = handle_unknown
-        self.unknown_value = unknown_value
 
 class DataFrameOrdinalencoder:
     def __init__(
