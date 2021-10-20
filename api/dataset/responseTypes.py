@@ -26,7 +26,7 @@ userDatasetDetails = {
                         "median": fields.Float,
                         "std_dev": fields.Float(attribute="stdDeviation"),
                         "unique_values": fields.Integer(attribute="uniqueValues"),
-                        "missing_values": fields.Integer(attribute="missing_values"),
+                        "missing_values": fields.Integer(attribute="missingValues"),
                         "samples": fields.List(fields.String),
                     }
                 ),
