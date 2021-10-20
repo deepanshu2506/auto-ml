@@ -117,7 +117,7 @@ class DataFrameOrdinalencoder:
                 df[col.columnName] = series
         return df
 
-    def inverse_transform(self, df: DataFrame):
+    def inverse_transform(self, df: DataFrame)->DataFrame:
         for col_name, encoder in self.encoders.items():
             encoder: OrdinalEncoder = encoder
             decoded_series = np.squeeze(
