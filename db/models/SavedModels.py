@@ -43,6 +43,7 @@ class SavedModel(Document):
     name = StringField()
     state = EnumField(TrainingStates)
     architecture = DynamicField()
+    classes = DynamicField()
 
     @classmethod
     def to_output(cls):
@@ -55,4 +56,5 @@ class SavedModel(Document):
             "created_at": fields.DateTime(),
             "name": fields.String(),
             "state": OutputEnumField(TrainingStates),
+            "classes": fields.List(fields.Raw()),
         }

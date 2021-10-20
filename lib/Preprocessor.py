@@ -60,7 +60,8 @@ def get_category_encoding_layer(name, dataset, dtype, max_tokens=None):
 
 def df_to_dataset(dataframe, shuffle=True, batch_size=32, target_variable="target"):
     dataframe = dataframe.copy()
-    labels = pd.get_dummies(dataframe.pop(target_variable))
+    target = dataframe.pop(target_variable)
+    labels = pd.get_dummies(target)
     ds = tf.data.Dataset.from_tensor_slices((dict(dataframe), labels))
     if shuffle:
         ds = ds.shuffle(buffer_size=len(dataframe))
@@ -84,7 +85,6 @@ class OrdinalEncoderProps:
         self.handle_unknown = handle_unknown
         self.unknown_value = unknown_value
 
-
 class DataFrameOrdinalencoder:
     def __init__(
         self, dataset_meta: Dataset, EncoderProps: List[OrdinalEncoderProps] = []
@@ -96,7 +96,7 @@ class DataFrameOrdinalencoder:
         self.dataset_meta = dataset_meta
         self.encoders = {}
 
-    def _gen_ordinal_encoder(
+    def _gen_ordinal_encoder(self,
         encoder_props: OrdinalEncoderProps = None,
     ) -> OrdinalEncoder:
         params = encoder_props.__dict__ or {}
@@ -110,14 +110,14 @@ class DataFrameOrdinalencoder:
             if col.dataType is DataTypes.STRING:
                 series = df[col.columnName]
                 non_nulls = np.array(series.dropna()).reshape(-1, 1)
-                encoder = self._gen_ordinal_encoder()
+                encoder = self._gen_ordinal_encoder(self.encoder_props[col.columnName])
                 ordinal_encoded = encoder.fit_transform(non_nulls)
                 self.encoders[col.columnName] = encoder
                 series.loc[series.notnull()] = np.squeeze(ordinal_encoded)
                 df[col.columnName] = series
         return df
 
-    def inverse_transform(self, df: DataFrame):
+    def inverse_transform(self, df: DataFrame)->DataFrame:
         for col_name, encoder in self.encoders.items():
             encoder: OrdinalEncoder = encoder
             decoded_series = np.squeeze(

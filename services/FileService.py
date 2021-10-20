@@ -31,7 +31,7 @@ class FileService:
 
     def save_model(self, model: Model, job_id, model_id) -> str:
         file_path = os.path.join(Config.MODEL_SAVE_DIRECTORY, f"{job_id}_{model_id}")
-        model.save(file_path, overwrite=True, include_optimizer=True)
+        model.save(file_path, overwrite=True)
         return file_path
 
     def get_model(modelPath) -> Model:

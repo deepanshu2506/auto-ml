@@ -1,5 +1,6 @@
 from api.dataset.imputationResources import DatasetSingleColImputation,DatasetAutoImputation
 from services.DatasetService import DatasetService
+from services.ImputationService import ImputationService
 from services.FileService import FileService, MockFileService
 from api.dataset.resources import (
     DataSetsAPI,
@@ -8,6 +9,7 @@ from api.dataset.resources import (
     PerformAggregationAPI,
 )
 from flask_restful import Api
+import pickle
 
 
 API_PREFIX: str = "/datasets"
@@ -15,6 +17,10 @@ API_PREFIX: str = "/datasets"
 
 def initialize(api: Api) -> None:
     datasetService = DatasetService(fileService=FileService())
+    filename="randomforest_model.sav"
+    imputer_model = pickle.load(open(filename, 'rb'))
+    imputationService =ImputationService(fileService=FileService(),imputer_model=imputer_model)
+    
     api.add_resource(
         DataSetsAPI,
         f"{API_PREFIX}/",
@@ -40,10 +46,10 @@ def initialize(api: Api) -> None:
     api.add_resource(
         DatasetSingleColImputation,
         f"{API_PREFIX}/<id>/impute_advanced",
-        resource_class_kwargs={"datasetService": datasetService},
+        resource_class_kwargs={"imputationService": imputationService},
     )
     api.add_resource(
         DatasetAutoImputation,
         f"{API_PREFIX}/<id>/auto_impute",
-        resource_class_kwargs={"datasetService": datasetService},
+        resource_class_kwargs={"imputationService": imputationService},
     )
