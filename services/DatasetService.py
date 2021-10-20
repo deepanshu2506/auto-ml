@@ -7,7 +7,6 @@ from utils.pdUtils import build_query, get_col_type, get_datatype, perform_aggre
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
 from pandas import DataFrame
-import numpy as np
 from werkzeug.datastructures import FileStorage
 from db.models.Dataset import (
     Dataset,
@@ -24,11 +23,21 @@ class DatasetService:
     def _build_column_metrics(self, column_metrics: Series, column_values: Series):
         featureMetrics = DatasetFeatureMetrics()
         if column_metrics is not None:
+            lower_quantile = column_values.quantile(0.25)
+            upper_quantile = column_values.quantile(0.75)
+            iqr = upper_quantile - lower_quantile
+            outlier_count = sum(i < (lower_quantile-(1.5*iqr)) for i in column_values.tolist()) + sum(i > (upper_quantile+(1.5*iqr)) for i in column_values.tolist())
+            # print("Lower Q",lower_quantile)
+            # print("Upper Q",upper_quantile)
+            # print("IQR",iqr)
+            # print("Outliers count",outlier_count)
+            featureMetrics.outlier_count = outlier_count
             featureMetrics.min = column_metrics["min"]
             featureMetrics.max = column_metrics["max"]
             featureMetrics.stdDeviation = column_metrics["std"]
             featureMetrics.median = numpy.nanmedian(column_values)
-
+        else:
+            featureMetrics.value_percentage =(dict((column_values.value_counts() / len(column_values))*100))
         unique_values = column_values.unique().tolist()
         featureMetrics.uniqueValues = len(unique_values)
         featureMetrics.samples = unique_values[: min(5, len(unique_values))]
@@ -40,7 +49,6 @@ class DatasetService:
         dataTypes = dataset.dtypes
         columnNames = dataset.columns.values.tolist()
         dataset_metrics = dataset.describe()
-
         for idx, (columnName, dataType) in enumerate(zip(columnNames, dataTypes)):
             colDataType: DataTypes = get_datatype(dataType)
             colData: Series = dataset.iloc[:, idx]

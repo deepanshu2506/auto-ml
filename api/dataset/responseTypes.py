@@ -28,6 +28,8 @@ userDatasetDetails = {
                         "unique_values": fields.Integer(attribute="uniqueValues"),
                         "missing_values": fields.Integer(attribute="missingValues"),
                         "samples": fields.List(fields.String),
+                        "outlier_count": fields.Integer,
+                        "value_percentage": fields.Raw(),
                     }
                 ),
                 "column_order": fields.Integer(attribute="columnOrder"),

@@ -12,6 +12,7 @@ from mongoengine.fields import (
     IntField,
     ListField,
     StringField,
+    DictField,
 )
 
 
@@ -27,6 +28,8 @@ class DatasetFeatureMetrics(EmbeddedDocument):
     uniqueValues = IntField()
     missingValues = IntField()
     samples = ListField(max_length=5)
+    value_percentage = DictField()
+    outlier_count = IntField()
 
 
 class DatasetFeature(EmbeddedDocument):
