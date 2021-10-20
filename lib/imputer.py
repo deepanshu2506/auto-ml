@@ -23,7 +23,7 @@ class ImputerFactory:
         elif type == ImputationMethods.MAX_FREQUENCY:
             return MaxFrequencyImputer(column_name=kwargs["column_name"])
         elif type == ImputationMethods.KNN:
-            return KNNImputer(column_name=kwargs["column_name"])
+            return KNNImputer(column_name=kwargs["column_name"],dataset=kwargs["dataset"])
         elif type == ImputationMethods.VALUE:
             return ValueImputer(
                 column_name=kwargs["column_name"], value=kwargs["value"]
@@ -80,18 +80,19 @@ class MaxFrequencyImputer(Imputer):
 
 
 class KNNImputer(Imputer):
-    def __init__(self, column_name) -> None:
+    def __init__(self, column_name,dataset) -> None:
         super().__init__()
         self.column_name = column_name
         self.ordinalEncoder = OrdinalEncoder()
         self.knn = KNNImputerBase(n_neighbors=5)
+        self.dataset=dataset
 
-    def impute(self, dataset:Dataset,dataframe: DataFrame) -> DataFrame:
+    def impute(self,dataframe: DataFrame) -> DataFrame:
         EncoderProps = []
         for col in dataframe.columns:
             obj = OrdinalEncoderProps(col)
             EncoderProps.append(obj)
-        encodingObj = DataFrameOrdinalencoder(dataset, EncoderProps)
+        encodingObj = DataFrameOrdinalencoder(self.dataset, EncoderProps)
         dataframe_encoded = encodingObj.fit(dataframe.copy(deep=True))
         imputed_data = self.knn.fit_transform(dataframe_encoded)
         df_temp = DataFrame(imputed_data, columns=dataframe.columns) 

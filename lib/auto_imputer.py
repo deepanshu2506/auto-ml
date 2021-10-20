@@ -114,7 +114,7 @@ class AutoImputerFactory:
                 ]
             ]
         )
-        print(predicted_imputer_ind)
+        
         simplefilter("ignore", category=ConvergenceWarning)
         imputer = imputer_map.get(int(predicted_imputer_ind), MeanImputer)
         imputerInstance = imputer()

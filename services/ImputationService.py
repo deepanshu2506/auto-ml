@@ -43,9 +43,9 @@ class ImputationService:
         if null_count == 0:
             return "No need of data imputation for column " + col_name + "!!"
         imputer: Imputer = ImputerFactory.get_imputer(
-            impute_type, column_name=col_name, value=value
+            impute_type,dataset=dataset,column_name=col_name, value=value
         )
-        imputed_dataset = imputer.impute(dataset,dataset_frame)
+        imputed_dataset = imputer.impute(dataset_frame)
         self.fileService.save_dataset(
             imputed_dataset,
             dataset_path=dataset.datasetLocation,
