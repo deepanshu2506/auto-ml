@@ -7,8 +7,6 @@ from utils.pdUtils import build_query, get_col_type, get_datatype, perform_aggre
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
 from pandas import DataFrame
-import numpy as np
-from sklearn.ensemble import IsolationForest
 from werkzeug.datastructures import FileStorage
 from db.models.Dataset import (
     Dataset,
