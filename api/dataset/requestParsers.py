@@ -4,11 +4,15 @@ from flask_restful import reqparse
 from werkzeug.datastructures import FileStorage
 
 NewDatasetRequestParser = reqparse.RequestParser()
-NewDatasetRequestParser.add_argument(
-    "file", type=FileStorage, location="files", required=True
-)
+NewDatasetRequestParser.add_argument("file", type=FileStorage, location="files")
 NewDatasetRequestParser.add_argument("dataset_name", type=str, required=True)
-
+NewDatasetRequestParser.add_argument("type", type=str, default="file")
+NewDatasetRequestParser.add_argument("host", type=str, default="file")
+NewDatasetRequestParser.add_argument("port", type=str, default="file")
+NewDatasetRequestParser.add_argument("user", type=str, default="file")
+NewDatasetRequestParser.add_argument("password", type=str, default="file")
+NewDatasetRequestParser.add_argument("database", type=str, default="file")
+NewDatasetRequestParser.add_argument("query", type=str, default="file")
 
 aggregationRequestParser = reqparse.RequestParser()
 aggregationRequestParser.add_argument(
@@ -33,4 +37,3 @@ singleColImputationRequestParser.add_argument("value", type=str)
 
 autoImputationRequestParser = reqparse.RequestParser()
 autoImputationRequestParser.add_argument("target_col_name", type=str, required=True)
-
