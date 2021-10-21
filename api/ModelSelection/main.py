@@ -1,5 +1,6 @@
 from api.ModelSelection.resources import (
     ExportGeneratedModelResource,
+    InferenceAPI,
     ModelSelectionJobResource,
     ModelSelectionResource,
 )
@@ -10,6 +11,7 @@ from services.FileService import FileService
 from flask_restful import Api
 
 from services.ModelSelectionJobService import ModelSelectionJobService
+from services.SavedModelService import SavedModelService
 
 
 API_PREFIX: str = "/dataset/model_selection"
@@ -22,6 +24,7 @@ def initialize(api: Api) -> None:
         fileService=fileService, datasetService=datasetService
     )
     modelSelectionJobService = ModelSelectionJobService()
+    savedModelService = SavedModelService(fileService=fileService)
     api.add_resource(
         ModelSelectionResource,
         f"{API_PREFIX}/",
@@ -43,4 +46,9 @@ def initialize(api: Api) -> None:
             "modelGenerationService": modelGeneratorService,
             "modelSelectionJobService": modelSelectionJobService,
         },
+    )
+    api.add_resource(
+        InferenceAPI,
+        f"{API_PREFIX}/saved_model/<saved_model_id>/infer",
+        resource_class_kwargs={"savedModelService": savedModelService},
     )
