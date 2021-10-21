@@ -34,7 +34,7 @@ class FileService:
         model.save(file_path, overwrite=True)
         return file_path
 
-    def get_model(modelPath) -> Model:
+    def get_model(self, modelPath) -> Model:
         return load_model(modelPath)
 
 

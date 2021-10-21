@@ -17,12 +17,16 @@ class DatasetNotFound(HTTPException):
 class ModelSelectionJobNotFound(HTTPException):
     pass
 
+
 class ModelNotFound(HTTPException):
     pass
 
 
-
 class InsufficientPrivilegesError(HTTPException):
+    pass
+
+
+class InvalidInputFormatForModelError(HTTPException):
     pass
 
 
@@ -42,5 +46,9 @@ RestfulErrors = {
     "ModelNotFound": {
         "message": "Model Not found",
         "status": 404,
+    },
+    "InvalidInputFormatForModelError": {
+        "message": "input is not well formed according to the model",
+        "status": 400,
     },
 }
