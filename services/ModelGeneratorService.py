@@ -202,5 +202,7 @@ class ModelGeneratorService:
         model.fit(train_ds, epochs=epochs)
         model_location = self.fileService.save_model(model, job.id, savedModel.id)
         savedModel.model_location = model_location
+        savedModel.state = TrainingStates.ANALYZING
+        savedModel.save()
         savedModel.state = TrainingStates.COMPLETED
         savedModel.save()
