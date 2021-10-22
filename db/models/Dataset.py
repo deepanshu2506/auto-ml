@@ -58,6 +58,14 @@ class DatasetJob(EmbeddedDocument):
     runOn = DateTimeField(default=datetime.datetime.utcnow)
 
 
+class DataSourceProperties(EmbeddedDocument):
+    query = StringField()
+    host = StringField()
+    port = StringField()
+    user = StringField()
+    password = StringField()
+
+
 class Dataset(Document):
     type = EnumField(DatasetType, default=DatasetType.CSV)
     name = StringField()
@@ -68,5 +76,6 @@ class Dataset(Document):
     createdBy = ObjectIdField()
     createdAt = DateTimeField(default=datetime.datetime.utcnow)
     jobs = EmbeddedDocumentListField(DatasetJob)
-
+    datasource_properties = EmbeddedDocumentField(DataSourceProperties)
+    datasource_type = StringField()
     isDeleted = BooleanField(default=False)

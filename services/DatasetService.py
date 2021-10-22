@@ -1,5 +1,6 @@
 from typing import List
-from utils.enums import AggregationMethods, Coltype, DataTypes
+from lib.integrations.DataSourceFactory import DatasourceFactory
+from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetType
 from utils.exceptions import DatasetNotFound
 import numpy
 from pandas.core.series import Series
@@ -40,8 +41,11 @@ class DatasetService:
             featureMetrics.value_percentage =(dict((column_values.value_counts() / len(column_values))*100))
         unique_values = column_values.unique().tolist()
         featureMetrics.uniqueValues = len(unique_values)
-        featureMetrics.samples = unique_values[: min(5, len(unique_values))]
+        featureMetrics.samples = [
+            str(x) for x in unique_values[: min(5, len(unique_values))]
+        ]
         featureMetrics.missingValues = column_values.isnull().sum()
+        print(unique_values, " ", featureMetrics.samples)
         return featureMetrics
 
     def _extract_fields(self, dataset: DataFrame):
@@ -71,13 +75,36 @@ class DatasetService:
             datasetFields.append(datasetFeature)
         return datasetFields
 
-    def createDataset(self, dataset_raw_file: FileStorage, datasetName: str) -> Dataset:
+    def createDataset(
+        self,
+        datasetName: str,
+        dataset_raw_file: FileStorage = None,
+        type: str = "file",
+        **kwargs,
+    ) -> Dataset:
         user_id = get_jwt_identity()
-        dataset_raw = self.fileService.convert_to_dataset(dataset_raw_file)
-        dataset = Dataset(
-            createdBy=user_id,
-            name=datasetName,
-        )
+        dataset_raw = None
+        dataset: Dataset = None
+        if type == "file":
+            dataset_raw = self.fileService.convert_to_dataset(dataset_raw_file)
+            dataset = Dataset(
+                createdBy=user_id,
+                name=datasetName,
+                datasource_type=type,
+            )
+        else:
+            query = kwargs.get("query")
+            datasource = DatasourceFactory.get_datasource(type, **kwargs)
+            print(datasource.host)
+            dataset_raw = datasource.create_dataset(query)
+            datasource_properties = datasource.get_datasource_properties()
+            dataset = Dataset(
+                createdBy=user_id,
+                name=datasetName,
+                type=DatasetType.SQL,
+                datasource_type=type,
+                datasource_properties=datasource_properties,
+            )
 
         dataset = dataset.save()
         file_path, file_size = self.fileService.save_dataset(

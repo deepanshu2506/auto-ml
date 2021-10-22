@@ -1,10 +1,8 @@
 from http import HTTPStatus
-from utils.enums import AggregationMethods
 from utils.exceptions import DatasetNotFound
-from flask import Response, jsonify
+from flask import Response, jsonify, make_response
 from mongoengine.errors import ValidationError
 from services.DatasetService import DatasetService
-from werkzeug.datastructures import FileStorage
 from api.dataset.requestParsers import (
     NewDatasetRequestParser,
     aggregationRequestParser,
@@ -24,9 +22,19 @@ class DataSetsAPI(Resource):
 
     def post(self):
         body = NewDatasetRequestParser.parse_args()
-        datasetFile: FileStorage = body["file"]
-        datasetId=self.datasetService.createDataset(datasetFile, datasetName=body["dataset_name"])
-        print("DatasetId:",datasetId)
+        type = body["type"]
+        if body.get("file") == None and type == "file":
+            return make_response(
+                jsonify(
+                    {
+                        "error": "dataset file or datasource from other integration is required"
+                    }
+                ),
+                400,
+            )
+
+        datasetId = self.datasetService.createDataset(body["dataset_name"], **body)
+        print("DatasetId:", datasetId)
         return Response(status=HTTPStatus.CREATED)
 
     @marshal_with(getUserDatasetsAPIResponse)
