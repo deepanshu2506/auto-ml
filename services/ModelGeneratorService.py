@@ -180,24 +180,36 @@ class ModelGeneratorService:
         savedModel: SavedModel,
         **kwargs,
     ):
+
         savedModel.state = TrainingStates.STARTED
         savedModel.save()
         model_arch = self._decode_model(model_arch)
+        target_col_meta: DatasetFeature = list(
+            filter(lambda x: x.columnName == job.target_col, job.dataset.datasetFields)
+        )[0]
+        problem_type = (
+            ProblemType.Classification
+            if target_col_meta.colType == Coltype.DISCRETE
+            else ProblemType.Regression
+        )
+
         (
             input_layers,
             preprocessing_layer,
         ) = encoder.get_input_preprocessing_layers()
         model = create_tunable_model(
             model_arch,
-            ProblemType.Classification,
+            problem_type,
             1,
             metrics=[],
             input_layer=input_layers,
             preprocessing_layer=preprocessing_layer,
             prod=True,
         )
+
         train_ds = df_to_dataset(
             dataframe=dataset,
+            problemType=problem_type,
             target_variable=job.target_col,
         )
         epochs = kwargs.get("epochs", 20)

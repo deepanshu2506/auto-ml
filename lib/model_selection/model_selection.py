@@ -39,6 +39,13 @@ class ModelGenerator:
         self._input_layers = None
         self.preprocessing_layer = None
 
+        self.target_feature_meta: DatasetFeature = list(
+            filter(
+                lambda x: x.columnName == self.target_feature,
+                self.dataset.datasetFields,
+            )
+        )[0]
+
     def build(self):
         input_layers, preprocessing_layer = self._get_input_preprocessing_layers()
         self._input_layers = input_layers
@@ -136,10 +143,14 @@ class ModelGenerator:
         pass
 
     def _generate_configuration(self):
+
+        is_discrete = self.target_feature_meta.colType == Coltype.DISCRETE
         Y = self.raw_dataset[self.target_feature]
-        output_shape = len(list(Y.value_counts()))  # applies only if classification
+        output_shape = len(list(Y.value_counts())) if is_discrete else 1
         architecture_type = Layers.FullyConnected
-        problem_type = ProblemType.Classification
+        problem_type = (
+            ProblemType.Classification if is_discrete else ProblemType.Regression
+        )
         size_scaler = 0.1
         config = Configuration(
             architecture_type,
@@ -181,8 +192,12 @@ class ModelGenerator:
                 self.raw_dataset.iloc[train_index],
                 self.raw_dataset.iloc[test_index],
             )
-            train_ds = df_to_dataset(train, target_variable=self.target_feature)
-            test_ds = df_to_dataset(test, target_variable=self.target_feature)
+            train_ds = df_to_dataset(
+                train, self.config.problem_type, target_variable=self.target_feature
+            )
+            test_ds = df_to_dataset(
+                test, self.config.problem_type, target_variable=self.target_feature
+            )
             history = best_model.fit(train_ds, epochs=20)
             score = best_model.evaluate(test_ds)
 

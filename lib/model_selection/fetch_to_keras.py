@@ -1,5 +1,7 @@
 from tensorflow.python.keras.metrics import CategoricalAccuracy, Precision, Recall
 from tensorflow.python.keras.models import Model
+
+from lib.model_selection.Individual import Individual
 from .ann_encoding import Layers, ProblemType, activations
 from tensorflow.keras.layers import Dense, Conv2D, LSTM, Dropout, MaxPooling2D, Flatten
 from tensorflow.keras import Sequential, Model
@@ -40,7 +42,7 @@ def population_to_keras(population, input_layer, preprocessing_layer):
 
     for i in range(len(population)):
 
-        individual = population[i]
+        individual: Individual = population[i]
 
         tModel = create_tunable_model(
             individual.stringModel,
