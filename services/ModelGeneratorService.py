@@ -210,6 +210,7 @@ class ModelGeneratorService:
             dataset=job.dataset, model=model, target_col=job.target_col
         )
         impact = importanceExtractor.extract(dataset)
+        print(impact)
         savedModel.feature_importance = impact
         savedModel.state = TrainingStates.COMPLETED
         savedModel.save()

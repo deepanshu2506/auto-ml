@@ -67,15 +67,8 @@ class ImportanceExtractor:
         impact = (df.max() - df.min()).sum()
         return float(impact)
 
-    def _get_field_importance(
-        self, column_data: Series, feature: DatasetFeature, median_values
-    ):
-        column_variants = self._generate_variants(column_data, feature)
-        inputs = self._build_variation(
-            feature.columnName, column_variants, median_values
-        )
-        tensor = self._build_tensor(inputs)
-        res = self.model.predict(tensor)
+    def _get_field_importance(self, res):
+
         impact = (
             self._discrete_target_impact(res)
             if self.problem_type == Coltype.DISCRETE
@@ -86,14 +79,27 @@ class ImportanceExtractor:
     def extract(self, df: DataFrame):
         median_values = self._get_median(df)
         impacts = {}
-        dataset_input_features = filter(
-            lambda x: x.columnName != self.target_col, self.dataset.datasetFields
-        )
-        for field in dataset_input_features:
-
-            field: DatasetFeature = field
-            impacts[field.columnName] = float(
-                self._get_field_importance(df[field.columnName], field, median_values)
+        dataset_input_features = list(
+            filter(
+                lambda x: x.columnName != self.target_col, self.dataset.datasetFields
             )
+        )
+        input_counts = []
+        agg_inputs = []
+        for field in dataset_input_features:
+            field: DatasetFeature = field
+            column_variants = self._generate_variants(df[field.columnName], field)
+            inputs = self._build_variation(
+                field.columnName, column_variants, median_values
+            )
+            input_counts.append(len(inputs))
+            agg_inputs.extend(inputs)
 
+        tensor = self._build_tensor(agg_inputs)
+        res = self.model.predict(tensor)
+        start = 0
+        for idx, field in enumerate(dataset_input_features):
+            field_res = res[start : start + input_counts[idx]]
+            start = start + input_counts[idx]
+            impacts[field.columnName] = float(self._get_field_importance(field_res))
         return impacts
