@@ -2,7 +2,6 @@ from datetime import datetime
 import threading
 from pandas.core.frame import DataFrame
 import pandas as pd
-from tensorflow._api.v2 import data
 from db.models.Dataset import Dataset, DatasetFeature
 from db.models.SavedModels import ModelFeatures, SavedModel
 from lib.FeatureImportance import ImportanceExtractor
@@ -43,7 +42,7 @@ class ModelGeneratorService:
             raw_dataset=raw_dataset,
             target_feature=target_col,
             logger=logger,
-            experiment_count=5,
+            experiment_count=3,
         )
         modelGenerator.build()
         algo_config = modelGenerator.config
@@ -72,14 +71,16 @@ class ModelGeneratorService:
         if results:
 
             def get_generatedModel(res):
-                print(res)
-                generatedModel = GeneratedModel(
-                    accuracy=res[0],
-                    precision=res[2],
-                    recall=res[3],
-                    fitness_score=res[-1].fitness,
-                )
-                generatedModel.accuracy_dev = res[1]
+                generatedModel = GeneratedModel()
+                if modelSelectionJob.problemType == ProblemType.Classification:
+
+                    generatedModel.accuracy = res[0]
+                    generatedModel.precision = res[2]
+                    generatedModel.recall = res[3]
+                    generatedModel.fitness_score = res[-1].fitness
+                    generatedModel.accuracy_dev = res[1]
+                else:
+                    generatedModel.error = res[0]
                 generatedModel.model_arch = self._encode_model(res[-1].stringModel)
                 generatedModel.trainable_params = res[-1].raw_size
                 return generatedModel
@@ -107,7 +108,7 @@ class ModelGeneratorService:
         return encoded
 
     def exportModel(self, job: ModelSelectionJob, model_id, **kwargs):
-        print(job.target_col)
+
         model: GeneratedModel = None
 
         def _buildModelFeature(
@@ -143,7 +144,12 @@ class ModelGeneratorService:
                 )
             )
             model_name = kwargs.get("model_name", f"{dataset.name}_model")
-            classes = pd.get_dummies(raw_dataset[job.target_col]).columns.tolist()
+
+            classes = (
+                pd.get_dummies(raw_dataset[job.target_col]).columns.tolist()
+                if job.problemType == ProblemType.Classification
+                else None
+            )
             savedModel = SavedModel(
                 epochs=epochs,
                 target_col=job.target_col,
@@ -153,6 +159,7 @@ class ModelGeneratorService:
                 features=features,
                 architecture=model.model_arch,
                 classes=classes,
+                problemType=job.problemType,
             )
             savedModel.save()
 
@@ -180,27 +187,40 @@ class ModelGeneratorService:
         savedModel: SavedModel,
         **kwargs,
     ):
+
         savedModel.state = TrainingStates.STARTED
         savedModel.save()
         model_arch = self._decode_model(model_arch)
+        target_col_meta: DatasetFeature = list(
+            filter(lambda x: x.columnName == job.target_col, job.dataset.datasetFields)
+        )[0]
+        problem_type = (
+            ProblemType.Classification
+            if target_col_meta.colType == Coltype.DISCRETE
+            else ProblemType.Regression
+        )
+
         (
             input_layers,
             preprocessing_layer,
         ) = encoder.get_input_preprocessing_layers()
         model = create_tunable_model(
             model_arch,
-            ProblemType.Classification,
+            problem_type,
             1,
             metrics=[],
             input_layer=input_layers,
             preprocessing_layer=preprocessing_layer,
             prod=True,
         )
+
         train_ds = df_to_dataset(
             dataframe=dataset,
+            problemType=problem_type,
             target_variable=job.target_col,
         )
-        epochs = kwargs.get("epochs", 20)
+        epochs = kwargs.get("epochs") or 20
+        print(epochs)
         model.fit(train_ds, epochs=epochs)
         model_location = self.fileService.save_model(model, job.id, savedModel.id)
         savedModel.model_location = model_location

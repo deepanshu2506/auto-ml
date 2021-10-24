@@ -46,6 +46,7 @@ class GeneratedModel(DynamicEmbeddedDocument):
     fitness_score = FloatField()
     model_arch = DynamicField()
     trainable_params = IntField()
+    error = FloatField()
     model_id = ObjectIdField(
         required=True, default=ObjectId, unique=True, primary_key=True, sparse=True
     )

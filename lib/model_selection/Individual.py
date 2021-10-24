@@ -120,8 +120,8 @@ class Individual:
     ):
 
         train, test = train_test_split(dataset, test_size=cross_validation_ratio)
-        train_ds = df_to_dataset(train, target_variable=target_var)
-        test_ds = df_to_dataset(test, target_variable=target_var)
+        train_ds = df_to_dataset(train, self.problem_type, target_variable=target_var)
+        test_ds = df_to_dataset(test, self.problem_type, target_variable=target_var)
 
         # print(X_train.shape)
 

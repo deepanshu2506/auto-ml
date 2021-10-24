@@ -1,6 +1,7 @@
 from typing import Dict
 from tensorflow.keras.models import Model
 from db.models.SavedModels import ModelFeatures, SavedModel
+from lib.model_selection.ann_encoding import ProblemType
 from utils.enums import Coltype, DataTypes
 from utils.exceptions import InvalidInputFormatForModelError, ModelNotFound
 from services.FileService import FileService
@@ -81,9 +82,10 @@ class SavedModelService:
         sanitized_inputs = self._verify_sanitize_inputs(model_meta, input)
         tensor = self._convert_to_tensor(sanitized_inputs)
         results = model.predict(tensor)
-
-        predictions = [
-            dict(zip(model_meta.classes, [round(float(x), 3) for x in result]))
-            for result in results
-        ]
+        predictions = results
+        if model_meta.ProblemType == ProblemType.Classification:
+            predictions = [
+                dict(zip(model_meta.classes, [round(float(x), 3) for x in result]))
+                for result in predictions
+            ]
         return predictions

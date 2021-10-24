@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Tuple
+from lib.model_selection.ann_encoding import ProblemType
 from utils.enums import Coltype, DataTypes
 
 import numpy as np
@@ -59,11 +60,20 @@ def get_category_encoding_layer(name, dataset, dtype, max_tokens=None):
     return lambda feature: encoder(index(feature))
 
 
-def df_to_dataset(dataframe, shuffle=True, batch_size=32, target_variable="target"):
+def df_to_dataset(
+    dataframe,
+    problemType: ProblemType,
+    shuffle=True,
+    batch_size=32,
+    target_variable="target",
+):
     dataframe = dataframe.copy()
     target = dataframe.pop(target_variable)
-    labels = pd.get_dummies(target)
-    ds = tf.data.Dataset.from_tensor_slices((dict(dataframe), labels))
+
+    target_values = (
+        pd.get_dummies(target) if problemType == ProblemType.Classification else target
+    )
+    ds = tf.data.Dataset.from_tensor_slices((dict(dataframe), target_values))
     if shuffle:
         ds = ds.shuffle(buffer_size=len(dataframe))
     ds = ds.batch(batch_size)
@@ -77,11 +87,11 @@ class OrdinalEncoderProps:
         col_name,
         categories="auto",
         dtype=np.float64,
-
     ) -> None:
         self.col_name = col_name
         self.categories = categories
         self.dtype = dtype
+
 
 class DataFrameOrdinalencoder:
     def __init__(
@@ -94,7 +104,8 @@ class DataFrameOrdinalencoder:
         self.dataset_meta = dataset_meta
         self.encoders = {}
 
-    def _gen_ordinal_encoder(self,
+    def _gen_ordinal_encoder(
+        self,
         encoder_props: OrdinalEncoderProps = None,
     ) -> OrdinalEncoder:
         params = encoder_props.__dict__ or {}
@@ -115,7 +126,7 @@ class DataFrameOrdinalencoder:
                 df[col.columnName] = series
         return df
 
-    def inverse_transform(self, df: DataFrame)->DataFrame:
+    def inverse_transform(self, df: DataFrame) -> DataFrame:
         for col_name, encoder in self.encoders.items():
             encoder: OrdinalEncoder = encoder
             decoded_series = np.squeeze(
