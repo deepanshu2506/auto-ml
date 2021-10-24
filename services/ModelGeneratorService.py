@@ -159,6 +159,7 @@ class ModelGeneratorService:
                 features=features,
                 architecture=model.model_arch,
                 classes=classes,
+                problemType=job.problemType,
             )
             savedModel.save()
 

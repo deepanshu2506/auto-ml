@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from mongoengine import Document
 from mongoengine.document import EmbeddedDocument
 from mongoengine.fields import (
@@ -13,6 +14,7 @@ from mongoengine.fields import (
     StringField,
 )
 from db.models.ModelSelectionJobs import ModelSelectionJob
+from lib.model_selection.ann_encoding import ProblemType
 from utils.enums import Coltype, DataTypes, TrainingStates
 from utils.customFields import MemoryField, EnumField as OutputEnumField
 from flask_restful import fields
@@ -44,6 +46,7 @@ class SavedModel(Document):
     name = StringField()
     state = EnumField(TrainingStates)
     architecture = DynamicField()
+    ProblemType = EnumField(ProblemType)
     classes = DynamicField()
     feature_importance = DictField()
 
