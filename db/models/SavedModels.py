@@ -3,6 +3,7 @@ from mongoengine import Document
 from mongoengine.document import EmbeddedDocument
 from mongoengine.fields import (
     DateTimeField,
+    DictField,
     DynamicField,
     EmbeddedDocumentListField,
     EnumField,
@@ -44,10 +45,10 @@ class SavedModel(Document):
     state = EnumField(TrainingStates)
     architecture = DynamicField()
     classes = DynamicField()
+    feature_importance = DictField()
 
     @classmethod
     def to_output(cls):
-        print(ModelFeatures.to_output())
         return {
             "epochs": fields.Integer(),
             "target_col": fields.String(),
@@ -57,4 +58,5 @@ class SavedModel(Document):
             "name": fields.String(),
             "state": OutputEnumField(TrainingStates),
             "classes": fields.List(fields.Raw()),
+            "feature_importance": fields.Raw(),
         }

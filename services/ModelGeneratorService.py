@@ -5,6 +5,7 @@ import pandas as pd
 from tensorflow._api.v2 import data
 from db.models.Dataset import Dataset, DatasetFeature
 from db.models.SavedModels import ModelFeatures, SavedModel
+from lib.FeatureImportance import ImportanceExtractor
 from lib.Preprocessor import KerasPreProcessingEncoder, df_to_dataset
 from lib.model_selection.ann_encoding import Layers, ProblemType
 from lib.model_selection.fetch_to_keras import create_tunable_model
@@ -20,6 +21,7 @@ from lib.Logger.SocketLogger import SocketLogger
 from services.DatasetService import DatasetService
 from services.FileService import FileService
 from utils.exceptions import ModelNotFound
+import matplotlib.pyplot as plt
 
 
 class ModelGeneratorService:
@@ -173,7 +175,7 @@ class ModelGeneratorService:
         self,
         model_arch,
         dataset,
-        job,
+        job: ModelSelectionJob,
         encoder: KerasPreProcessingEncoder,
         savedModel: SavedModel,
         **kwargs,
@@ -202,5 +204,13 @@ class ModelGeneratorService:
         model.fit(train_ds, epochs=epochs)
         model_location = self.fileService.save_model(model, job.id, savedModel.id)
         savedModel.model_location = model_location
+        savedModel.state = TrainingStates.ANALYZING
+        savedModel.save()
+        importanceExtractor = ImportanceExtractor(
+            dataset=job.dataset, model=model, target_col=job.target_col
+        )
+        impact = importanceExtractor.extract(dataset)
+        print(impact)
+        savedModel.feature_importance = impact
         savedModel.state = TrainingStates.COMPLETED
         savedModel.save()
