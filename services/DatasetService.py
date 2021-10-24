@@ -27,7 +27,9 @@ class DatasetService:
             lower_quantile = column_values.quantile(0.25)
             upper_quantile = column_values.quantile(0.75)
             iqr = upper_quantile - lower_quantile
-            outlier_count = sum(i < (lower_quantile-(1.5*iqr)) for i in column_values.tolist()) + sum(i > (upper_quantile+(1.5*iqr)) for i in column_values.tolist())
+            outlier_count = sum(
+                i < (lower_quantile - (1.5 * iqr)) for i in column_values.tolist()
+            ) + sum(i > (upper_quantile + (1.5 * iqr)) for i in column_values.tolist())
             # print("Lower Q",lower_quantile)
             # print("Upper Q",upper_quantile)
             # print("IQR",iqr)
@@ -38,14 +40,15 @@ class DatasetService:
             featureMetrics.stdDeviation = column_metrics["std"]
             featureMetrics.median = numpy.nanmedian(column_values)
         else:
-            featureMetrics.value_percentage =(dict((column_values.value_counts() / len(column_values))*100))
+            featureMetrics.value_percentage = dict(
+                (column_values.value_counts() / len(column_values)) * 100
+            )
         unique_values = column_values.unique().tolist()
         featureMetrics.uniqueValues = len(unique_values)
         featureMetrics.samples = [
             str(x) for x in unique_values[: min(5, len(unique_values))]
         ]
         featureMetrics.missingValues = column_values.isnull().sum()
-        print(unique_values, " ", featureMetrics.samples)
         return featureMetrics
 
     def _extract_fields(self, dataset: DataFrame):

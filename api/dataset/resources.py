@@ -33,7 +33,9 @@ class DataSetsAPI(Resource):
                 400,
             )
 
-        datasetId = self.datasetService.createDataset(body["dataset_name"], **body)
+        datasetId = self.datasetService.createDataset(
+            body["dataset_name"], body.get("file"), **body
+        )
         print("DatasetId:", datasetId)
         return Response(status=HTTPStatus.CREATED)
 
