@@ -52,7 +52,7 @@ class ImportanceExtractor:
             variations.append(variation_dict)
         return variations
 
-    def _build_tensor(inputs):
+    def _build_tensor(self, inputs):
         tensor = {
             key: convert_to_tensor([input[key] for input in inputs])
             for key in inputs[0]
@@ -90,9 +90,10 @@ class ImportanceExtractor:
             lambda x: x.columnName != self.target_col, self.dataset.datasetFields
         )
         for field in dataset_input_features:
+
             field: DatasetFeature = field
-            impacts[field.columnName] = self._get_field_importance(
-                df[field.columnName], field, median_values
+            impacts[field.columnName] = float(
+                self._get_field_importance(df[field.columnName], field, median_values)
             )
 
         return impacts
