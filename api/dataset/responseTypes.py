@@ -1,6 +1,6 @@
 from utils.customFields import MemoryField, EnumField
 from flask_restful import fields
-from utils.enums import DatasetType, DataTypes
+from utils.enums import Coltype, DatasetType, DataTypes
 
 userDatasets = {
     "dataset_name": fields.String(attribute="name"),
@@ -36,6 +36,7 @@ userDatasetDetails = {
                 "column_name": fields.String(attribute="columnName"),
                 "datatype": EnumField(enum=DataTypes, attribute="dataType"),
                 "column_description": fields.String(attribute="columnDescription"),
+                "column_Type": EnumField(Coltype, attribute="colType"),
             }
         )
     ),

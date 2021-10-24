@@ -1,4 +1,9 @@
-from tensorflow.python.keras.metrics import CategoricalAccuracy, Precision, Recall
+from tensorflow.keras.metrics import (
+    CategoricalAccuracy,
+    Precision,
+    Recall,
+    RootMeanSquaredError,
+)
 from tensorflow.python.keras.models import Model
 
 from lib.model_selection.Individual import Individual
@@ -153,7 +158,7 @@ def get_compiled_model(
 
     if problem_type == ProblemType.Regression:
         lossFunction = "mean_squared_error"
-        all_metrics = ["mse"]
+        all_metrics = [RootMeanSquaredError(name="rmse", dtype=None)]
     elif problem_type == ProblemType.Classification:
         lossFunction = "categorical_crossentropy"
         all_metrics = [

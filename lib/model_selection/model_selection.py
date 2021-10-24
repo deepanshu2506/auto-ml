@@ -151,7 +151,7 @@ class ModelGenerator:
         problem_type = (
             ProblemType.Classification if is_discrete else ProblemType.Regression
         )
-        size_scaler = 0.1
+        size_scaler = 0.6
         config = Configuration(
             architecture_type,
             problem_type,
@@ -166,7 +166,7 @@ class ModelGenerator:
             binary_selection=True,
             mutation_ratio=0.8,
             similarity_threshold=0.2,
-            more_layers_prob=0.8,
+            more_layers_prob=0.5,
             verbose_individuals=True,
             show_model=True,
             verbose_training=1,
@@ -202,23 +202,34 @@ class ModelGenerator:
             score = best_model.evaluate(test_ds)
 
             scores.append(score)
-
-        scores_df = DataFrame(
-            data=scores, columns=["loss", "accuracy", "precision", "recall"]
+        columns = (
+            ["loss", "accuracy", "precision", "recall"]
+            if best.problem_type == ProblemType.Classification
+            else ["loss", "rmse"]
         )
-        scores_df["accuracy"] = scores_df["accuracy"] * 100
-        scores_df["precision"] = scores_df["precision"] * 100
-        scores_df["recall"] = scores_df["recall"] * 100
+        scores_df = DataFrame(data=scores, columns=columns)
+        if best.problem_type == ProblemType.Classification:
+            scores_df["accuracy"] = scores_df["accuracy"] * 100
+            scores_df["precision"] = scores_df["precision"] * 100
+            scores_df["recall"] = scores_df["recall"] * 100
         return scores_df
 
     def get_experiment_scores(self, scores_df, best_model):
-        return (
-            scores_df["accuracy"].mean(),
-            scores_df["accuracy"].std(),
-            scores_df["precision"].mean(),
-            scores_df["recall"].mean(),
-            best_model,
-        )
+
+        scores = None
+        if self.config.problem_type == ProblemType.Classification:
+            scores = (
+                scores_df["accuracy"].mean(),
+                scores_df["accuracy"].std(),
+                scores_df["precision"].mean(),
+                scores_df["recall"].mean(),
+                best_model,
+            )
+
+        else:
+            scores = (scores_df["rmse"].mean(), best_model)
+
+        return scores
 
     def get_best_model():
         pass
