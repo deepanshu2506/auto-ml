@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from lib.Preprocessor import DataFrameOrdinalencoder, OrdinalEncoderProps
 from utils.enums import (
     AggregationMethods,
@@ -20,7 +21,7 @@ from lib.auto_imputer import AutoImputerFactory
 from numpy import nan
 
 
-from db.models.Dataset import Dataset, DatasetJob, JobStats
+from db.models.Dataset import Dataset, DatasetFeature, DatasetJob, JobStats
 
 
 class ImputationService:
@@ -43,7 +44,7 @@ class ImputationService:
         if null_count == 0:
             return "No need of data imputation for column " + col_name + "!!"
         imputer: Imputer = ImputerFactory.get_imputer(
-            impute_type,dataset=dataset,column_name=col_name, value=value
+            impute_type, dataset=dataset, column_name=col_name, value=value
         )
         imputed_dataset = imputer.impute(dataset_frame)
         self.fileService.save_dataset(
@@ -81,10 +82,10 @@ class ImputationService:
         null_val = df.isnull().sum().sum()
         return null_val
 
-    def get_features(self, dataset, dataset_frame, target_col_name):
+    def get_features(self, dataset: Dataset, dataset_frame, target_col_name):
         features = {}
         features["rows_count"] = dataset.info.tupleCount
-        dataset_fields = dataset.datasetFields
+        dataset_fields: List[DatasetFeature] = dataset.datasetFields
         features["cols_count"] = len(dataset_fields)
         (
             features["is_classification"],
@@ -100,15 +101,15 @@ class ImputationService:
         imputed_col_stats = []
 
         for i in range(features["cols_count"]):
-            null = dataset_fields[i]["metrics"]["missingValues"]
+            null = dataset_fields[i].metrics.missingValues
             if null != 0:
                 null_count += null
                 c = {
-                    "col_name": dataset_fields[i]["columnName"],
+                    "col_name": dataset_fields[i].columnName,
                     "imputed_count": null,
                 }
                 imputed_col_stats.append(c)
-            if dataset_fields[i]["colType"] == Coltype.DISCRETE:
+            if dataset_fields[i].colType == Coltype.DISCRETE:
                 discrete_count += 1
             else:
                 continous_count += 1
@@ -143,7 +144,7 @@ class ImputationService:
             null_count,
         ) = self.get_features(dataset, dataset_frame, target_col_name)
         if null_count == 0:
-            return ["Null","No need of data imputation!!"]
+            return ["Null", "No need of data imputation!!"]
 
         EncoderProps = []
         for col in dataset.datasetFields:
@@ -178,4 +179,4 @@ class ImputationService:
         dataset.jobs.append(imputation_job)
         dataset.state = DatasetStates.IMPUTED
         dataset.save()
-        return [impute_type,imputed_col_stats]
+        return [impute_type, imputed_col_stats]
