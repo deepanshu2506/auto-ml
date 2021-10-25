@@ -19,7 +19,7 @@ from lib.model_selection.model_selection import ModelGenerator
 from lib.Logger.SocketLogger import SocketLogger
 from services.DatasetService import DatasetService
 from services.FileService import FileService
-from utils.exceptions import ModelNotFound
+from utils.exceptions import ModelNotFound, UnimputedDatasetError
 import matplotlib.pyplot as plt
 
 
@@ -36,7 +36,10 @@ class ModelGeneratorService:
         modelSelectionJob = ModelSelectionJob(created_by=user_id)
         modelSelectionJob.dataset = dataset
         logger = SocketLogger(user_id)
-
+        null_count = raw_dataset.isnull().sum().sum()
+        if null_count > 0:
+            null_cols = raw_dataset.columns[raw_dataset.isnull().any()].tolist()
+            raise UnimputedDatasetError(data={"cols": null_cols})
         modelGenerator = ModelGenerator(
             dataset=dataset,
             raw_dataset=raw_dataset,
