@@ -1,6 +1,6 @@
 from api.websocket.setup import SocketServer, setup_events
 from os import name
-from utils.exceptions import RestfulErrors
+from utils.exceptions import APIError, handle_exception
 from api.registerAPIs import register
 from config import Config
 from db.init import DBUtils
@@ -10,9 +10,15 @@ from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
 
+
+@app.errorhandler(APIError)
+def handle_API_errors(e):
+    return handle_exception(e)
+
+
 app.config.from_object(Config)
 print("here")
-api = Api(app, errors=RestfulErrors)
+api = Api(app)
 DBUtils.init()
 jwt = JWTManager(app)
 

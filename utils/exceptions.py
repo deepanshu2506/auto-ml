@@ -1,4 +1,4 @@
-from flask_restful import HTTPException
+from flask import jsonify
 
 
 class APIInputValidationError(Exception):
@@ -6,49 +6,50 @@ class APIInputValidationError(Exception):
         super().__init__(message)
 
 
-class UserExistsError(HTTPException):
+class APIError(Exception):
+    def __init__(self, data=None, *args: object) -> None:
+        self.data = data
+        super().__init__(*args)
+
     pass
 
 
-class DatasetNotFound(HTTPException):
-    pass
+class UserExistsError(APIError):
+    description = "User already Exists"
+    code = 422
 
 
-class ModelSelectionJobNotFound(HTTPException):
-    pass
+class DatasetNotFound(APIError):
+    description = "Dataset Not found"
+    code = 404
 
 
-class ModelNotFound(HTTPException):
-    pass
+class ModelSelectionJobNotFound(APIError):
+    description = "Model Selection Job Not found"
+    code = 404
 
 
-class InsufficientPrivilegesError(HTTPException):
-    pass
+class ModelNotFound(APIError):
+    description = "Model Not found"
+    code = 404
 
 
-class InvalidInputFormatForModelError(HTTPException):
-    pass
+class InvalidInputFormatForModelError(APIError):
+    description = "input is not well formed according to the model"
+    code = 400
 
 
-RestfulErrors = {
-    "UserExistsError": {
-        "message": "User already Exists",
-        "status": 422,
-    },
-    "DatasetNotFound": {
-        "message": "Dataset Not found",
-        "status": 404,
-    },
-    "ModelSelectionJobNotFound": {
-        "message": "Model Selection Job Not found",
-        "status": 404,
-    },
-    "ModelNotFound": {
-        "message": "Model Not found",
-        "status": 404,
-    },
-    "InvalidInputFormatForModelError": {
-        "message": "input is not well formed according to the model",
-        "status": 400,
-    },
-}
+class UnimputedDatasetError(APIError):
+    code = 400
+    description = "Dataset has null values"
+
+    def __init__(self, data=None, *args: object) -> None:
+        super().__init__(data=data, *args)
+
+
+def handle_exception(err):
+    """Return custom JSON when APIError or its children are raised"""
+    response = {"error": err.description}
+    if err.data:
+        response["data"] = err.data
+    return jsonify(response), err.code
