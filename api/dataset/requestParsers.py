@@ -13,6 +13,7 @@ NewDatasetRequestParser.add_argument("user", type=str, default="file")
 NewDatasetRequestParser.add_argument("password", type=str, default="file")
 NewDatasetRequestParser.add_argument("database", type=str, default="file")
 NewDatasetRequestParser.add_argument("query", type=str, default="file")
+NewDatasetRequestParser.add_argument("null_placeholder")
 
 aggregationRequestParser = reqparse.RequestParser()
 aggregationRequestParser.add_argument(
