@@ -78,6 +78,9 @@ class DatasetService:
             datasetFields.append(datasetFeature)
         return datasetFields
 
+    def _replace_nulls(self, df: DataFrame, place_holder):
+        return df.replace({place_holder: None}, inplace=False)
+
     def createDataset(
         self,
         datasetName: str,
@@ -108,8 +111,11 @@ class DatasetService:
                 datasource_type=type,
                 datasource_properties=datasource_properties,
             )
-
         dataset = dataset.save()
+        null_placeholder = kwargs.get("null_placeholder")
+        if null_placeholder is not None:
+            dataset_raw = self._replace_nulls(dataset_raw, null_placeholder)
+
         file_path, file_size = self.fileService.save_dataset(
             dataset_raw, user_id=user_id, dataset_id=dataset.id
         )
