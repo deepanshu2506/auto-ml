@@ -1,0 +1,43 @@
+@import "../../../colors.scss";
+
+.table-container {
+  overflow-y: auto;
+  flex-grow: 1;
+  .table {
+    background-color: white;
+    td {
+      vertical-align: middle;
+    }
+    thead {
+      th {
+        position: sticky;
+        top: 0;
+        font-weight: 100;
+        letter-spacing: 1px;
+        background-color: $primary-color;
+        text-transform: uppercase;
+        color: white;
+      }
+    }
+    tbody {
+      .not-available {
+        width: 100%;
+        color: red;
+      }
+    }
+    height: 100%;
+    .empty-table {
+      height: 50px;
+      .empty {
+        vertical-align: top;
+        text-align: center;
+        background-color: white;
+        color: #888;
+        font-size: 1.2em;
+        &:hover {
+          background-color: white;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+@import "../../../colors.scss";
+.filter-box {
+  box-shadow: 0 2px 4px 0 rgba(210, 217, 229, 0.5);
+  margin: 0px 20px 10px 0;
+  padding: 10px 15px 0 15px;
+  border-radius: 4px;
+  background-color: white;
+
+  .search {
+    input {
+      font-size: 1.1em;
+      border: 1px solid $primary-color;
+      padding: 20px 10px;
+    }
+    .col-md-1 {
+      padding: 0;
+      margin-left: 5px;
+    }
+    button {
+      height: 100%;
+    }
+  }
+  .applied-filters {
+    padding: 0 0 10px 10px;
+    .filter-label {
+      max-width: 350px;
+      border: 1px solid #0f6fff;
+      margin: 5px 15px;
+      padding: 8px 5px 8px 10px;
+      border-radius: 5px;
+      align-items: center;
+      display: flex;
+      span {
+        width: 90%;
+        overflow: hidden;
+        white-space: nowrap;
+        border-radius: 5px;
+        text-overflow: ellipsis;
+      }
+      svg {
+        cursor: pointer;
+      }
+      background-color: $primary-color-light;
+    }
+  }
+  .no-filters {
+    width: 100%;
+    text-align: center;
+    color: #aaa;
+  }
+
+  .filter-button {
+    border-top: 1px solid #eee;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 4px 4px;
+    cursor: pointer;
+    &:hover {
+      border-color: #0f6fff;
+      background-color: $primary-color-light;
+    }
+    span {
+      margin: 0 10px 0 5px;
+    }
+  }
+}

@@ -1,0 +1,54 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../App.scss";
+.content {
+  height: calc(100vh-60px);
+  .data-container {
+    .data-div {
+      padding: 0;
+      height: 92vh;
+    }
+  }
+
+  .sidebar {
+    border-right: 1px solid #ddd;
+    transition: 500ms ease all;
+    width: 200px !important;
+    height: 92vh;
+    z-index: 10;
+    width: 100px;
+    .sidebar-container {
+      margin-top: 30px;
+      width: 100%;
+      .sidebar-item {
+        a {
+          text-decoration: none;
+        }
+        background-color: transparent;
+        cursor: pointer;
+        padding: 5px;
+        border-color: #ffffff;
+        .item {
+          font-size: 1.1em;
+          display: flex;
+          box-sizing: border-box;
+          padding: 10px 0;
+          align-items: center;
+          border-radius: 3px;
+          .title {
+            display: flex;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            font-family: roboto;
+            align-items: center;
+          }
+        }
+        .clicked {
+          background-color: theme-color-level(primary, -10);
+          color: $primary;
+        }
+      }
+    }
+  }
+}

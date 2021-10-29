@@ -1,0 +1,14 @@
+@import "../../colors.scss";
+.screen {
+  height: 100%;
+  overflow-y: hidden;
+  display: flex;
+  background-color: $light;
+  flex-direction: column;
+  a {
+    color: black;
+    &:hover {
+      color: $primary-color;
+    }
+  }
+}

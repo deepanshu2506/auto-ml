@@ -23,7 +23,7 @@ uploads
 html
 json
 lib/visualization/datasets
-data
+/data
 /models
 
 

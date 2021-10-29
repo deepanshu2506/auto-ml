@@ -1,0 +1,12 @@
+@import "./colors.scss";
+$theme-colors: (
+  "primary": $primary-color,
+  "primary-light": $primary-color-light,
+);
+
+* {
+  font-family: roboto;
+}
+
+/* import bootstrap to set changes */
+@import "~bootstrap/scss/bootstrap";
