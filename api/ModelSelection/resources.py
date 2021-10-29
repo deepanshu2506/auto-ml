@@ -13,6 +13,7 @@ from api.ModelSelection.requestParsers import (
 )
 from services.ModelSelectionJobService import ModelSelectionJobService
 from services.SavedModelService import SavedModelService
+from io import BytesIO
 
 
 class ModelSelectionResource(Resource):
@@ -99,12 +100,12 @@ class ExportSavedModelAPI(Resource):
         super().__init__()
         self.savedModelService = savedModelService
 
-    method_decorators = [jwt_required()]
+    # method_decorators = [jwt_required()]
 
     def get(self, saved_model_id):
-        user_id = get_jwt_identity()
+        user_id = ""
         body = exportSavedModelParser.parse_args()
-        exported_model = self.savedModelService.export_saved_model(
+        exported_model_path = self.savedModelService.export_saved_model(
             saved_model_id, user_id, **body
         )
-        return send_file(exported_model, mimetype="application/x-tar")
+        return send_file(exported_model_path, as_attachment=True)
