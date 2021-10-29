@@ -13,3 +13,6 @@ exportModelParser.add_argument("model_name", type=str)
 
 InferenceParser = reqparse.RequestParser()
 InferenceParser.add_argument("input", type=dict, required=True)
+
+exportSavedModelParser = reqparse.RequestParser()
+exportSavedModelParser.add_argument("model_name", type=str)

@@ -25,6 +25,7 @@ json
 lib/visualization/datasets
 data
 /models
+/docker
 
 
 

@@ -3,12 +3,13 @@ from flask_jwt_extended.utils import get_jwt_identity
 from flask_restful import Resource, marshal_with
 from flask_jwt_extended import jwt_required
 from db.models.SavedModels import SavedModel
-from flask import jsonify
+from flask import jsonify, send_file
 from services.ModelGeneratorService import ModelGeneratorService
 from api.ModelSelection.requestParsers import (
     InferenceParser,
     modelSelectionRequestParser,
     exportModelParser,
+    exportSavedModelParser,
 )
 from services.ModelSelectionJobService import ModelSelectionJobService
 from services.SavedModelService import SavedModelService
@@ -91,3 +92,19 @@ class InferenceAPI(Resource):
             saved_model_id, user_id, **body
         )
         return jsonify({"inference": inference})
+
+
+class ExportSavedModelAPI(Resource):
+    def __init__(self, savedModelService: SavedModelService) -> None:
+        super().__init__()
+        self.savedModelService = savedModelService
+
+    method_decorators = [jwt_required()]
+
+    def get(self, saved_model_id):
+        user_id = get_jwt_identity()
+        body = exportSavedModelParser.parse_args()
+        exported_model = self.savedModelService.export_saved_model(
+            saved_model_id, user_id, **body
+        )
+        return send_file(exported_model, mimetype="application/x-tar")

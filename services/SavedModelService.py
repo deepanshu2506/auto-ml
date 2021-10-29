@@ -1,6 +1,8 @@
 from typing import Dict
+from docker import version
 from tensorflow.keras.models import Model
 from db.models.SavedModels import ModelFeatures, SavedModel
+from lib.export_integrations.docker_exporter import DockerExporter
 from lib.model_selection.ann_encoding import ProblemType
 from utils.enums import Coltype, DataTypes
 from utils.exceptions import InvalidInputFormatForModelError, ModelNotFound
@@ -89,3 +91,9 @@ class SavedModelService:
                 for result in predictions
             ]
         return predictions
+
+    def export_saved_model(self, model_id, user_id,**kwargs):
+        model_meta = self.findById(model_id)
+        exporter = DockerExporter()
+        return exporter.export(model_meta.model_location,model_name=model_meta.name,version=1)
+

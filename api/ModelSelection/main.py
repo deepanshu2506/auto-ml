@@ -1,5 +1,6 @@
 from api.ModelSelection.resources import (
     ExportGeneratedModelResource,
+    ExportSavedModelAPI,
     InferenceAPI,
     ModelSelectionJobResource,
     ModelSelectionResource,
@@ -50,5 +51,10 @@ def initialize(api: Api) -> None:
     api.add_resource(
         InferenceAPI,
         f"{API_PREFIX}/saved_model/<saved_model_id>/infer",
+        resource_class_kwargs={"savedModelService": savedModelService},
+    )
+    api.add_resource(
+        ExportSavedModelAPI,
+        f"{API_PREFIX}/saved_model/<saved_model_id>/export",
         resource_class_kwargs={"savedModelService": savedModelService},
     )
