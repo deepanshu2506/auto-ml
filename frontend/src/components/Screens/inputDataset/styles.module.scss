@@ -47,15 +47,6 @@
   max-height: 52vh;
   margin-bottom: 1rem;
 
-  &::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #ddd;
-    border-radius: 3px;
-  }
   th {
     color: white;
     font-weight: normal;

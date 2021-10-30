@@ -5,10 +5,18 @@
   display: flex;
   background-color: $light;
   flex-direction: column;
+
   a {
     color: black;
     &:hover {
       color: $primary-color;
     }
   }
+}
+
+.scrollableContainer {
+  overflow-y: auto;
+  padding-left: 0;
+  padding-right: 0;
+  // border: 1px solid red;
 }

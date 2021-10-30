@@ -6,6 +6,15 @@ $theme-colors: (
 
 * {
   font-family: roboto;
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 3px;
+  }
 }
 
 /* import bootstrap to set changes */
