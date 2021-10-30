@@ -2,3 +2,79 @@
 @import "../../../../node_modules/bootstrap/scss/variables";
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
+
+.nav {
+  background-color: white;
+  border: 1px solid #eee;
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 5px;
+  margin: 0;
+}
+.content {
+  display: flex;
+  background-color: white;
+  height: 100px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  width: 100%;
+  margin: 1rem 0;
+  flex-grow: 1;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.fileUpload {
+  display: flex;
+  justify-content: center;
+  border-radius: 5px;
+  align-items: center;
+  border: 2px dashed #888;
+  padding: 3rem 1rem;
+  color: #888;
+  background-color: #eee;
+  cursor: pointer;
+  margin: 1rem 0;
+  h2 {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+}
+
+.tablecontainer {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 55vh;
+  margin-bottom: 1rem;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 3px;
+  }
+  th {
+    color: white;
+    font-weight: normal;
+  }
+
+  td {
+    text-align: center;
+  }
+}
+
+.legend {
+  color: #888;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.submitButton {
+  display: flex;
+  flex-direction: column-reverse;
+  margin-bottom: 1rem;
+  //   flex-grow: 0;
+}

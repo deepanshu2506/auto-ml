@@ -24,18 +24,15 @@ const routes = [
     exact: true,
     // Icon: () => <Avatar src="/teams-icon.png" round={true} size={35} />,
     component: ListDatasetScreen,
-    subRoutes: [
-      {
-        sidebar: false,
-        auth: true,
-        title: "Dataset Info",
-        path: "/datasets/:datasetID",
-        exact: false,
-        component: DatasetInfoScreen,
-      },
-    ],
   },
-
+  {
+    sidebar: false,
+    auth: true,
+    title: "Dataset Info",
+    path: "/datasets/:datasetID",
+    exact: false,
+    component: DatasetInfoScreen,
+  },
   {
     sidebar: true,
     auth: true,
