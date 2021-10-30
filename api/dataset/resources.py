@@ -37,7 +37,7 @@ class DataSetsAPI(Resource):
             body["dataset_name"], body.get("file"), **body
         )
         print("DatasetId:", datasetId)
-        return Response(status=HTTPStatus.CREATED)
+        return {"datasetId": str(datasetId)}, 201
 
     @marshal_with(getUserDatasetsAPIResponse)
     def get(self):
