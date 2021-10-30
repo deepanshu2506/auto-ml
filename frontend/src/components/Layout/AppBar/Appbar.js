@@ -1,4 +1,4 @@
-import { Button, Form, FormControl, Nav, Navbar } from "react-bootstrap";
+import { Button, Form, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import styles from "./Appbar.module.scss";
 const Appbar = (props) => (
