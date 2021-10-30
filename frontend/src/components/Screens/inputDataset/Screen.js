@@ -11,16 +11,35 @@ import {
 import { useRef, useState } from "react";
 import styles from "./styles.module.scss";
 import papa from "papaparse";
+import API, { apiURLs } from "../../../API";
+import { useHistory } from "react-router";
 
 const DATASET_INPUT_TYPES = {
   CSV: "CSV",
   DB: "DB",
 };
 const CSVUploadForm = () => {
+  const history = useHistory();
   const [state, setState] = useState({});
   const [datasetDetails, setDatasetDetails] = useState({});
   const [validated, setValidated] = useState(false);
   const fileRef = useRef(null);
+
+  const createDataset = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("dataset_name", state.dataset_name);
+      formData.append("file", state.file);
+      const { data } = await API.formData.post(
+        apiURLs.dataset.create,
+        formData
+      );
+      history.push(`/datasets/${data.datasetId}`);
+      alert("dataset created");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -33,6 +52,7 @@ const CSVUploadForm = () => {
       }
       setValidated(true);
     } else {
+      createDataset();
     }
   };
 
