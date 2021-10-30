@@ -1,8 +1,9 @@
 import React from "react";
 import { Container, Row } from "react-bootstrap";
+import { Redirect, useHistory, useLocation } from "react-router";
 import Appbar from "./AppBar/Appbar";
-import DataContainer from "./DataContainer/DataContainer";
-import SideBar from "./SideBar/SideBar";
+import DataContainer from "./DataContainer";
+import SideBar from "./SideBar";
 
 const Layout = (props) => {
   return (
@@ -10,7 +11,6 @@ const Layout = (props) => {
       <Appbar />
       <Container fluid>
         <Row>
-          <SideBar />
           <DataContainer />
         </Row>
       </Container>

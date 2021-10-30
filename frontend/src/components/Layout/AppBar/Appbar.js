@@ -1,19 +1,21 @@
 import { Button, Form, FormControl, Nav, Navbar } from "react-bootstrap";
-import "./Appbar.scss";
+import { Link } from "react-router-dom";
+import styles from "./Appbar.module.scss";
 const Appbar = (props) => (
-  <Navbar bg="primary" className="appbar" variant="dark">
-    <Navbar.Brand href="#home">
-      <img
-        alt=""
-        src="/ipl-logo.svg"
-        width="100"
-        className="d-inline-block align-top"
-      />
-    </Navbar.Brand>
+  <Navbar bg="primary" className={styles.Appbar} variant="dark">
+    <Link to="/">
+      <Navbar.Brand>AUTO ML</Navbar.Brand>
+    </Link>
     <Nav className="mr-auto"></Nav>
     <Form inline>
-      <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-      <Button variant="outline-light">Search</Button>
+      <Link to="/login">
+        <Button variant="light">Login</Button>
+      </Link>
+      <Link to="/signup">
+        <Button variant="outline-light" className="ml-2">
+          Signup
+        </Button>
+      </Link>
     </Form>
   </Navbar>
 );

@@ -1,0 +1,37 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../App.scss";
+
+.sidebarcontainer {
+  margin-top: 30px;
+  width: 100%;
+  .sidebaritem {
+    a {
+      text-decoration: none;
+    }
+    background-color: transparent;
+    cursor: pointer;
+    padding: 5px;
+    border-color: #ffffff;
+    .item {
+      font-size: 1.1em;
+      display: flex;
+      box-sizing: border-box;
+      padding: 10px 0;
+      align-items: center;
+      border-radius: 3px;
+      .title {
+        display: flex;
+        font-size: 1rem;
+        text-transform: uppercase;
+        font-family: roboto;
+        align-items: center;
+      }
+    }
+    .clicked {
+      background-color: theme-color-level(primary, -10);
+      color: $primary;
+    }
+  }
+}

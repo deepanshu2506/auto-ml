@@ -1,11 +1,11 @@
 import "./App.scss";
 import React from "react";
-import Wrapper from "./components/Layout/Wrapper";
 import { BrowserRouter } from "react-router-dom";
+import Layout from "./components/Layout";
 function App() {
   return (
     <BrowserRouter>
-      <Wrapper />
+      <Layout />
     </BrowserRouter>
   );
 }

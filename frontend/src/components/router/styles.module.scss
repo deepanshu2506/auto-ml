@@ -1,0 +1,22 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../App.scss";
+.content {
+  height: calc(100vh-60px);
+  .datacontainer {
+    .datadiv {
+      padding: 0;
+      height: 92vh;
+    }
+  }
+
+  .sidebar {
+    border-right: 1px solid #ddd;
+    transition: 500ms ease all;
+    width: 200px !important;
+    height: 92vh;
+    z-index: 10;
+    width: 100px;
+  }
+}

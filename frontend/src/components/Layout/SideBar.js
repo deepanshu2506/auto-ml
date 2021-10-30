@@ -3,27 +3,33 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router";
 import { Col, ListGroup, Row } from "react-bootstrap";
 import items from "./Routes";
+import styles from "./sidebar.module.scss";
 const SideBar = (props) => {
   const location = useLocation();
   return (
-    <ListGroup variant="flush" className="sidebar-container">
-      {items.map((item) => (
-        <ListGroup.Item className="sidebar-item" key={item.title}>
-          <Link className="" to={item.path}>
-            <Row
-              className={`item ${
-                location.pathname.includes(item.path) && "clicked"
-              }`}
-            >
-              <Col md={2}>{item.Icon && <item.Icon />}</Col>
+    <ListGroup variant="flush" className={styles.sidebarcontainer}>
+      {items.map(
+        (item) =>
+          item.sidebar && (
+            <ListGroup.Item className={styles.sidebaritem} key={item.title}>
+              <Link className="" to={item.path}>
+                <Row
+                  className={`${styles.item} ${
+                    location.pathname.includes(item.path) && styles.clicked
+                  }`}
+                >
+                  {item.Icon && (
+                    <Col md={2}>
+                      <item.Icon />
+                    </Col>
+                  )}
 
-              <Col md={8} className="title pl-4">
-                {item.title}
-              </Col>
-            </Row>
-          </Link>
-        </ListGroup.Item>
-      ))}
+                  <Col className={`${styles.title} pl-2`}>{item.title}</Col>
+                </Row>
+              </Link>
+            </ListGroup.Item>
+          )
+      )}
     </ListGroup>
   );
 };

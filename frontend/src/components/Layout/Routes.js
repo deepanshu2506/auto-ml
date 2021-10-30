@@ -1,38 +1,64 @@
-import Avatar from "react-avatar";
-import PlayerScreen from "../Screens/PlayersScreen/Screen";
-import MatchScreen from "../Screens/MatchScreen/Screen";
-import TeamScreen from "../Screens/TeamScreen/Screen";
-import VenueScreen from "../Screens/Venues/Screen";
+// import Avatar from "react-avatar";
+import DatasetInfoScreen from "../Screens/DatasetsInfo/Screen";
+import InputDatasetScreen from "../Screens/inputDataset/Screen";
+import ListDatasetScreen from "../Screens/listDatasets/Screen";
+import LoginScreen from "../Screens/login/Screen";
+import SignupScreen from "../Screens/signup/Screen";
+
+// const routes = [
+//   {
+//     title: "teams",
+//     path: "/teams",
+//     exact: true,
+//     Icon: () => <Avatar src="/teams-icon.png" round={true} size={35} />,
+//     component: TeamScreen,
+//   },
+// ];
 
 const routes = [
   {
-    title: "teams",
-    path: "/teams",
+    sidebar: true,
+    title: "Datasets",
+    path: "/datasets",
+    auth: true,
     exact: true,
-    Icon: () => <Avatar src="/teams-icon.png" round={true} size={35} />,
-    component: TeamScreen,
+    // Icon: () => <Avatar src="/teams-icon.png" round={true} size={35} />,
+    component: ListDatasetScreen,
+    subRoutes: [
+      {
+        sidebar: false,
+        auth: true,
+        title: "Dataset Info",
+        path: "/datasets/:datasetID",
+        exact: false,
+        component: DatasetInfoScreen,
+      },
+    ],
   },
+
   {
-    title: "Players",
-    path: "/players",
+    sidebar: true,
+    auth: true,
+    title: "Create dataset",
+    path: "/dataset/create",
     exact: true,
-    Icon: () => <Avatar src="/player-icon.svg" round={true} size={35} />,
-    component: PlayerScreen,
-  },
-
-  {
-    title: "matches",
-    path: "/matches",
-    Icon: () => <Avatar src="/bats-man.svg" round={true} size={35} />,
-
-    component: MatchScreen,
+    component: InputDatasetScreen,
   },
   {
-    title: "venues",
-    path: "/venues",
-    Icon: () => <Avatar src="/venue-icon.svg" round={true} size={35} />,
-
-    component: VenueScreen,
+    sidebar: false,
+    auth: false,
+    title: "Login",
+    path: "/login",
+    exact: true,
+    component: LoginScreen,
+  },
+  {
+    sidebar: false,
+    title: "Sign Up",
+    path: "/signup",
+    auth: false,
+    exact: true,
+    component: SignupScreen,
   },
 ];
 
