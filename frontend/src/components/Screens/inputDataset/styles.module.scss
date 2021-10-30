@@ -18,7 +18,7 @@
   border: 1px solid #eee;
   border-radius: 5px;
   width: 100%;
-  margin: 1rem 0;
+  margin: 1rem 0 0.5rem;
   flex-grow: 1;
   padding: 1rem;
   overflow: hidden;
@@ -44,7 +44,7 @@
 .tablecontainer {
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 55vh;
+  max-height: 52vh;
   margin-bottom: 1rem;
 
   &::-webkit-scrollbar {

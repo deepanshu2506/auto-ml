@@ -30,6 +30,9 @@ const CSVUploadForm = () => {
       const formData = new FormData();
       formData.append("dataset_name", state.dataset_name);
       formData.append("file", state.file);
+      if (state.null_placeholder && state.null_placeholder.length > 0) {
+        formData.append("null_placeholder", state.null_placeholder);
+      }
       const { data } = await API.formData.post(
         apiURLs.dataset.create,
         formData
@@ -84,9 +87,10 @@ const CSVUploadForm = () => {
       onSubmit={handleSubmit}
       className={`w-100`}
     >
-      <Container fluid>
+      <Container fluid className="h-100 d-flex flex-column">
         <Row>
           <Form.Group as={Col} md="6" controlId="dataset-name">
+            <Form.Label>Dataset Name</Form.Label>
             <InputGroup hasValidation>
               <Form.Control
                 type="text"
@@ -105,21 +109,26 @@ const CSVUploadForm = () => {
               </Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
-          {/* <Col className={styles.submitButton}> */}
-          <Form.Group as={Col} md="6" controlId="dataset-name">
+          <Form.Group as={Col} md="6" controlId="null-placeholder">
+            <Form.Label>Null Placeholder</Form.Label>
             <InputGroup hasValidation>
-              <Button block type="submit">
-                CREATE DATASET
-              </Button>
-              <Form.Control.Feedback type="invalid">
-                Please enter a dataset name.
-              </Form.Control.Feedback>
+              <Form.Control
+                type="text"
+                placeholder="Optional"
+                aria-describedby="inputGroupPrepend"
+                onChange={(e) => {
+                  setState((prev) => ({
+                    ...prev,
+                    null_placeholder: e.target.value,
+                  }));
+                }}
+                required
+              />
             </InputGroup>
           </Form.Group>
-          {/* </Col> */}
         </Row>
         {!state.file && (
-          <Row>
+          <Row className="flex-grow-1">
             <input
               type="file"
               style={{ display: "none" }}
@@ -171,6 +180,13 @@ const CSVUploadForm = () => {
             </Row>
           </>
         )}
+        <Row>
+          <Col>
+            <Button block type="submit">
+              CREATE DATASET
+            </Button>
+          </Col>
+        </Row>
       </Container>
     </Form>
   );
