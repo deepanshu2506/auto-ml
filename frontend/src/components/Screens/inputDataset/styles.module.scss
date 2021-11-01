@@ -69,3 +69,28 @@
   margin-bottom: 1rem;
   //   flex-grow: 0;
 }
+
+.checkConnectionDiv {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  button {
+    // margin: 0 1rem 0 0;
+  }
+}
+.connState {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.connectionError {
+  display: flex;
+  padding-left: 0;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #888;
+  p {
+    margin-bottom: 0;
+  }
+}

@@ -5,6 +5,10 @@ export const apiURLs = {
   dataset: {
     create: "/datasets/",
   },
+
+  misc: {
+    checkDbConn: "/misc/checkDBConn",
+  },
 };
 
 const addTokenToConfig = (config) => {

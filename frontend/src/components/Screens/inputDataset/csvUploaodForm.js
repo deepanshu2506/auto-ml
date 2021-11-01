@@ -117,7 +117,6 @@ const CSVUploadForm = () => {
                     null_placeholder: e.target.value,
                   }));
                 }}
-                required
               />
             </InputGroup>
           </Form.Group>
