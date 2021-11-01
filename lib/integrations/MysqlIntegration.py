@@ -30,13 +30,15 @@ class MySqlIntegration(Integration):
         return mysql.connector.connect(**config)
 
     def check_connection(self):
+        error = None
         try:
             con = self.get_connection()
             connected = con.is_connected()
             con.close()
-        except Exception:
+        except Exception as e:
             connected = False
-        return connected
+            error = e
+        return connected, error
 
     def _query(self, query):
         con = self.get_connection()

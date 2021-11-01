@@ -1,3 +1,4 @@
+from typing import Tuple
 from db.models.Dataset import DataSourceProperties
 
 
@@ -19,4 +20,7 @@ class Integration:
         raise NotImplementedError
 
     def get_datasource_properties(self) -> DataSourceProperties:
+        raise NotImplementedError
+
+    def check_connection(self)->Tuple:
         raise NotImplementedError
