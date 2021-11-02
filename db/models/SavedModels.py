@@ -1,5 +1,4 @@
 from datetime import datetime
-from enum import Enum
 from mongoengine import Document
 from mongoengine.base.fields import ObjectIdField
 from mongoengine.document import EmbeddedDocument
@@ -17,7 +16,10 @@ from mongoengine.fields import (
 from db.models.ModelSelectionJobs import ModelSelectionJob
 from lib.model_selection.ann_encoding import ProblemType
 from utils.enums import Coltype, DataTypes, TrainingStates
-from utils.customFields import MemoryField, EnumField as OutputEnumField
+from utils.customFields import (
+    ArrayCountField,
+    EnumField as OutputEnumField,
+)
 from flask_restful import fields
 
 
@@ -51,16 +53,25 @@ class SavedModel(Document):
     classes = DynamicField()
     feature_importance = DictField()
     created_by = ObjectIdField()
+
     @classmethod
-    def to_output(cls):
-        return {
+    def to_output(cls, detailed=True):
+        summary_fields = {
             "epochs": fields.Integer(),
             "target_col": fields.String(),
-            "features": fields.List(fields.Nested(ModelFeatures.to_output())),
-            "model_location": fields.String(),
+            "state": OutputEnumField(TrainingStates),
             "created_at": fields.DateTime(),
             "name": fields.String(),
-            "state": OutputEnumField(TrainingStates),
-            "classes": fields.List(fields.Raw()),
-            "feature_importance": fields.Raw(),
+            "num_classes": ArrayCountField(attribute="classes"),
+            "type": OutputEnumField(ProblemType, attribute="ProblemType"),
         }
+        detailed_fields = {
+            "classes": fields.List(fields.Raw()),
+            "model_location": fields.String(),
+            "feature_importance": fields.Raw(),
+            "features": fields.List(fields.Nested(ModelFeatures.to_output())),
+        }
+        output_fields = (
+            {**summary_fields, **detailed_fields} if detailed else summary_fields
+        )
+        return output_fields

@@ -21,6 +21,10 @@ class SavedModelService:
             raise ModelNotFound
         return models[0]
 
+    def get_models_by_user(self,user_id):
+        models = SavedModel.objects(created_by=user_id)
+        return models
+
     def _load_model(self, model: SavedModel) -> Model:
         tf_model = self.fileService.get_model(model.model_location)
         return tf_model

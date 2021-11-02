@@ -24,3 +24,10 @@ class EnumField(fields.Raw):
         if not isinstance(value, self.enum):
             raise Exception("invalid value")
         return value.value
+
+class ArrayCountField(fields.Raw):
+
+    def format(self,value):
+        if not isinstance(value,list):
+            raise Exception('invalid value')
+        return len(value)
