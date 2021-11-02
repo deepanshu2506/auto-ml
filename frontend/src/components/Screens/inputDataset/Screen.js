@@ -10,7 +10,7 @@ const DATASET_INPUT_TYPES = {
 };
 
 const InputDatasetScreen = (props) => {
-  const [inputType, setInputType] = useState(DATASET_INPUT_TYPES.DB);
+  const [inputType, setInputType] = useState(DATASET_INPUT_TYPES.CSV);
   const changeUploadType = (eventKey) => setInputType(eventKey);
   return (
     <Container
@@ -21,7 +21,7 @@ const InputDatasetScreen = (props) => {
         <Nav
           onSelect={changeUploadType}
           variant="pills"
-          defaultActiveKey={DATASET_INPUT_TYPES.DB}
+          defaultActiveKey={DATASET_INPUT_TYPES.CSV}
         >
           <Nav.Item>
             <Nav.Link eventKey={DATASET_INPUT_TYPES.CSV}>CSV</Nav.Link>
