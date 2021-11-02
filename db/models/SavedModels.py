@@ -6,8 +6,10 @@ from mongoengine.fields import (
     DateTimeField,
     DictField,
     DynamicField,
+    EmbeddedDocumentField,
     EmbeddedDocumentListField,
     EnumField,
+    FloatField,
     IntField,
     ListField,
     ReferenceField,
@@ -39,6 +41,22 @@ class ModelFeatures(EmbeddedDocument):
         }
 
 
+class ModelMetrics(EmbeddedDocument):
+    accuracy = FloatField()
+    precision = FloatField()
+    recall = FloatField()
+    error = FloatField()
+
+    @classmethod
+    def to_output(cls):
+        return {
+            "accuracy": fields.Float(),
+            "precision": fields.Float(),
+            "recall": fields.Float(),
+            "error": fields.Float(),
+        }
+
+
 class SavedModel(Document):
     epochs = IntField()
     target_col = StringField()
@@ -49,10 +67,12 @@ class SavedModel(Document):
     name = StringField()
     state = EnumField(TrainingStates)
     architecture = DynamicField()
+    param_count = IntField()
     ProblemType = EnumField(ProblemType)
     classes = DynamicField()
     feature_importance = DictField()
     created_by = ObjectIdField()
+    metrics = EmbeddedDocumentField(ModelMetrics)
 
     @classmethod
     def to_output(cls, detailed=True):
@@ -72,6 +92,9 @@ class SavedModel(Document):
             "features": fields.List(fields.Nested(ModelFeatures.to_output())),
             "dataset_id": fields.String(attribute="job.dataset.id"),
             "model_selection_job_id": fields.String(attribute="job.id"),
+            "architecture": fields.Raw(),
+            "param_count": fields.Integer(),
+            "metrics": fields.Nested(ModelMetrics.to_output()),
         }
         output_fields = (
             {**summary_fields, **detailed_fields} if detailed else summary_fields

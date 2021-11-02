@@ -181,3 +181,8 @@ def get_compiled_model(
     )
 
     return model
+
+def copyModel2Model(model_source,model_target):        
+    for l_tg,l_sr in zip(model_target.layers,model_source.layers):
+        wk0=l_sr.get_weights()
+        l_tg.set_weights(wk0)

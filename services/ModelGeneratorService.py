@@ -3,11 +3,11 @@ import threading
 from pandas.core.frame import DataFrame
 import pandas as pd
 from db.models.Dataset import Dataset, DatasetFeature
-from db.models.SavedModels import ModelFeatures, SavedModel
+from db.models.SavedModels import ModelFeatures, ModelMetrics, SavedModel
 from lib.FeatureImportance import ImportanceExtractor
 from lib.Preprocessor import KerasPreProcessingEncoder, df_to_dataset
 from lib.model_selection.ann_encoding import Layers, ProblemType
-from lib.model_selection.fetch_to_keras import create_tunable_model
+from lib.model_selection.fetch_to_keras import copyModel2Model, create_tunable_model
 from utils.enums import Coltype, ModelSelectionJobStates, TrainingStates
 from db.models.ModelSelectionJobs import (
     GeneratedModel,
@@ -21,6 +21,7 @@ from services.DatasetService import DatasetService
 from services.FileService import FileService
 from utils.exceptions import ModelNotFound, UnimputedDatasetError
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
 
 class ModelGeneratorService:
@@ -163,6 +164,7 @@ class ModelGeneratorService:
                 state=TrainingStates.SUBMITTED,
                 features=features,
                 architecture=model.model_arch,
+                param_count = model.trainable_params,
                 classes=classes,
                 ProblemType=job.problemType,
                 created_by=user_id,
@@ -210,6 +212,24 @@ class ModelGeneratorService:
             input_layers,
             preprocessing_layer,
         ) = encoder.get_input_preprocessing_layers()
+
+        model = create_tunable_model(
+            model_arch,
+            problem_type,
+            1,
+            metrics=[],
+            input_layer=input_layers,
+            preprocessing_layer=preprocessing_layer,
+            prod=True,
+        )
+        train_model = create_tunable_model(
+            model_arch,
+            problem_type,
+            1,
+            metrics=[],
+            input_layer=input_layers,
+            preprocessing_layer=preprocessing_layer,
+        )
         model = create_tunable_model(
             model_arch,
             problem_type,
@@ -220,14 +240,26 @@ class ModelGeneratorService:
             prod=True,
         )
 
-        train_ds = df_to_dataset(
-            dataframe=dataset,
-            problemType=problem_type,
-            target_variable=job.target_col,
+        train, test = train_test_split(dataset, test_size=0.1)
+        train_ds = df_to_dataset(train, problemType=problem_type, target_variable=job.target_col
+        )
+        test_ds = df_to_dataset(test, problemType=problem_type, target_variable=job.target_col
         )
         epochs = kwargs.get("epochs") or 20
         print(epochs)
-        model.fit(train_ds, epochs=epochs)
+        train_model.fit(train_ds, epochs=epochs)
+        scores = train_model.evaluate(
+            test_ds,
+        )
+        
+        print(scores)
+        metrics = ModelMetrics(error=scores[0])
+        if savedModel.ProblemType is ProblemType.Classification:
+            metrics.accuracy = float(scores[1])
+            metrics.precision = float(scores[2])
+            metrics.recall = float(scores[3])
+        savedModel.metrics = metrics
+        copyModel2Model(train_model, model)
         model_location = self.fileService.save_model(model, job.id, savedModel.id)
         savedModel.model_location = model_location
         savedModel.state = TrainingStates.ANALYZING
