@@ -25,6 +25,7 @@ def initialize(api: Api) -> None:
     )
     modelSelectionJobService = ModelSelectionJobService()
     savedModelService = SavedModelService(fileService=fileService)
+    
     api.add_resource(
         ModelSelectionResource,
         f"{API_PREFIX}/",
@@ -47,8 +48,4 @@ def initialize(api: Api) -> None:
             "modelSelectionJobService": modelSelectionJobService,
         },
     )
-    api.add_resource(
-        InferenceAPI,
-        f"{API_PREFIX}/saved_model/<saved_model_id>/infer",
-        resource_class_kwargs={"savedModelService": savedModelService},
-    )
+ 

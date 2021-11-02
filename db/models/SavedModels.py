@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from mongoengine import Document
+from mongoengine.base.fields import ObjectIdField
 from mongoengine.document import EmbeddedDocument
 from mongoengine.fields import (
     DateTimeField,
@@ -49,7 +50,7 @@ class SavedModel(Document):
     ProblemType = EnumField(ProblemType)
     classes = DynamicField()
     feature_importance = DictField()
-
+    created_by = ObjectIdField()
     @classmethod
     def to_output(cls):
         return {
