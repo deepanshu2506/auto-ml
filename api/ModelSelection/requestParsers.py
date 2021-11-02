@@ -10,6 +10,3 @@ exportModelParser = reqparse.RequestParser()
 exportModelParser.add_argument("epochs", type=int)
 exportModelParser.add_argument("model_name", type=str)
 
-
-InferenceParser = reqparse.RequestParser()
-InferenceParser.add_argument("input", type=dict, required=True)
