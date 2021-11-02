@@ -10,7 +10,7 @@ const SideBar = (props) => {
     <ListGroup variant="flush" className={styles.sidebarcontainer}>
       {items.map(
         (item) =>
-          item.sidebar && (
+          item.sidebar === true && (
             <ListGroup.Item className={styles.sidebaritem} key={item.title}>
               <Link className="" to={item.path}>
                 <Row

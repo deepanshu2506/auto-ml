@@ -10,6 +10,9 @@ export const apiURLs = {
     checkDbConn: "/misc/checkDBConn",
     previewDataFromDb: "/misc/previewDataFromDb",
   },
+  savedModels: {
+    getModels: "/saved_model/",
+  },
 };
 
 const addTokenToConfig = (config) => {
