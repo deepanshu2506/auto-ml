@@ -71,6 +71,7 @@ class ExportGeneratedModelResource(Resource):
         savedModel: SavedModel = self.modelGenerationService.exportModel(
             job,
             model_id,
+            user_id,
             **body,
         )
         return savedModel

@@ -110,7 +110,7 @@ class ModelGeneratorService:
             encoded.append([Layers(layer[0]), *layer[1:]])
         return encoded
 
-    def exportModel(self, job: ModelSelectionJob, model_id, **kwargs):
+    def exportModel(self, job: ModelSelectionJob, model_id, user_id, **kwargs):
 
         model: GeneratedModel = None
 
@@ -163,6 +163,7 @@ class ModelGeneratorService:
                 architecture=model.model_arch,
                 classes=classes,
                 ProblemType=job.problemType,
+                created_by=user_id,
             )
             savedModel.save()
 
