@@ -6,7 +6,6 @@ from db.models.SavedModels import SavedModel
 from flask import jsonify
 from services.ModelGeneratorService import ModelGeneratorService
 from api.ModelSelection.requestParsers import (
-    InferenceParser,
     modelSelectionRequestParser,
     exportModelParser,
 )

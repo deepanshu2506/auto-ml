@@ -1,6 +1,5 @@
 from api.ModelSelection.resources import (
     ExportGeneratedModelResource,
-    InferenceAPI,
     ModelSelectionJobResource,
     ModelSelectionResource,
 )
