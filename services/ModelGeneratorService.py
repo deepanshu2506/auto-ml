@@ -143,7 +143,9 @@ class ModelGeneratorService:
             features = list(
                 map(
                     lambda field: _buildModelFeature(field, raw_dataset),
-                    dataset.datasetFields,
+                    filter(
+                        lambda x: x.columnName != job.target_col, dataset.datasetFields
+                    ),
                 )
             )
             model_name = kwargs.get("model_name", f"{dataset.name}_model")
