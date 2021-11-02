@@ -1,4 +1,6 @@
 from typing import Tuple
+
+from pandas.core.frame import DataFrame
 from db.models.Dataset import DataSourceProperties
 
 
@@ -13,7 +15,7 @@ class Integration:
     def get_connection(self):
         raise NotImplementedError
 
-    def create_dataset(self, query):
+    def create_dataset(self, query)->DataFrame:
         raise NotImplementedError
 
     def _query(self, query, fetch=False):
@@ -23,4 +25,7 @@ class Integration:
         raise NotImplementedError
 
     def check_connection(self)->Tuple:
+        raise NotImplementedError
+    
+    def preview_dataset(self,query,limit)->DataFrame:
         raise NotImplementedError

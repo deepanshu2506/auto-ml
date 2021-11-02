@@ -72,3 +72,7 @@ class MySqlIntegration(Integration):
             return properties
         else:
             raise RuntimeError("Dataset is not yet created")
+
+    def preview_dataset(self, query, limit) -> DataFrame:
+        q = f"""SELECT * FROM ({query}) as dataset LIMIT {limit}"""
+        return self.create_dataset(q)
