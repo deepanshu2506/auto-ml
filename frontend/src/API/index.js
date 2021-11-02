@@ -8,6 +8,7 @@ export const apiURLs = {
 
   misc: {
     checkDbConn: "/misc/checkDBConn",
+    previewDataFromDb: "/misc/previewDataFromDb",
   },
 };
 

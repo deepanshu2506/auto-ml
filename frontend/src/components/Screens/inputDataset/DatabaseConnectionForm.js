@@ -10,10 +10,13 @@ import {
 } from "react-bootstrap";
 import { BsCheck } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
+import { useHistory } from "react-router";
 import API, { apiURLs } from "../../../API";
+import PreviewDialogBox from "./previewDialogBox";
 import styles from "./styles.module.scss";
 
 const DatabaseConnectionForm = (props) => {
+  const history = useHistory();
   const [state, setState] = useState({});
   const databaseConnectionFormRef = useRef(null);
   const datasetFormRef = useRef(null);
@@ -22,6 +25,7 @@ const DatabaseConnectionForm = (props) => {
   const [dbConnCheckLoading, setDbConnCheckLoading] = useState(false);
   const [connectionState, setConnectionState] = useState(0);
   const [connDesc, setConnDesc] = useState("");
+  const [previewDialogState, setPreviewDialogState] = useState(false);
   const validateForm = (form, validator) => {
     if (form.current.checkValidity() === false) {
       validator(true);
@@ -38,6 +42,16 @@ const DatabaseConnectionForm = (props) => {
       user: state.user,
       type: state.type,
       database: state.database,
+    };
+    return payload;
+  };
+
+  const buildDatasetPayload = () => {
+    const payload = {
+      ...buildConnectionPayload(),
+      query: state.query,
+      dataset_name: state.dataset_name,
+      null_placeholder: state.null_placeholder,
     };
     return payload;
   };
@@ -66,21 +80,21 @@ const DatabaseConnectionForm = (props) => {
       setDbConnCheckLoading(false);
     }
   };
-  const createDataset = (event) => {
+  const createDataset = async (event) => {
     event.preventDefault();
     event.stopPropagation();
     const isValid =
       validateForm(datasetFormRef, setDsFormValidate) && connectionState === 1;
     if (isValid) {
-      const payload = {
-        ...buildConnectionPayload(),
-        query: state.query,
-        dataset_name: state.dataset_name,
-        null_placeholder: state.null_placeholder,
-      };
+      const payload = buildDatasetPayload();
+      const { data } = await API.json.post(apiURLs.dataset.create, payload);
+      history.push(`/datasets/${data.datasetId}`);
     } else {
     }
   };
+
+  const openPreviewDialog = () => setPreviewDialogState(true);
+  const closePreviewDialog = () => setPreviewDialogState(false);
   return (
     <Container
       fluid
@@ -309,12 +323,27 @@ const DatabaseConnectionForm = (props) => {
         </Row>
         <Row>
           <Col>
+            <Button
+              variant="outline-primary"
+              block
+              disabled={connectionState !== 1}
+              onClick={openPreviewDialog}
+            >
+              Preview Dataset
+            </Button>
+          </Col>
+          <Col>
             <Button type="submit" block disabled={connectionState !== 1}>
               Create Dataset
             </Button>
           </Col>
         </Row>
       </Form>
+      <PreviewDialogBox
+        onClose={closePreviewDialog}
+        open={previewDialogState}
+        datasetProps={buildDatasetPayload()}
+      />
     </Container>
   );
 };

@@ -60,7 +60,7 @@ const CSVUploadForm = () => {
       preview: 20,
       header: true,
       complete: (results, file) => {
-        console.log(file);
+        console.log(results);
         setDatasetDetails({
           fileName: file.name,
           rowCount: results.meta.cursor,
