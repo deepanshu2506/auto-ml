@@ -64,6 +64,7 @@ class SavedModel(Document):
             "name": fields.String(),
             "num_classes": ArrayCountField(attribute="classes"),
             "type": OutputEnumField(ProblemType, attribute="ProblemType"),
+            "id": fields.String(),
         }
         detailed_fields = {
             "classes": fields.List(fields.Raw()),
