@@ -37,3 +37,17 @@ class GetSavedModelsAPI(Resource):
         user_id = get_jwt_identity()
         models = self.savedModelService.get_models_by_user(user_id=user_id)
         return models
+
+
+class SavedModelByIdAPI(Resource):
+    def __init__(self, savedModelService: SavedModelService) -> None:
+        super().__init__()
+        self.savedModelService = savedModelService
+
+    method_decorators = [jwt_required()]
+
+    @marshal_with(SavedModel.to_output())
+    def get(self, saved_model_id):
+        user_id = get_jwt_identity()
+        model = self.savedModelService.findById(saved_model_id, user_id)
+        return model

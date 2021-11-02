@@ -68,9 +68,10 @@ class SavedModel(Document):
         }
         detailed_fields = {
             "classes": fields.List(fields.Raw()),
-            "model_location": fields.String(),
             "feature_importance": fields.Raw(),
             "features": fields.List(fields.Nested(ModelFeatures.to_output())),
+            "dataset_id": fields.String(attribute="job.dataset.id"),
+            "model_selection_job_id": fields.String(attribute="job.id"),
         }
         output_fields = (
             {**summary_fields, **detailed_fields} if detailed else summary_fields
