@@ -14,9 +14,8 @@ import ArchitectureDiagram from "../../Content/ArchitectureDiagram";
 import { useEffect, useState } from "react";
 import API, { apiURLs } from "../../../API";
 import { useLocation, useParams } from "react-router";
+import { MODEL_TYPES } from "../../../utils/enums";
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
-const MODEL_TYPES = { 1: "Regression", 2: "Classification" };
 
 const SavedModelDetailsScreen = (props) => {
   const [model, setModel] = useState({});

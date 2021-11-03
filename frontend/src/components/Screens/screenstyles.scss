@@ -1,7 +1,7 @@
 @import "../../colors.scss";
 .screen {
   height: 100%;
-  overflow-y: hidden;
+  overflow-y: auto;
   display: flex;
   background-color: $light;
   flex-direction: column;
