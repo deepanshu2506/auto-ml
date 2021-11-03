@@ -26,7 +26,10 @@ const SavedModelScreen = (props) => {
     fetchSavedModels();
   }, []);
   return (
-    <Container className={`${styles.screen} py-2 `} fluid>
+    <Container
+      className={`${styles.screen} ${styles.savedModelsScreen} py-2 `}
+      fluid
+    >
       {loading ? (
         <Row>
           <Spinner animation="border" variant="primary" />

@@ -3,11 +3,8 @@
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
 
-.SavedModelsScreen {
-  border: 1px solid #eee;
-  background-color: white;
-  border-radius: 0.5rem;
-  height: 100%;
+.savedModelsScreen {
+  overflow-y: auto;
 }
 
 .modelName {
