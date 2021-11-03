@@ -12,6 +12,7 @@ export const apiURLs = {
   },
   savedModels: {
     getModels: "/saved_model/",
+    modelDetails: (model_id) => `/saved_model/${model_id}`,
   },
 };
 
