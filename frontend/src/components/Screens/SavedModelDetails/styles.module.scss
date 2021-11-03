@@ -2,3 +2,51 @@
 @import "../../../../node_modules/bootstrap/scss/variables";
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
+
+.savedModelScreen {
+  overflow-y: auto;
+}
+
+.tablecontainer {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 52vh;
+  margin-bottom: 1rem;
+
+  th {
+    color: white;
+    font-weight: normal;
+  }
+
+  td {
+    // text-align: center;
+    max-width: 25vw;
+  }
+}
+
+.modelName {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.modelState {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.modelCreationDate {
+  font-size: 0.8rem;
+  margin-bottom: 0;
+  font-style: italic;
+  color: #888;
+}
+.modelCard {
+  padding-bottom: 0.3rem;
+}
