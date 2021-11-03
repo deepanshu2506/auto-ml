@@ -7,7 +7,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem(
       "auth_token",
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzNTQ4NzQ4MiwianRpIjoiNjBlMjNkZmEtZmE3Ni00NmNjLWFlODctZGRlODhkZGMxYTY0IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjYwZjkxOGVjYTU3MTRkZmY3YjdmN2VjOCIsIm5iZiI6MTYzNTQ4NzQ4MiwiZXhwIjoxNjM2MDkyMjgyfQ.nfFr3RKElOusDsvlrlSJL7keIFgPBHz68wsBGRVXee8"
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzNTY1NjgxMSwianRpIjoiMWRkMTdiOTAtNjI3NS00ODdjLWJlYTEtZTE1YjQwYWJhZDE5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjYxN2UyNDVmMTczMmI5YWVjZThmNGVjZSIsIm5iZiI6MTYzNTY1NjgxMSwiZXhwIjoxNjM2MjYxNjExfQ.nuM1kQ3lacmfOXoNRUYiDuuyxxCvTPbg1Qz4g-JMBLE"
     );
   }, []);
 

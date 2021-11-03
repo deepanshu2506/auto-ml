@@ -37,7 +37,12 @@ const formDataAPI = axios.create({
     "Content-Type": "application/json",
   },
 });
-
+const getRequestAPI = axios.create({
+  baseURL: endpoint,
+});
+getRequestAPI.interceptors.request.use(addTokenToConfig, function (error) {
+  return Promise.reject(error);
+});
 jsonAPI.interceptors.request.use(addTokenToConfig, function (error) {
   return Promise.reject(error);
 });
@@ -49,5 +54,6 @@ formDataAPI.interceptors.request.use(addTokenToConfig, function (error) {
 const API = {
   json: jsonAPI,
   formData: formDataAPI,
+  getRequest:getRequestAPI
 };
 export default API;
