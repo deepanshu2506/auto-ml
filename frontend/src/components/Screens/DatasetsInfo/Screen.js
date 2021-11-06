@@ -3,23 +3,21 @@ import {
   Container,
   Row,
   Table,
+  Spinner,
+  Button
 } from "react-bootstrap";
 import styles from "./styles.module.scss";
 import API from "../../../API";
 import {useState,useEffect } from "react";
 import {useLocation} from "react-router-dom";
 import CanvasJSReact from '../../../assets/canvasjs.react';
-// import Clone from "rfdc";
 
 const DatasetInfoScreen = (props) => {
-  // const Clone = require('rfdc')()
   const [info, setInfo] = useState(null);
   const location = useLocation();
-  console.log(location.pathname);
+  const [loading, setLoading] = useState(true);
   const [chartData,setChartData]=useState({});
   const [expandedRows, setExpandedRows] = useState([]);
-  // State variable to keep track which row is currently expanded.
-  // var CanvasJS = CanvasJSReact.CanvasJS;
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
   function rowStyleFormat(row, rowIdx) {
     return { backgroundColor: rowIdx % 2 === 0 ? 'red' : 'blue' };
@@ -38,14 +36,13 @@ const DatasetInfoScreen = (props) => {
     setExpandedRows(newExpandedRows);
   }
  const getDatasetInfo=async()=>{
+  setLoading(true);
     try { 
       const pathname=await location.pathname;
       const response = await API.getRequest.get(
         pathname
       );
       setInfo(response.data);
-      console.log("dataaa");
-      console.log(response.data);
       var data=response.data;
       var percentages={}
       var columnData={};
@@ -99,11 +96,11 @@ const DatasetInfoScreen = (props) => {
           pieChartData[columnData.column_name]=options;
         }
       }
-      console.log(pieChartData);
       setChartData(pieChartData);
     } catch (err) {
       console.log(err);
     }
+    setLoading(false);
   };
 
   useEffect(() =>{
@@ -112,56 +109,75 @@ const DatasetInfoScreen = (props) => {
   }, []);
 
   return (
-    <Container >
-      <Container className={`${styles.screen} pt-3 pl-4 `} fluid>
-        Dataset info screen
+    <Container
+      className={`${styles.screen}  pt-3 pl-4 `}
+      fluid
+    >
+      <Container className={styles.nav} fluid>
+        <span>Dataset info screen</span>
       </Container>
      
-     {info && <Container className={styles.subtitles}>
-      <h1>{ info.dataset_name}</h1>
+      {loading ? (
+      <Row style={{alignItems:'center',flexDirection:'column'}}>
+        <Spinner animation="border" size="lg" />
+      </Row>
+      ) : ( 
+      <>
+     <Container className={styles.content} fluid>
+      <h4 className={styles.datasetname}>
+       Dataset name : 
+      <span >  { info.dataset_name}</span></h4>
       <Row>
         
-        <Col>
+        <Col sm={6} lg={3}>
           <div className= {`${styles.cardcounter} ${styles.primary}`}>
             <i className="fa fa-clock-o"></i>
-            <span className={styles.countnum}>Created on:</span>
-            <span className={styles.countname}>{info.created_at}</span>
+            <span className={styles.countnum} >Created on :</span>
+            <span className={styles.countname}>{info.created_at.slice(0,-14).trim()}</span>
+            <br/>
+            <span className={`${styles.countname} ${styles.countname2}`}>{info.created_at.slice(-14,-6).trim()}</span>
+
           </div>
         </Col>
-        <Col>
-        <div className= {`${styles.cardcounter} ${styles.danger}`}>
-            <i className="fa fa-ticket"></i>
-            <span className={`${styles.countnum}`}>File Size:</span>
-            <span className={styles.countname}>{info.file_size}</span>
-        </div>
-      </Col>
-      </Row>
-      <Row>
-        <Col>
+        <Col sm={6} lg={3}>
+          <div className= {`${styles.cardcounter} ${styles.danger}`}>
+              <i className="fa fa-ticket"></i>
+              <span className={styles.countnum}>File Size :</span>
+              <span className={styles.countname}>{info.file_size}</span>
+          </div>
+        </Col>
+        <Col sm={6} lg={3}>
           <div className= {`${styles.cardcounter} ${styles.success}`}>
-              <i className="fa fa-database"></i>
-              <span className={`${styles.countnum}`}>Tuple count:</span>
-              <span className={styles.countname}>{info.tuple_count}</span>
+                <i className="fa fa-database"></i>
+                <span className={styles.countnum}>Tuple count :</span>
+                <span className={styles.countname}>{info.tuple_count}</span>
           </div>
         </Col>
-        <Col>
+        <Col sm={6} lg={3}>
           <div className= {`${styles.cardcounter} ${styles.info}`}>
-              <i className="fa fa-file"></i>
-              <span className={`${styles.countnum}`}>File type:</span>
-              <span className={styles.countname}>{info.type}</span>
+                <i className="fa fa-file"></i>
+                <span className={styles.countnum}>File type :</span>
+                <span className={styles.countname}>{info.type}</span>
           </div>
         </Col>
       </Row>
       </Container>
-      }
-      <h3>Datasets Fields description: </h3>
-      <Table striped bordered hover size="md" trStyle={rowStyleFormat}>
+      
+      <Container className={styles.content} fluid>
+      <h4 className={`${styles.datasetname} pb-1`}>Datasets Fields description :
+      <span style={{float:"right"}} className="pb-2"> <Button variant="outline-primary" >
+      Auto Impute
+    </Button>{' '}</span>
+      </h4>
+     
+      <Table striped bordered hover size="md" className={styles.table}  trStyle={rowStyleFormat}>
       <thead>
         <tr>
           <th>No.</th>
           <th>Column Name</th>
           <th>Datatype</th>
           <th>Column type</th>
+          <th>Data Imputation</th>
         </tr>
       </thead>
       <tbody>
@@ -171,20 +187,21 @@ const DatasetInfoScreen = (props) => {
      [ <tr 
       onClick={event => handleExpandRow(event, column.column_order)}
       key={column.column_order}>
-        <td>{column.column_order}</td>
-        <td>{column.column_name}</td>
-        <td>{column.datatype}</td>
-        <td>{column.column_Type}</td>
+        <td style={{width:'10%'}}>{column.column_order}</td>
+        <td style={{width:'30%'}}>{column.column_name}</td>
+        <td style={{width:'25%'}}>{column.datatype}</td>
+        <td style={{width:'25%'}}>{column.column_Type}</td>
+        <td style={{width:'10%',textAlign:'center'}}><Button style={{padding:"0.1em 0.5rem"}} variant="primary"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></Button></td>
         </tr>,
         <>{
           expandedRows.includes(column.column_order) ?
           <tr  key={column.column_name}>
             <td colSpan="2">
               <div>
-                <h4>Metrics </h4>
+                <h4 className={styles.datasetname}>Metrics : </h4>
                 <ul>
                   <li>
-                    <span><b>Missing count:</b></span> {' '}
+                    <span><b> Missing count:</b></span> {' '}
                     <span> { column.metrics.missing_values} </span>
                   </li>
                   <li>
@@ -210,8 +227,8 @@ const DatasetInfoScreen = (props) => {
                 </div>
             </td>
             <>{column.datatype==="NUMBER"?
-              <td colSpan="2">
-                <h4>{}</h4>
+              <td colSpan="3">
+                <h4 className={styles.space}>{}</h4>
                 <ul>
                   <li>
                     <span><b>Min:</b></span> {' '}
@@ -232,7 +249,7 @@ const DatasetInfoScreen = (props) => {
                 </ul>
               </td>
               :
-              <td colSpan="2">
+              <td colSpan="3">
                 <CanvasJSChart options = {chartData[column.column_name]}/>
               </td>
             }
@@ -245,9 +262,12 @@ const DatasetInfoScreen = (props) => {
     }
       </tbody>
     </Table>
-  
+    </Container>
+  </>)}{" "}
+   </Container>
 
-  </Container>
+      
+  
   );
 };
 
