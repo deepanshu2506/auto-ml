@@ -3,21 +3,54 @@
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
 
-span{
-    font-size: 20px;
-    color:rgb(9, 7, 97)
+.nav {
+  background-color: white;
+  border: 1px solid #eee;
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 5px;
+  margin: 0;
+  font-size: 1.2rem;
+  span{
+    color: #fff;
+    background-color: #1769aa;
+  padding: 0.7rem;
+  border-radius: 5px;
+  margin-left: -11px;
+
+  }
 }
 
-.subtitles{
-    max-width: 1050px;
+.content {
+  background-color: white;
+  // height: 100px;
+  // overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  width: 100%;
+  margin: 1rem 0 0.5rem;
+  padding: 1rem;
 }
+
+
+.datasetname{
+  font-family:Rubik;
+  font-size:1.2rem ;
+ 
+  span{
+    color:rgb(9, 7, 97);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+}
+
 .cardcounter{
     box-shadow: 2px 2px 10px #DADADA;
-    margin: 15px;
+    margin: 10px 0px;
     padding: 20px 20px;
     background-color: #fff;
     height: 120px;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: .3s linear all;
   &:hover{
     box-shadow: 4px 4px 20px #dfd7d7;
@@ -46,18 +79,43 @@ span{
 }
 .countnum{
     position: absolute;
-    right: 50px;
+    right: 40px;
     top: 20px;
-    font-size: 28px;
+    font-size: 21px;
     display: block;
   }
   .countname{
     position: absolute;
-    right: 50px;
-    top: 65px;
+    right: 40px;
+    top: 55px;
     font-style: italic;
     text-transform: capitalize;
-    opacity: 0.5;
+    opacity: 0.7;
     display: block;
     font-size: 20px;
   }
+  .countname2{
+    top: 75px;
+  }
+
+  ul {
+    list-style-type: circle;
+  }
+  li{
+    span{
+      b{
+        min-width: 30px;
+      }
+    }
+  }
+  .space{
+      &:after {
+        content: '\200b';
+    }
+  }
+
+.table{
+  .btn{
+    padding:0;
+  }
+}
