@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row } from "react-bootstrap";
-import Appbar from "./AppBar/Appbar";
+import {Appbar} from "./AppBar/Appbar";
 import DataContainer from "./DataContainer";
 
 const Layout = (props) => {

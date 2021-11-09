@@ -1,24 +1,53 @@
 import "./App.scss";
-import React, { useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
+import React, {Component,useEffect } from "react";
+import { Router } from "react-router-dom";
 import Layout from "./components/Layout";
-import CanvasJSReact from "./assets/canvasjs.react";
-function App() {
-  useEffect(() => {
-    localStorage.setItem(
-      "auth_token",
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzNTY1NjgxMSwianRpIjoiMWRkMTdiOTAtNjI3NS00ODdjLWJlYTEtZTE1YjQwYWJhZDE5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjYxN2UyNDVmMTczMmI5YWVjZThmNGVjZSIsIm5iZiI6MTYzNTY1NjgxMSwiZXhwIjoxNjM2MjYxNjExfQ.nuM1kQ3lacmfOXoNRUYiDuuyxxCvTPbg1Qz4g-JMBLE"
-    );
-  }, []);
 
-  useEffect(() => {
-    CanvasJSReact.CanvasJS.addColorSet("appTheme", ["#007bff"]);
-  }, []);
-  return (
-    <BrowserRouter>
-      <Layout />
-    </BrowserRouter>
-  );
+import { history } from './helpers';
+import { connect } from 'react-redux';
+import { alertActions } from './actions';
+
+import CanvasJSReact from "./assets/canvasjs.react";
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    history.listen((location, action) => {
+      // clear alert on location change
+      this.props.clearAlerts();
+    });
+
+    useEffect(() => {
+      CanvasJSReact.CanvasJS.addColorSet("appTheme", ["#007bff"]);
+    }, []);
+  }
+
+  render() {
+    const { alert } = this.props;
+    return (
+      <div>
+        {alert.message &&
+          <div className={`alert mb-0 ${alert.type}`}>{alert.message}</div>
+        }
+        <Router history={history}>
+          <Layout />
+        </Router>
+      </div>
+    );
+  }
+}
+function mapState(state) {
+  const { alert } = state;
+  return { alert };
 }
 
-export default App;
+const actionCreators = {
+  clearAlerts: alertActions.clear
+};
+
+const connectedApp = connect(mapState, actionCreators)(App);
+export { connectedApp as App };
+
+
+

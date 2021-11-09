@@ -15,10 +15,16 @@ export const apiURLs = {
     modelDetails: (model_id) => `/saved_model/${model_id}`,
     infer: (model_id) => `/saved_model/${model_id}/infer`,
   },
+  user:{
+    register:"/auth/register",
+    login:"/auth/login"
+  }
 };
 
 const addTokenToConfig = (config) => {
-  const Token = localStorage.getItem("auth_token");
+  let user = JSON.parse(localStorage.getItem('user'));
+  const Token=user.auth_token;
+  console.log(user)
   if (Token) config.headers["Authorization"] = "Bearer " + Token;
 
   return config;
@@ -43,6 +49,14 @@ const getRequestAPI = axios.create({
 getRequestAPI.interceptors.request.use(addTokenToConfig, function (error) {
   return Promise.reject(error);
 });
+
+const authDataAPI = axios.create({
+  baseURL: endpoint,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 jsonAPI.interceptors.request.use(addTokenToConfig, function (error) {
   return Promise.reject(error);
 });
@@ -54,6 +68,7 @@ formDataAPI.interceptors.request.use(addTokenToConfig, function (error) {
 const API = {
   json: jsonAPI,
   formData: formDataAPI,
-  getRequest:getRequestAPI
+  getRequest:getRequestAPI,
+  authData: authDataAPI
 };
 export default API;
