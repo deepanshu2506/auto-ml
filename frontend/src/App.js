@@ -1,5 +1,5 @@
 import "./App.scss";
-import React, {Component,useEffect } from "react";
+import React, { useEffect } from "react";
 import { Router } from "react-router-dom";
 import Layout from "./components/Layout";
 
@@ -9,33 +9,28 @@ import { alertActions } from './actions';
 
 import CanvasJSReact from "./assets/canvasjs.react";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-
+const App = (props) => {
+  if(props){
     history.listen((location, action) => {
       // clear alert on location change
-      this.props.clearAlerts();
+      props.clearAlerts();
     });
-
-    useEffect(() => {
-      CanvasJSReact.CanvasJS.addColorSet("appTheme", ["#007bff"]);
-    }, []);
   }
+  useEffect(() => {
+    CanvasJSReact.CanvasJS.addColorSet("appTheme", ["#007bff"]);
+  }, []);
 
-  render() {
-    const { alert } = this.props;
-    return (
-      <div>
-        {alert.message &&
-          <div className={`alert mb-0 ${alert.type}`}>{alert.message}</div>
-        }
-        <Router history={history}>
-          <Layout />
-        </Router>
-      </div>
-    );
-  }
+  const { alert } = props;
+  return (
+    <div>
+      {alert.message &&
+        <div className={`alert mb-0 ${alert.type}`}>{alert.message}</div>
+      }
+      <Router history={history}>
+        <Layout />
+      </Router>
+    </div>
+  );
 }
 function mapState(state) {
   const { alert } = state;
