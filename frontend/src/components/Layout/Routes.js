@@ -22,7 +22,7 @@ const routes = [
   {
     sidebar: true,
     title: "Datasets",
-    path: "/datasets",
+    path: "/datasets/",
     auth: true,
     exact: true,
     // Icon: () => <Avatar src="/teams-icon.png" round={true} size={35} />,
