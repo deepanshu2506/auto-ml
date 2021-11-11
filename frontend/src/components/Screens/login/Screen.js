@@ -16,9 +16,9 @@ import { connect } from 'react-redux';
 import { userActions } from '../../../actions';
 
 const LoginScreen = (props) => {
-    useEffect(()=>{
-        props.logout();
-    },[]);
+    // useEffect(()=>{
+    //     props.logout();
+    // },[]);
 
     const [form, setForm] = useState({})
     const [errors, setErrors] = useState({})

@@ -49,7 +49,7 @@ function login(user) {
 }
 
 function logout() {
-  userService.logout();
+  //userService.logout();
   return { type: appConstants.LOGOUT };
 }
 

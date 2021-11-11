@@ -2,8 +2,13 @@ import { Col, Container, Row } from "react-bootstrap";
 import { Redirect, withRouter } from "react-router";
 import SideBar from "../Layout/SideBar";
 import styles from "./styles.module.scss";
+import { useSelector } from 'react-redux';
+
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const isAuthenticated = true;
+  const { loggedIn,user } = useSelector(state => state.authentication);
+  console.log(loggedIn);
+  //const isAuthenticated = localStorage.getItem('user') ? true : false;
+  const isAuthenticated=loggedIn
   return isAuthenticated ? (
     <>
       <Container fluid className={styles.content}>

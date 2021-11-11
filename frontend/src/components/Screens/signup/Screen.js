@@ -7,7 +7,6 @@ import {
 } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import styles from "./styles.module.scss";
-import { useHistory } from "react-router";
 import React from "react";
 
 import LottieAnimation from '../../../Lottie';
@@ -17,7 +16,6 @@ import { connect } from 'react-redux';
 import { userActions } from '../../../actions';
 
 const SignupScreen = (props) => {
-    const history = useHistory();
     const [form, setForm] = useState({})
     const [errors, setErrors] = useState({})
     const [validate, setValidate] = useState(false)

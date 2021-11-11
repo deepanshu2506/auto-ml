@@ -2,21 +2,23 @@ import { Button, Form, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import styles from "./Appbar.module.scss";
 
-import { userService } from '../../../services';
+import { useSelector } from 'react-redux';
 import { connect } from 'react-redux';
 import { userActions } from '../../../actions';
 
-const Appbar = (props) => (
+const Appbar = (props) => {
+  //const { loggedIn,user } = useSelector(state => state.authentication);
+  return (
   <Navbar bg="primary" className={styles.Appbar} variant="dark">
     <Link to="/">
       <Navbar.Brand>AUTO ML</Navbar.Brand>
     </Link>
     <Nav className="mr-auto"></Nav>
-    {localStorage.getItem('user') ?
+    {props.loggedIn ?
       <Form inline>
-        <Link to="/login">
-          <Button variant="light">Logout</Button>
-        </Link>
+          <Button variant="light" onClick={()=>props.logout()}>
+            Logout
+          </Button>
       </Form> :
       <Form inline>
         <Link to="/login">
@@ -28,18 +30,17 @@ const Appbar = (props) => (
       </Form>
     }
   </Navbar>
-);
+  );
+};
 
-//export default Appbar;
 function mapState(state) {
-  const { users, authentication } = state;
-  const { user } = authentication;
-  return { user, users };
+  const { loggedIn,user } =  state.authentication;
+  return {loggedIn}
+ 
 }
 
 const actionCreators = {
-  getUsers: userActions.getAll,
-  deleteUser: userActions.delete
+  logout: userActions.logout
 }
 
 const connectedAppbar = connect(mapState, actionCreators)(Appbar);

@@ -18,7 +18,7 @@ async function login(form) {
     ).then((response) => {
         console.log(response);
         let user={"profile":response.data.profile.username,"auth_token":response.data.token};
-        localStorage.setItem("user",JSON.stringify(user));
+        //localStorage.setItem("user",JSON.stringify(user));
         console.log(user);
         return user;
     }).catch(err => {
