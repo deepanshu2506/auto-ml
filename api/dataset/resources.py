@@ -80,10 +80,10 @@ class PerformAggregationAPI(Resource):
 
     def post(self, id):
         body = aggregationRequestParser.parse_args()
-        headers, values = self.datasetService.perform_aggregation(id, **body)
+        headers, values,meta = self.datasetService.perform_aggregation(id, **body)
         return jsonify(
             {
-                "data": {"headers": headers, "values": values},
+                "data": {"headers": headers, "values": values,"meta":meta},
             }
         )
 
