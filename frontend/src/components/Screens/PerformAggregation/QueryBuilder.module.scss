@@ -1,0 +1,108 @@
+@import "../../../colors.scss";
+
+.container {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 90%;
+  margin: 0 auto;
+  .addButtonContainer {
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .filters {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.5rem;
+    .empty {
+      margin-bottom: 0;
+      font-size: 0.8rem;
+      color: #888;
+      font-style: italic;
+      font-weight: lighter;
+    }
+  }
+}
+
+.rightContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.whereContainer {
+  border-right: 1px solid #ddd;
+  min-height: 30vh;
+  display: flex;
+  padding: 0.5rem;
+
+  &::before {
+    content: "Filter By";
+    color: $primary-color-dark;
+    position: absolute;
+    top: -12px;
+    left: 15px;
+    background-color: #f8f9fa;
+    padding: 0 5px;
+  }
+}
+
+.groupByContainer {
+  border-bottom: 1px solid #ddd;
+  flex-grow: 1;
+  padding: 0.5rem;
+  display: flex;
+  &::before {
+    content: "Group By";
+    color: $primary-color-dark;
+    position: absolute;
+    top: -12px;
+    left: 10px;
+    background-color: #f8f9fa;
+    padding: 0 5px;
+  }
+}
+
+.aggregateByContainer {
+  flex-grow: 1;
+  display: flex;
+  padding: 0.5rem;
+
+  &::before {
+    content: "Aggregate By";
+    color: $primary-color-dark;
+    position: absolute;
+    top: 45%;
+    left: 10px;
+    background-color: #f8f9fa;
+    padding: 0 5px;
+  }
+}
+
+.tag {
+  font-size: 0.9rem;
+  border-radius: 3px;
+  padding: 0.2rem 0.3rem;
+  margin: 0.5rem 0;
+  color: $primary-color;
+  background-color: rgba($color: $primary-color, $alpha: 0.2);
+  width: fit-content;
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  .cancel {
+    margin-left: 0.7rem;
+    button {
+      color: gray;
+      border: none;
+      font-size: 1rem;
+      padding: 0;
+      margin: auto;
+      background-color: transparent;
+      outline: none;
+    }
+  }
+}
