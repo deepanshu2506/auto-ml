@@ -127,7 +127,9 @@ class DatasetService:
         return dataset.id
 
     def get_datasets(self, user_id) -> List[Dataset]:
-        return Dataset.objects(createdBy=user_id, isDeleted=False)
+        return Dataset.objects(createdBy=user_id, isDeleted=False).order_by(
+            "-createdAt"
+        )
 
     def find_by_id(self, id, user_id) -> Dataset:
         datasets = Dataset.objects(createdBy=user_id, id=id, isDeleted=False)
