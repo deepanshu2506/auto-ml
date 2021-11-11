@@ -167,27 +167,44 @@ class DatasetService:
     def perform_aggregation(
         self,
         dataset_id,
-        aggregate_method: AggregationMethods,
-        groupby_field: str,
-        aggregate_by_field: str,
-        filter: dict,
+        aggregate_method: AggregationMethods = None,
+        groupby_field: str = None,
+        aggregate_by_field: str = None,
+        filter: list = None,
+        max_records=100,
     ):
         dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
             dataset.datasetLocation
         )
+
         if filter:
             filter_query = build_query(filter)
             print(filter_query)
             dataset_frame: DataFrame = dataset_frame.query(filter_query)
+        aggregated_df = dataset_frame
+        is_aggregate = groupby_field and aggregate_method and aggregate_by_field
+        if is_aggregate:
+            aggregated_df = perform_aggregation(
+                dataset_frame.groupby(groupby_field)[aggregate_by_field],
+                aggregate_func=aggregate_method,
+            )
+        aggregation_result = (
+            list(aggregated_df.iteritems())
+            if is_aggregate
+            else dataset_frame.values.tolist()
+        )
+        meta = {"total_records": len(aggregation_result)}
 
-        aggregated_df = perform_aggregation(
-            dataset_frame.groupby(groupby_field)[aggregate_by_field],
-            aggregate_func=aggregate_method,
-        )
-        aggregation_result = list(aggregated_df.iteritems())
+        aggregation_result = aggregation_result[:max_records]
+        meta["returned_records"] = len(aggregation_result)
         headers = (
-            groupby_field,
-            f"{aggregate_by_field.replace(' ' , '_')}_{aggregate_method.value}",
+            (
+                groupby_field,
+                f"{aggregate_by_field.replace(' ' , '_')}_{aggregate_method.value}",
+            )
+            if is_aggregate
+            else dataset_frame.columns.tolist()
         )
-        return headers, aggregation_result
+
+        return headers, aggregation_result, meta
