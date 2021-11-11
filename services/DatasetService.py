@@ -140,24 +140,27 @@ class DatasetService:
         dataset.isDeleted = True
         dataset.save()
 
-    def get_discrete_col_details(self, id, user_id, num_samples=10) -> None:
+    def get_discrete_col_details(self, id, user_id, num_samples=None) -> None:
         dataset = self.find_by_id(id, user_id)
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
             dataset.datasetLocation
         )
 
-        discrete_cols = list(
+        discrete_cols: List[DatasetFeature] = list(
             filter(lambda col: col.colType == Coltype.DISCRETE, dataset.datasetFields)
         )
         discrete_col_names = list(map(lambda col: col.columnName, discrete_cols))
         discrete_data: DataFrame = dataset_frame[discrete_col_names]
         col_details = {}
-        for col in discrete_data:
-            unique_vals = discrete_data[col].unique()
-            col_details[col] = {
-                "values": unique_vals[:num_samples].tolist(),
+        for col in discrete_cols:
+            unique_vals = discrete_data[col.columnName].unique()
+            col_details[col.columnName] = {
+                "values": (
+                    unique_vals[:num_samples] if num_samples else unique_vals
+                ).tolist(),
                 "unique_count": unique_vals.size,
-                "total_count": discrete_data[col].size,
+                "total_count": discrete_data[col.columnName].size,
+                "data_type": col.dataType.value,
             }
         return col_details
 
