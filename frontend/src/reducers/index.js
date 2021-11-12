@@ -4,14 +4,13 @@ import { authentication } from './auth.reducer';
 import { register } from './register.reducer';
 import { alert } from './alert.reducer';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistReducer } from 'redux-persist';
 import { appConstants } from '../helpers/app-constants';
 import storage from 'redux-persist/lib/storage'
 
 const persistConfig = {
   key: 'root',
-  storage: AsyncStorage,
+  storage,
   whitelist: ['user','loggedIn']
 };
 
