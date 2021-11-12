@@ -338,9 +338,13 @@ const AddAggregationDialog = ({ show, onClose, onAdd, columns }) => {
               required
             >
               <option value="">Select Column</option>
-              {columns.map((column) => (
-                <option value={column.column_name}>{column.column_name}</option>
-              ))}
+              {columns
+                .filter((column) => column.dataType !== "string")
+                .map((column) => (
+                  <option value={column.column_name}>
+                    {column.column_name}
+                  </option>
+                ))}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               Please select Column
