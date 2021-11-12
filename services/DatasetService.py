@@ -22,7 +22,7 @@ class DatasetService:
     def __init__(self, fileService: FileService) -> None:
         self.fileService = fileService
 
-    def _build_column_metrics(self, column_metrics: Series, column_values: Series):
+    def _build_column_metrics(self, column_metrics: Series, column_values: Series, colType:Coltype):
         featureMetrics = DatasetFeatureMetrics()
         if column_metrics is not None:
             lower_quantile = column_values.quantile(0.25)
@@ -38,9 +38,10 @@ class DatasetService:
             featureMetrics.outlier_count = outlier_count
             featureMetrics.min = column_metrics["min"]
             featureMetrics.max = column_metrics["max"]
+            featureMetrics.mean = column_metrics["mean"]
             featureMetrics.stdDeviation = column_metrics["std"]
             featureMetrics.median = numpy.nanmedian(column_values)
-        else:
+        if colType == Coltype.DISCRETE:
             column_values_clean = column_values.fillna("None", inplace=False)
             featureMetrics.value_percentage = dict(
                 (column_values_clean.value_counts() / len(column_values_clean)) * 100
@@ -80,7 +81,7 @@ class DatasetService:
                 else None
             )
             datasetFeature.metrics = self._build_column_metrics(
-                raw_column_metrics, colData
+                raw_column_metrics, colData,colType
             )
             datasetFields.append(datasetFeature)
         return datasetFields

@@ -200,7 +200,7 @@ const FormModal = ({ children, show, onClose, onSubmit, ...props }) => {
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={onAdd}>Add</Button>
+        <Button onClick={onAdd}>Add</Button><Button onClick={onAdd}>Add</Button>
       </Modal.Footer>
     </Modal>
   );

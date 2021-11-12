@@ -78,6 +78,7 @@
   }
 }
 .countnum{
+  color:white;
     position: absolute;
     right: 40px;
     top: 20px;
@@ -85,6 +86,7 @@
     display: block;
   }
   .countname{
+    color:white;
     position: absolute;
     right: 40px;
     top: 55px;
@@ -98,6 +100,20 @@
     top: 75px;
   }
 
+  .metrics{
+    span{
+      color: #090761;
+      font-size: 16px;
+    }
+  }
+.err{
+  background-color: rgb(231, 52, 52);
+  height: 4rem;
+  width:100%;
+  margin:2rem;
+  padding:2rem;
+  color:white;
+}
   ul {
     list-style-type: circle;
   }
@@ -114,7 +130,11 @@
     }
   }
 
-.table{
+.infotable{
+  width:auto;
+  margin:2rem 3rem;
+  text-transform: capitalize;
+
   .btn{
     padding:0;
   }
