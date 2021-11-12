@@ -27,9 +27,13 @@ export const apiURLs = {
 };
 
 const addTokenToConfig = (config) => {
-  let user = JSON.parse(localStorage.getItem('user'));
-  const Token=user.auth_token;
-  console.log(user)
+  // let user = JSON.parse(localStorage.getItem('user'));
+  // const Token=user.auth_token;
+  // console.log(user)
+
+  let redux_store = JSON.parse(localStorage.getItem('persist:root'));
+  let user=JSON.parse(redux_store.user)
+  const Token=user["auth_token"];
   if (Token) config.headers["Authorization"] = "Bearer " + Token;
 
   return config;
