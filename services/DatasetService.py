@@ -186,6 +186,7 @@ class DatasetService:
         aggregate_by_field: str = None,
         filter: list = None,
         max_records=100,
+        export_to_file=False
     ):
         dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
@@ -209,8 +210,8 @@ class DatasetService:
             else dataset_frame.fillna("NA").values.tolist()
         )
         meta = {"total_records": len(aggregation_result)}
-
-        aggregation_result = aggregation_result[:max_records]
+        if not export_to_file:
+            aggregation_result = aggregation_result[:max_records]
         meta["returned_records"] = len(aggregation_result)
         headers = (
             (

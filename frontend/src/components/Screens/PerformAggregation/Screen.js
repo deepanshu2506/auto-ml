@@ -34,25 +34,62 @@ const AggregationScreen = (props) => {
   const onQueryChange = (query) => setQuery(query);
   console.log(query);
 
-  const performAggregation = async () => {
+  const getAggregationResult = async (exportToFile = false) => {
     const payload = {
       aggregate_method: query.aggregate?.method,
       aggregate_by_field: query.aggregate?.col,
       groupby_field: query.groupBy,
       filter: query.filters,
+      export_to_file: exportToFile,
     };
+
+    const reqConfig = exportToFile ? { responseType: "blob" } : {};
+
+    const response = await API.json.post(
+      apiURLs.dataset.performAggregation(params.datasetID),
+      payload,
+      reqConfig
+    );
+    return response;
+  };
+
+  const performAggregation = async () => {
     try {
       const {
         data: { data },
-      } = await API.json.post(
-        apiURLs.dataset.performAggregation(params.datasetID),
-        payload
-      );
+      } = await getAggregationResult();
       setResult(data);
     } catch (err) {
       console.log(err);
     }
   };
+
+  const downloadAggregation = async () => {
+    try {
+      const response = await getAggregationResult(true);
+      const fileNameHeader = "x-suggested-filename";
+      const suggestedFileName = response.headers[fileNameHeader];
+      const effectiveFileName =
+        suggestedFileName === undefined ? "result.csv" : suggestedFileName;
+      console.log(
+        `Received header [${fileNameHeader}]: ${suggestedFileName}, effective fileName: ${effectiveFileName}`
+      );
+
+      // Let the user save the file.
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", effectiveFileName); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const isValidQuery = () =>
+    query?.filters?.length === 0 &&
+    query?.groupBy === null &&
+    query?.aggregate === null;
   return (
     <Container className={`${styles.screen} pt-3 pl-4 `} fluid>
       {featuresLoading ? (
@@ -67,16 +104,22 @@ const AggregationScreen = (props) => {
           <Row className="my-2">
             <Col>
               <Button
-                disabled={
-                  query?.filters?.length === 0 &&
-                  query?.groupBy === null &&
-                  query?.aggregate === null
-                }
+                disabled={isValidQuery()}
                 block
                 variant="primary"
                 onClick={performAggregation}
               >
                 View Result
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                disabled={isValidQuery()}
+                block
+                variant="primary"
+                onClick={downloadAggregation}
+              >
+                download Result
               </Button>
             </Col>
           </Row>

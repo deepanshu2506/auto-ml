@@ -40,6 +40,7 @@ aggregationRequestParser.add_argument(
 aggregationRequestParser.add_argument("groupby_field", type=str)
 aggregationRequestParser.add_argument("aggregate_by_field", type=str)
 aggregationRequestParser.add_argument("filter", type=dict, action="append")
+aggregationRequestParser.add_argument("export_to_file", type=bool)
 
 
 colDetailsRequestParser = reqparse.RequestParser()
