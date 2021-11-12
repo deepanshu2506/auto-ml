@@ -4,6 +4,7 @@ from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetType
 from utils.exceptions import DatasetNotFound
 import numpy
 from pandas.core.series import Series
+
 from utils.pdUtils import build_query, get_col_type, get_datatype, perform_aggregation
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
@@ -40,9 +41,15 @@ class DatasetService:
             featureMetrics.stdDeviation = column_metrics["std"]
             featureMetrics.median = numpy.nanmedian(column_values)
         else:
+            column_values_clean = column_values.fillna("None", inplace=False)
             featureMetrics.value_percentage = dict(
-                (column_values.value_counts() / len(column_values)) * 100
+                (column_values_clean.value_counts() / len(column_values_clean)) * 100
             )
+            featureMetrics.value_percentage = {
+                str(key): value
+                for key, value in featureMetrics.value_percentage.items()
+            }
+
         unique_values = column_values.unique().tolist()
         featureMetrics.uniqueValues = len(unique_values)
         featureMetrics.samples = [
@@ -111,18 +118,21 @@ class DatasetService:
                 datasource_type=type,
                 datasource_properties=datasource_properties,
             )
-        dataset = dataset.save()
         null_placeholder = kwargs.get("null_placeholder")
         if null_placeholder is not None:
             dataset_raw = self._replace_nulls(dataset_raw, null_placeholder)
 
+        dataset.datasetFields = self._extract_fields(dataset_raw)
+
+        dataset_raw = self._replace_nulls(dataset_raw, numpy.nan)
+
+        dataset = dataset.save()
         file_path, file_size = self.fileService.save_dataset(
             dataset_raw, user_id=user_id, dataset_id=dataset.id
         )
         tupleCount = len(dataset_raw.index)
         dataset.datasetLocation = file_path
         dataset.info = DatasetInfo(fileSize=file_size, tupleCount=tupleCount)
-        dataset.datasetFields = self._extract_fields(dataset_raw)
         dataset = dataset.save()
         return dataset.id
 
@@ -153,7 +163,8 @@ class DatasetService:
         discrete_data: DataFrame = dataset_frame[discrete_col_names]
         col_details = {}
         for col in discrete_cols:
-            unique_vals = discrete_data[col.columnName].unique()
+            unique_vals = discrete_data[col.columnName].fillna("NA").unique()
+
             col_details[col.columnName] = {
                 "values": (
                     unique_vals[:num_samples] if num_samples else unique_vals
@@ -190,9 +201,9 @@ class DatasetService:
                 aggregate_func=aggregate_method,
             )
         aggregation_result = (
-            list(aggregated_df.iteritems())
+            list(aggregated_df.fillna("NA").iteritems())
             if is_aggregate
-            else dataset_frame.values.tolist()
+            else dataset_frame.fillna("NA").values.tolist()
         )
         meta = {"total_records": len(aggregation_result)}
 
