@@ -10,7 +10,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app , expose_headers=['x-suggested-filename'])
 
 @app.errorhandler(APIError)
 def handle_API_errors(e):

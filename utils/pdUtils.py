@@ -1,3 +1,4 @@
+from functools import reduce
 from numpy.core.numerictypes import issubdtype
 from pandas import Series
 from pandas.core.frame import DataFrame
@@ -61,14 +62,28 @@ def perform_aggregation(df: DataFrame, aggregate_func: AggregationMethods) -> Da
     pass
 
 
-def build_query(query: dict) -> str:
-    if "lhs" in query and "rhs" in query:
-        rhs = query["rhs"]
+def build_query(query: list) -> str:
+
+    def reduce_func(acc, curr):
+        rhs = curr["rhs"]
         try:
             rhs = float(rhs)
         except ValueError:
             rhs = '"' + rhs + '"'
 
-        return f"`{query['lhs']}` {query['op']} {rhs}"
-    else:
-        return f"{build_query(query['expr1'])} {(query.get('op') or '').lower()} {build_query(query['expr2']) if query.get('expr2') else ''}"
+        return acc + f"`{curr['lhs']}` {curr['op']} {rhs}"
+
+    q = reduce(reduce_func, query, "")
+    print(q)
+    return q
+
+    # if "lhs" in query and "rhs" in query:
+    #     rhs = query["rhs"]
+    #     try:
+    #         rhs = float(rhs)
+    #     except ValueError:
+    #         rhs = '"' + rhs + '"'
+
+    #     return f"`{query['lhs']}` {query['op']} {rhs}"
+    # else:
+    #     return f"{build_query(query['expr1'])} {(query.get('op') or '').lower()} {build_query(query['expr2']) if query.get('expr2') else ''}"
