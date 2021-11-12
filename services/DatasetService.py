@@ -4,6 +4,7 @@ from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetType
 from utils.exceptions import DatasetNotFound
 import numpy
 from pandas.core.series import Series
+
 from utils.pdUtils import build_query, get_col_type, get_datatype, perform_aggregation
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
@@ -40,9 +41,15 @@ class DatasetService:
             featureMetrics.stdDeviation = column_metrics["std"]
             featureMetrics.median = numpy.nanmedian(column_values)
         else:
+            column_values_clean = column_values.fillna("None", inplace=False)
             featureMetrics.value_percentage = dict(
-                (column_values.value_counts() / len(column_values)) * 100
+                (column_values_clean.value_counts() / len(column_values_clean)) * 100
             )
+            featureMetrics.value_percentage = {
+                str(key): value
+                for key, value in featureMetrics.value_percentage.items()
+            }
+
         unique_values = column_values.unique().tolist()
         featureMetrics.uniqueValues = len(unique_values)
         featureMetrics.samples = [
@@ -111,18 +118,21 @@ class DatasetService:
                 datasource_type=type,
                 datasource_properties=datasource_properties,
             )
-        dataset = dataset.save()
         null_placeholder = kwargs.get("null_placeholder")
         if null_placeholder is not None:
             dataset_raw = self._replace_nulls(dataset_raw, null_placeholder)
 
+        dataset.datasetFields = self._extract_fields(dataset_raw)
+
+        dataset_raw = self._replace_nulls(dataset_raw, numpy.nan)
+
+        dataset = dataset.save()
         file_path, file_size = self.fileService.save_dataset(
             dataset_raw, user_id=user_id, dataset_id=dataset.id
         )
         tupleCount = len(dataset_raw.index)
         dataset.datasetLocation = file_path
         dataset.info = DatasetInfo(fileSize=file_size, tupleCount=tupleCount)
-        dataset.datasetFields = self._extract_fields(dataset_raw)
         dataset = dataset.save()
         return dataset.id
 
@@ -142,51 +152,72 @@ class DatasetService:
         dataset.isDeleted = True
         dataset.save()
 
-    def get_discrete_col_details(self, id, user_id, num_samples=10) -> None:
+    def get_discrete_col_details(self, id, user_id, num_samples=None) -> None:
         dataset = self.find_by_id(id, user_id)
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
             dataset.datasetLocation
         )
 
-        discrete_cols = list(
+        discrete_cols: List[DatasetFeature] = list(
             filter(lambda col: col.colType == Coltype.DISCRETE, dataset.datasetFields)
         )
         discrete_col_names = list(map(lambda col: col.columnName, discrete_cols))
         discrete_data: DataFrame = dataset_frame[discrete_col_names]
         col_details = {}
-        for col in discrete_data:
-            unique_vals = discrete_data[col].unique()
-            col_details[col] = {
-                "values": unique_vals[:num_samples].tolist(),
+        for col in discrete_cols:
+            unique_vals = discrete_data[col.columnName].fillna("NA").unique()
+
+            col_details[col.columnName] = {
+                "values": (
+                    unique_vals[:num_samples] if num_samples else unique_vals
+                ).tolist(),
                 "unique_count": unique_vals.size,
-                "total_count": discrete_data[col].size,
+                "total_count": discrete_data[col.columnName].size,
+                "data_type": col.dataType.value,
             }
         return col_details
 
     def perform_aggregation(
         self,
         dataset_id,
-        aggregate_method: AggregationMethods,
-        groupby_field: str,
-        aggregate_by_field: str,
-        filter: dict,
+        aggregate_method: AggregationMethods = None,
+        groupby_field: str = None,
+        aggregate_by_field: str = None,
+        filter: list = None,
+        max_records=100,
     ):
         dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
             dataset.datasetLocation
         )
+
         if filter:
             filter_query = build_query(filter)
             print(filter_query)
             dataset_frame: DataFrame = dataset_frame.query(filter_query)
+        aggregated_df = dataset_frame
+        is_aggregate = groupby_field and aggregate_method and aggregate_by_field
+        if is_aggregate:
+            aggregated_df = perform_aggregation(
+                dataset_frame.groupby(groupby_field)[aggregate_by_field],
+                aggregate_func=aggregate_method,
+            )
+        aggregation_result = (
+            list(aggregated_df.fillna("NA").iteritems())
+            if is_aggregate
+            else dataset_frame.fillna("NA").values.tolist()
+        )
+        meta = {"total_records": len(aggregation_result)}
 
-        aggregated_df = perform_aggregation(
-            dataset_frame.groupby(groupby_field)[aggregate_by_field],
-            aggregate_func=aggregate_method,
-        )
-        aggregation_result = list(aggregated_df.iteritems())
+        aggregation_result = aggregation_result[:max_records]
+        meta["returned_records"] = len(aggregation_result)
         headers = (
-            groupby_field,
-            f"{aggregate_by_field.replace(' ' , '_')}_{aggregate_method.value}",
+            (
+                groupby_field,
+                f"{aggregate_by_field.replace(' ' , '_')}_{aggregate_method.value}",
+            )
+            if is_aggregate
+            else dataset_frame.columns.tolist()
         )
-        return headers, aggregation_result
+
+        return headers, aggregation_result, meta

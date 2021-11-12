@@ -4,6 +4,11 @@ const endpoint = "http://localhost:5000";
 export const apiURLs = {
   dataset: {
     create: "/datasets/",
+    getFeatures: (datasetID) => `/datasets/${datasetID}/col_details`,
+    performAggregation: (datasetID) =>
+      `/datasets/${datasetID}/perform_aggregation`,
+
+    getDatasetDetails: (datasetID) => `/datasets/${datasetID}`,
   },
 
   misc: {
@@ -54,6 +59,6 @@ formDataAPI.interceptors.request.use(addTokenToConfig, function (error) {
 const API = {
   json: jsonAPI,
   formData: formDataAPI,
-  getRequest:getRequestAPI
+  getRequest: getRequestAPI,
 };
 export default API;

@@ -4,6 +4,7 @@ import InputDatasetScreen from "../Screens/inputDataset/Screen";
 import ListDatasetScreen from "../Screens/listDatasets/Screen";
 import LoginScreen from "../Screens/login/Screen";
 import ModelInferenceScreen from "../Screens/ModelInference/Screen";
+import AggregationScreen from "../Screens/PerformAggregation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
 import SignupScreen from "../Screens/signup/Screen";
@@ -27,6 +28,14 @@ const routes = [
     exact: true,
     // Icon: () => <Avatar src="/teams-icon.png" round={true} size={35} />,
     component: ListDatasetScreen,
+  },
+  {
+    sidebar: false,
+    auth: true,
+    title: "Dataset Info",
+    path: "/datasets/:datasetID/aggregation",
+    exact: false,
+    component: AggregationScreen,
   },
   {
     sidebar: false,
