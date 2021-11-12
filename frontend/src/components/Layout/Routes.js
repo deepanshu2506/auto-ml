@@ -2,12 +2,12 @@
 import DatasetInfoScreen from "../Screens/DatasetsInfo/Screen";
 import InputDatasetScreen from "../Screens/inputDataset/Screen";
 import ListDatasetScreen from "../Screens/listDatasets/Screen";
-import LoginScreen from "../Screens/login/Screen";
 import ModelInferenceScreen from "../Screens/ModelInference/Screen";
 import AggregationScreen from "../Screens/PerformAggregation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
-import SignupScreen from "../Screens/signup/Screen";
+import {LoginScreen} from "../Screens/login/Screen";
+import {SignupScreen} from "../Screens/signup/Screen";
 
 // const routes = [
 //   {
