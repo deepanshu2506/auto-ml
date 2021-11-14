@@ -4,7 +4,6 @@ import API from "../../../API";
 import {useState,useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import CanvasJSReact from '../../../assets/canvasjs.react';
-// import { userService } from '../../../services/datasetInfo';
 import ImputeModal from "../dataImpute/singleImpute";
 
 const DatasetInfoScreen = (props) => {
@@ -17,7 +16,7 @@ const DatasetInfoScreen = (props) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [modalOpen,setModalOpen] = useState(false);
   const [datasetId,setDatasetId] = useState("");
-  const [columnName,setcolumnName] = useState("");
+  const [columnDetail,setcolumnDetail] = useState({});
 
 
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
@@ -33,10 +32,9 @@ const DatasetInfoScreen = (props) => {
       : currentExpandedRows.concat(columnId);
 
     setExpandedRows(newExpandedRows);
-    // userService.login();
   }
-  const openModal=(datasetId,columnName)=>{
-    setcolumnName(columnName);
+  const openModal=(datasetId,columnDetail)=>{
+    setcolumnDetail(columnDetail);
     setModalOpen(true);
   }
   
@@ -132,7 +130,7 @@ const DatasetInfoScreen = (props) => {
 
   return (
     <Container className={`${styles.screen}  pt-3 pl-4 `} fluid>
-    <ImputeModal key={columnName} modalOpen={modalOpen} datasetId={datasetId} columnName={columnName}></ImputeModal>
+    <ImputeModal key={columnDetail.column_name} modalOpen={modalOpen} datasetId={datasetId} columnDetail={columnDetail}></ImputeModal>
       <Container className={styles.nav} fluid>
         <span>Dataset info screen</span>
       </Container>
@@ -231,19 +229,18 @@ const DatasetInfoScreen = (props) => {
               </thead>
               <tbody>
                 {info &&
-                  info.datasetFields.map((column) => [
-                    <tr key={column.column_order}
-                    >
-                      <td style={{ width: "10%" }}>{column.column_order}</td>
+                  info.datasetFields.map((column,i) => [
+                    <tr key={i} >
+                      <td style={{ width: "10%" }}>{column.column_order +i}</td>
                       <td  
                       onClick={(event) =>
                         handleExpandRow(event, column.column_order)
                       }
                       style={{ width: "30%" }}>{column.column_name}</td>
-                      <td style={{ width: "25%" }}>{column.datatype.toLowerCase()}</td>
-                      <td style={{ width: "25%" }}>{column.column_Type}</td>
-                      <td style={{width:'20%',textAlign:'center'}}>
-                        <Button style={{padding:"0.1em 0.5rem"}} variant="primary" onClick={()=>openModal(datasetId,column.column_name)} >
+                      <td style={{ width: "23%" }}>{column.datatype.toLowerCase()}</td>
+                      <td style={{ width: "23%" }}>{column.column_Type}</td>
+                      <td style={{width:'24%',textAlign:'center'}}>
+                        <Button style={{padding:"0.1em 0.5rem"}} variant="primary" onClick={()=>openModal(datasetId,column)} >
                           <i className="fa fa-pencil-square-o" aria-hidden="true">
                           </i>
                         </Button>
@@ -251,38 +248,38 @@ const DatasetInfoScreen = (props) => {
                     </tr>,
                     <>
                       {expandedRows.includes(column.column_order) ? (
-                        <tr className={styles.metrics} key={column.column_name}>
+                        <tr className={styles.metrics} key={i*10}>
                           <td colSpan="2">
                             <div>
                               <h4 className={styles.datasetname}>Metrics : </h4>
                               <ul>
-                                <li>
+                                <li key={i*10+1}>
                                   <span>
                                     <b> Missing count:</b>
                                   </span>{" "}
                                   <span> {column.metrics.missing_values} </span>
                                 </li>
-                                <li>
+                                <li key={i*10+2}>
                                   <span>
                                     <b>Outlier count:</b>
                                   </span>{" "}
                                   <span> {column.metrics.outlier_count} </span>
                                 </li>
-                                <li>
+                                <li key={i*10+3}>
                                   <span>
                                     <b>Unique values:</b>
                                   </span>{" "}
                                   <span> {column.metrics.unique_values} </span>
                                 </li>
-                                <li>
+                                <li key={i*10+4}>
                                   <span>
                                     <b>Samples:</b>
                                   </span>{" "}
                                   {column.metrics.samples.map((sample) => (
-                                    <span>{sample}, </span>
+                                    <span key={sample}>{sample}, </span>
                                   ))}
                                 </li>
-                                <li>
+                                <li key={i*10+5}>
                                   <span>
                                     <b>Column description:</b>
                                   </span>{" "}
@@ -296,25 +293,25 @@ const DatasetInfoScreen = (props) => {
                               <td colSpan="3">
                                 <h4 className={styles.space}>{}</h4>
                                 <ul>
-                                  <li>
+                                  <li key={i*10+6}>
                                     <span>
                                       <b>Min:</b>
                                     </span>{" "}
                                     <span> {column.metrics.min} </span>
                                   </li>
-                                  <li>
+                                  <li key={i*10+7}>
                                     <span>
                                       <b>Mean:</b>
                                     </span>{" "}
                                     <span> { Math.round(column.metrics.mean * 100) / 100} </span>
                                   </li>
-                                  <li>
+                                  <li key={i*10+8}>
                                     <span>
                                       <b>Max:</b>
                                     </span>{" "}
                                     <span> {column.metrics.max} </span>
                                   </li>
-                                  <li>
+                                  <li key={i*10+9}>
                                     <span>
                                       <b>Median:</b>
                                     </span>{" "}
