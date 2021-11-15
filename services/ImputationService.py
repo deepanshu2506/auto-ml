@@ -42,7 +42,10 @@ class ImputationService:
         )
         null_count = int(dataset_frame[col_name].isnull().sum())
         if null_count == 0:
-            return {"imputed":False,"result":"No need of data imputation for column " + col_name + " !"}
+            return {
+                "imputed": False,
+                "result": "No need of data imputation for column " + col_name + " !",
+            }
         imputer: Imputer = ImputerFactory.get_imputer(
             impute_type, dataset=dataset, column_name=col_name, value=value
         )
@@ -69,7 +72,8 @@ class ImputationService:
         )
         dataset.jobs.append(imputation_job)
         dataset.state = DatasetStates.PARTIALLY_IMPUTED
-        return {"imputed":True,"result":imputed_col_stats[0]}
+        dataset.save()
+        return {"imputed": True, "result": imputed_col_stats[0]}
 
     def add_null(self, df):
         ix = [(row, col) for row in range(df.shape[0]) for col in range(df.shape[1])]
