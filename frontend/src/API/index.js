@@ -9,6 +9,7 @@ export const apiURLs = {
       `/datasets/${datasetID}/perform_aggregation`,
 
     getDatasetDetails: (datasetID) => `/datasets/${datasetID}`,
+    singleColImputation:(datasetID)=> `/datasets/${datasetID}/impute_advanced`,
   },
 
   misc: {

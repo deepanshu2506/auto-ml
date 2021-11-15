@@ -1,16 +1,15 @@
 import {
   Button,
   Col,
-  Container,
   Form,
   InputGroup,
-  Modal,
   Row,
 } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from "./QueryBuilder.module.scss";
+import FormModal from "../../Content/FormModal/FormModal";
 const QueryBuilder = ({ features, discreteCols, onChange }) => {
   const [dialogStates, setDialogStates] = useState({
     addFilter: false,
@@ -165,46 +164,7 @@ const Tag = ({ children, onRemove }) => {
   );
 };
 
-const validateForm = (form, validator) => {
-  if (form.current.checkValidity() === false) {
-    validator(true);
-    return false;
-  } else {
-    return true;
-  }
-};
 
-const FormModal = ({ children, show, onClose, onSubmit, ...props }) => {
-  const [validate, setValidated] = useState(false);
-  const formRef = useRef(null);
-
-  const onAdd = () => {
-    const isValid = validateForm(formRef, setValidated);
-    if (isValid) {
-      onSubmit();
-      onClose();
-      try {
-      } catch (err) {}
-    }
-  };
-  return (
-    <Modal show={show} onHide={onClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>{props.ModalTitle}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Container fluid>
-          <Form noValidate validated={validate} ref={formRef}>
-            {children}
-          </Form>
-        </Container>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={onAdd}>Add</Button>
-      </Modal.Footer>
-    </Modal>
-  );
-};
 
 const AddFilterDialog = ({ show, onClose, onAdd, columns, discreteCols }) => {
   const [state, setState] = useState({});
@@ -217,6 +177,8 @@ const AddFilterDialog = ({ show, onClose, onAdd, columns, discreteCols }) => {
       onClose={onClose}
       onSubmit={onSubmit}
       ModalTitle="Add Filters"
+      animation={true}
+      closeOnSubmit={true}
     >
       <Row>
         <Form.Group as={Col} md="4" controlId="dataset-name">

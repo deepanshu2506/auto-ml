@@ -1,20 +1,25 @@
 import { Col, Container, Row, Table, Spinner, Button } from "react-bootstrap";
 import styles from "./styles.module.scss";
 import API from "../../../API";
-import { useState, useEffect } from "react";
+import {useState,useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import CanvasJSReact from "../../../assets/canvasjs.react";
+import CanvasJSReact from '../../../assets/canvasjs.react';
+import ImputeModal from "../dataImpute/singleImpute";
 
 const DatasetInfoScreen = (props) => {
   const [info, setInfo] = useState(null);
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-  const [chartData, setChartData] = useState({});
+  const [err, setErr] = useState(false);
+  const [errMsg,setErrMsg]=useState("")
+  const [chartData,setChartData]=useState({});
   const [expandedRows, setExpandedRows] = useState([]);
+  const [modalOpen,setModalOpen] = useState(false);
+  const [datasetId,setDatasetId] = useState("");
+  const [columnDetail,setcolumnDetail] = useState({});
+
+
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-  function rowStyleFormat(row, rowIdx) {
-    return { backgroundColor: rowIdx % 2 === 0 ? "red" : "blue" };
-  }
   const handleExpandRow = (event, columnId) => {
     const currentExpandedRows = expandedRows;
     const isRowExpanded = currentExpandedRows.includes(columnId);
@@ -27,19 +32,27 @@ const DatasetInfoScreen = (props) => {
       : currentExpandedRows.concat(columnId);
 
     setExpandedRows(newExpandedRows);
-  };
-  const getDatasetInfo = async () => {
-    setLoading(true);
-    try {
-      const pathname = await location.pathname;
-      const response = await API.getRequest.get(pathname);
+  }
+  const openModal=(datasetId,columnDetail)=>{
+    setcolumnDetail(columnDetail);
+    setModalOpen(true);
+  }
+  
+ const getDatasetInfo=async()=>{
+  setLoading(true);
+    try { 
+      const pathname=await location.pathname;
+      setDatasetId(pathname.substring(10));
+      const response = await API.getRequest.get(
+        pathname
+      );
       setInfo(response.data);
-      var data = response.data;
-      var percentages = {};
-      var columnData = {};
-      var valPercent = {};
-      var valPercentList = [];
-      var pieChartData = {};
+      // console.log(response.data);
+      var data=response.data;
+      var percentages={},columnData={},valPercent={},pieChartData={};
+      var valPercentList=[];
+      const threshold=15;
+      var yPercent;
       var initiateOptions = {
         exportEnabled: true,
         animationEnabled: true,
@@ -47,38 +60,44 @@ const DatasetInfoScreen = (props) => {
         title: {
           text: "",
         },
-        data: [
+        data: [{
+          type: "pie",
+          startAngle: 75,
+          toolTipContent: "<b>{label}</b>: {y}%",
+          showInLegend: "true",
+          legendText: "{label}",
+          indexLabelFontSize: 16,
+          indexLabel: "{label} - {y}%",
+          dataPoints: [ ]
+        }]
+      }
+      var options={};
+      let sum=0;
+      for (let i=0;i<data.datasetFields.length;i++)
+      {
+        columnData=data.datasetFields[i];
+        percentages=columnData.metrics.value_percentage;  
+        if(columnData.column_Type==="discrete"){
+          options=JSON.parse(JSON.stringify(initiateOptions));
+          valPercentList=[];
+          sum=0;
+          var t=0;
+          for(var p in percentages)
           {
-            type: "pie",
-            startAngle: 75,
-            toolTipContent: "<b>{label}</b>: {y}%",
-            showInLegend: "true",
-            legendText: "{label}",
-            indexLabelFontSize: 16,
-            indexLabel: "{label} - {y}%",
-            dataPoints: [],
-          },
-        ],
-      };
-      var options = {};
-      let sum = 0;
-      for (let i = 0; i < data.datasetFields.length; i++) {
-        columnData = data.datasetFields[i];
-        percentages = columnData.metrics.value_percentage;
-        if (columnData.datatype === "STRING") {
-          options = JSON.parse(JSON.stringify(initiateOptions));
-          valPercentList = [];
-          sum = 0;
-          for (var p in percentages) {
-            sum += percentages[p];
-            valPercent = {
-              y: percentages[p],
-              label: p,
+            t+=1
+            sum+=percentages[p];
+            yPercent=Math.round(percentages[p] * 100) / 100
+            valPercent={
+              y:yPercent,
+              label:p
             };
             valPercentList.push(valPercent);
+            if(t>threshold){break;}
           }
-          if (sum < 100) {
-            valPercent = { y: 100 - sum, label: "NA" };
+          if(t>threshold){continue;}
+          if(sum<100){
+            valPercent={y:100-sum,
+            label:"NA"};
             valPercentList.push(valPercent);
           }
           options.title.text = columnData.column_name;
@@ -87,8 +106,19 @@ const DatasetInfoScreen = (props) => {
         }
       }
       setChartData(pieChartData);
-    } catch (err) {
-      console.log(err);
+    } 
+    catch(err){
+      setErr(true);
+      if (err.response.status === 404) {
+        console.log(err.response.data.error);
+        setErrMsg(err.response.data.error);
+      } else if(err.response.status === 422 || err.response.status===401) 
+      {
+        console.log(err.response.data.error);
+        setErrMsg("Not authorised user");
+      }else{
+        setErrMsg(err.message);
+      }
     }
     setLoading(false);
   };
@@ -100,9 +130,18 @@ const DatasetInfoScreen = (props) => {
 
   return (
     <Container className={`${styles.screen}  pt-3 pl-4 `} fluid>
+    <ImputeModal key={columnDetail.column_name} modalOpen={modalOpen} datasetId={datasetId} columnDetail={columnDetail}></ImputeModal>
       <Container className={styles.nav} fluid>
         <span>Dataset info screen</span>
       </Container>
+      {err?
+      <Container className={styles.content} fluid>
+        <Container className={styles.err}>
+        <h5>{errMsg} !</h5>
+        </Container>
+     </Container>
+     :(
+       <>
       {loading ? (
         <Row style={{ alignItems: "center", flexDirection: "column" }}>
           <Spinner animation="border" size="lg" />
@@ -177,8 +216,7 @@ const DatasetInfoScreen = (props) => {
               bordered
               hover
               size="md"
-              className={styles.table}
-              trStyle={rowStyleFormat}
+              className={styles.infotable}
             >
               <thead>
                 <tr>
@@ -191,63 +229,57 @@ const DatasetInfoScreen = (props) => {
               </thead>
               <tbody>
                 {info &&
-                  info.datasetFields.map((column) => [
-                    <tr
+                  info.datasetFields.map((column,i) => [
+                    <tr key={i} >
+                      <td style={{ width: "10%" }}>{column.column_order +i}</td>
+                      <td  
                       onClick={(event) =>
                         handleExpandRow(event, column.column_order)
                       }
-                      key={column.column_order}
-                    >
-                      <td style={{ width: "10%" }}>{column.column_order}</td>
-                      <td style={{ width: "30%" }}>{column.column_name}</td>
-                      <td style={{ width: "25%" }}>{column.datatype}</td>
-                      <td style={{ width: "25%" }}>{column.column_Type}</td>
-                      <td style={{ width: "10%", textAlign: "center" }}>
-                        <Button
-                          style={{ padding: "0.1em 0.5rem" }}
-                          variant="primary"
-                        >
-                          <i
-                            class="fa fa-pencil-square-o"
-                            aria-hidden="true"
-                          ></i>
+                      style={{ width: "30%" }}>{column.column_name}</td>
+                      <td style={{ width: "23%" }}>{column.datatype.toLowerCase()}</td>
+                      <td style={{ width: "23%" }}>{column.column_Type}</td>
+                      <td style={{width:'24%',textAlign:'center'}}>
+                        <Button style={{padding:"0.1em 0.5rem"}} variant="primary" onClick={()=>openModal(datasetId,column)} >
+                          <i className="fa fa-pencil-square-o" aria-hidden="true">
+                          </i>
                         </Button>
                       </td>
                     </tr>,
                     <>
                       {expandedRows.includes(column.column_order) ? (
-                        <tr key={column.column_name}>
+                        <tr className={styles.metrics} key={i*10}>
                           <td colSpan="2">
                             <div>
                               <h4 className={styles.datasetname}>Metrics : </h4>
                               <ul>
-                                <li>
+                                <li key={i*10+1}>
                                   <span>
                                     <b> Missing count:</b>
                                   </span>{" "}
                                   <span> {column.metrics.missing_values} </span>
                                 </li>
-                                <li>
+                                <li key={i*10+2}>
                                   <span>
                                     <b>Outlier count:</b>
                                   </span>{" "}
                                   <span> {column.metrics.outlier_count} </span>
                                 </li>
-                                <li>
+                                <li key={i*10+3}>
                                   <span>
                                     <b>Unique values:</b>
                                   </span>{" "}
                                   <span> {column.metrics.unique_values} </span>
                                 </li>
-                                <li>
+                                <li key={i*10+4}>
                                   <span>
                                     <b>Samples:</b>
                                   </span>{" "}
                                   {column.metrics.samples.map((sample) => (
-                                    <span>{sample}, </span>
+                                    <span key={sample}>{sample}, </span>
                                   ))}
                                 </li>
-                                <li>
+                                <li key={i*10+5}>
                                   <span>
                                     <b>Column description:</b>
                                   </span>{" "}
@@ -257,29 +289,29 @@ const DatasetInfoScreen = (props) => {
                             </div>
                           </td>
                           <>
-                            {column.datatype === "NUMBER" ? (
+                            {column.column_Type  === "continous" ? (
                               <td colSpan="3">
                                 <h4 className={styles.space}>{}</h4>
                                 <ul>
-                                  <li>
+                                  <li key={i*10+6}>
                                     <span>
                                       <b>Min:</b>
                                     </span>{" "}
                                     <span> {column.metrics.min} </span>
                                   </li>
-                                  <li>
+                                  <li key={i*10+7}>
                                     <span>
                                       <b>Mean:</b>
                                     </span>{" "}
-                                    <span> {column.metrics.mean} </span>
+                                    <span> { Math.round(column.metrics.mean * 100) / 100} </span>
                                   </li>
-                                  <li>
+                                  <li key={i*10+8}>
                                     <span>
                                       <b>Max:</b>
                                     </span>{" "}
                                     <span> {column.metrics.max} </span>
                                   </li>
-                                  <li>
+                                  <li key={i*10+9}>
                                     <span>
                                       <b>Median:</b>
                                     </span>{" "}
@@ -289,9 +321,10 @@ const DatasetInfoScreen = (props) => {
                               </td>
                             ) : (
                               <td colSpan="3">
-                                <CanvasJSChart
-                                  options={chartData[column.column_name]}
-                                />
+                                {column.metrics.unique_values<15?
+                                <CanvasJSChart options = {chartData[column.column_name]}/>:
+                                <h6>More than 15 unique values to show in graph</h6>
+                                }
                               </td>
                             )}
                           </>
@@ -302,9 +335,11 @@ const DatasetInfoScreen = (props) => {
               </tbody>
             </Table>
           </Container>
-        </>
-      )}{" "}
-    </Container>
+      </>)}{" "}
+    </>
+    )}
+     
+   </Container>
   );
 };
 
