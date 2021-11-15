@@ -1,0 +1,28 @@
+@import "../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../node_modules/bootstrap/scss/variables";
+@import "../../../../node_modules/bootstrap/scss/mixins";
+@import "../screenstyles.scss";
+
+.previewDatasetTableContainer {
+    max-height: 80vh;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin: 1rem 0rem ;
+  
+    th {
+        opacity: 0.9;
+        color: white;
+        font-weight: normal;
+    }
+
+    td {
+        text-align: center;
+    }
+}
+.content {
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    width: 100%;
+  }
