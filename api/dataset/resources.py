@@ -85,7 +85,7 @@ class DatasetPreviewAPI(Resource):
         user_id = get_jwt_identity()
         try:
             df = self.datasetService.getDataset(id, user_id)
-            df=df.head(20)
+            df=df.head(100)
             columnNames=list(df.columns.values)      
             return Response(df.to_json(orient ='records'), mimetype='application/json')
         except ValidationError:

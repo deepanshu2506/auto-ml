@@ -11,18 +11,49 @@
     margin: 1rem 0rem ;
   
     th {
-        opacity: 0.9;
         color: white;
         font-weight: normal;
+    }
+    i{
+      color:rgb(155, 238, 155)
     }
 
     td {
         text-align: center;
     }
 }
+.search{
+  input{
+    font-size: 18px;
+    border: 2px solid $primary-color;
+    border-radius: 12px;
+    opacity: 0.9;
+    &:focus{
+      border: 2px solid $primary-color;
+      opacity:1
+    }
+  }
+  
+}
+
 .content {
     background-color: white;
     border: 1px solid #eee;
     border-radius: 5px;
     width: 100%;
   }
+
+.disable{
+  i{
+    color:grey
+  }
+}
+
+.pagination{
+  width:100%;
+  text-align:center;
+  input[type=number]{
+    text-align: center;
+    width: 50px;
+  }
+}
