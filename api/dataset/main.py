@@ -5,8 +5,9 @@ from services.FileService import FileService, MockFileService
 from api.dataset.resources import (
     DataSetsAPI,
     DatasetAPI,
+    DatasetPreviewAPI,
     DatasetColDetailsAPI,
-    PerformAggregationAPI,
+    PerformAggregationAPI
 )
 from flask_restful import Api
 import pickle
@@ -33,6 +34,12 @@ def initialize(api: Api) -> None:
         resource_class_kwargs={"datasetService": datasetService},
     )
 
+    api.add_resource(
+        DatasetPreviewAPI,
+        f"{API_PREFIX}/<id>/preview",
+        resource_class_kwargs={"datasetService": datasetService},
+    )
+    
     api.add_resource(
         PerformAggregationAPI,
         f"{API_PREFIX}/<id>/perform_aggregation",

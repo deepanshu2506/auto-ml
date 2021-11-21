@@ -74,6 +74,22 @@ class DatasetAPI(Resource):
         except ValidationError:
             raise DatasetNotFound
 
+class DatasetPreviewAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    def __init__(self, datasetService: DatasetService) -> None:
+        super().__init__()
+        self.datasetService = datasetService
+
+    def get(self, id):
+        user_id = get_jwt_identity()
+        try:
+            df = self.datasetService.getDataset(id, user_id)
+            # df=df.head(100)
+            columnNames=list(df.columns.values)      
+            return Response(df.to_json(orient ='records'), mimetype='application/json')
+        except ValidationError:
+            raise DatasetNotFound
 
 class PerformAggregationAPI(Resource):
     method_decorators = [jwt_required()]

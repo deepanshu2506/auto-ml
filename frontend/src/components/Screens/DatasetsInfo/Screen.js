@@ -47,7 +47,7 @@ const DatasetInfoScreen = (props) => {
         pathname
       );
       setInfo(response.data);
-      // console.log(response.data);
+      console.log(response.data);
       var data=response.data;
       var percentages={},columnData={},valPercent={},pieChartData={};
       var valPercentList=[];
@@ -200,6 +200,11 @@ const DatasetInfoScreen = (props) => {
             </Col>
             <Col md={2}>
               <Button block>Create Model</Button>
+            </Col>
+            <Col md={3}>
+              <Link to={`${location.pathname}/preview`}>
+                <Button block>Dataset Preview</Button>
+              </Link>
             </Col>
           </Row>
           <Container className={styles.content} fluid>

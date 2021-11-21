@@ -3,6 +3,7 @@ import DatasetInfoScreen from "../Screens/DatasetsInfo/Screen";
 import InputDatasetScreen from "../Screens/inputDataset/Screen";
 import ListDatasetScreen from "../Screens/listDatasets/Screen";
 import ModelInferenceScreen from "../Screens/ModelInference/Screen";
+import DatasetPreviewScreen from "../Screens/datasetPreview/Screen";
 import AggregationScreen from "../Screens/PerformAggregation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
@@ -36,6 +37,14 @@ const routes = [
     path: "/datasets/:datasetID/aggregation",
     exact: false,
     component: AggregationScreen,
+  },
+  {
+    sidebar: false,
+    auth: true,
+    title: "Dataset Preview",
+    path: "/datasets/:datasetID/preview",
+    exact: false,
+    component: DatasetPreviewScreen,
   },
   {
     sidebar: false,
