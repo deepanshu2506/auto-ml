@@ -28,8 +28,6 @@ export default function CustomTable({columns,
     } = useTable({
       columns,
       data,
-      // manualPagination:true,
-      // pageCount:controlledPageCount
     },useGlobalFilter,useSortBy,usePagination);
     const {globalFilter,pageIndex,pageSize}=state
     useEffect(()=>{
@@ -37,7 +35,22 @@ export default function CustomTable({columns,
     })
   return (
     <>
-    <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter}/>
+    <Row className={styles.pagination}>
+      <Col md={6} className={styles.left}>
+        <span> Show :{' '}
+          <select value={pageSize} onChange={e=>setPageSize(Number(e.target.value))}>
+            {[10,25,50].map(pageSize=>(
+              <option key={pageSize} value={pageSize}>
+                {pageSize}
+              </option>
+            ))}
+          </select>{' '}entries
+        </span>
+      </Col>
+      <Col md={6} className={styles.right}>
+        <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter}/>
+      </Col>
+  </Row>
     <br/>
     <Table striped  {...getTableProps()}>
       <thead className="bg-primary py-1">
@@ -83,7 +96,7 @@ export default function CustomTable({columns,
       </tfoot> */}
     </Table>
     <Row className={styles.pagination}>
-      <Col>
+      <Col md={5} className={styles.left}>
         <span>
           Go to page :{' '}
           <input type="number" defaultValue={pageIndex+1} 
@@ -91,18 +104,8 @@ export default function CustomTable({columns,
           gotoPage(pageNumber)}}/>
         </span>
       </Col>
-      <Col>
-      <span> Show :{' '}
-        <select value={pageSize} onChange={e=>setPageSize(Number(e.target.value))}>
-          {[10,25,50].map(pageSize=>(
-            <option key={pageSize} value={pageSize}>
-              {pageSize}
-            </option>
-          ))}
-        </select>
-      </span>
-      </Col>
-      <Col >
+      
+      <Col md={7} className={styles.right}>
       <Button onClick={()=>gotoPage(0)} disabled={!canPreviousPage}> {'<<'} </Button>
       <Button onClick={()=>previousPage()} disabled={!canPreviousPage}>Previous</Button>
         <span>

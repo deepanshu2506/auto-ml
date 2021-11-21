@@ -1,5 +1,5 @@
-import { useEffect, useState,useCallback} from "react";
-import { Container, Row, Spinner, Table } from "react-bootstrap";
+import { useEffect, useState} from "react";
+import { Container, Row, Spinner } from "react-bootstrap";
 import API, { apiURLs } from "../../../API";
 import styles from "./styles.module.scss";
 import CustomTable from "./CustomTable";
@@ -44,9 +44,9 @@ const DatasetPreview = (props) => {
   }, []);
  
   return (
-        <Container className={styles.screen} fluid>
-          <Container className={`${styles.nav} pt-3 pl-4 pb-3`} fluid>
-            <span>Dataset Preview</span>
+    <Container className={`${styles.screen}  pt-3 pl-4 `} fluid>
+      <Container className={`${styles.nav} pt-3 pl-4 pb-3`} fluid>
+        <span>Dataset Preview</span>
       </Container>
           {loading ? (
             <Row>
@@ -54,7 +54,7 @@ const DatasetPreview = (props) => {
             </Row>
           ) : (
             datasetDetails && columnFinal && (
-            <Container className={styles.content} fluid>
+            <Container className={`${styles.content}  pt-1 `}  fluid>
               <Row
                 className={`${styles.previewDatasetTableContainer} flex-grow-1 `}
               >

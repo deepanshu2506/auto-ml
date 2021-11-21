@@ -2,7 +2,23 @@
 @import "../../../../node_modules/bootstrap/scss/variables";
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
+.nav {
+  background-color: white;
+  border: 1px solid #eee;
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 5px;
+  margin: 0;
+  font-size: 1.2rem;
+  span{
+    color: #fff;
+    background-color: #1769aa;
+  padding: 0.7rem;
+  border-radius: 5px;
+  margin-left: -11px;
 
+  }
+}
 .previewDatasetTableContainer {
     max-height: 80vh;
     max-width: 100%;
@@ -24,12 +40,17 @@
 }
 .search{
   input{
-    font-size: 18px;
-    border: 2px solid $primary-color;
-    border-radius: 12px;
-    opacity: 0.9;
+    font-size: 17px;
+    background: transparent;
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: groove;
+    border-bottom-color:lightgray;
+    color: #44515e;
     &:focus{
-      border: 2px solid $primary-color;
+      outline:none !important;
+      border-bottom-color:$primary-color;
       opacity:1
     }
   }
@@ -37,6 +58,7 @@
 }
 
 .content {
+    margin-top: 1rem;
     background-color: white;
     border: 1px solid #eee;
     border-radius: 5px;
@@ -45,11 +67,21 @@
 
 .disable{
   i{
-    color:grey
+    color:lightgray
   }
 }
 
 .pagination{
+  padding-bottom:0.6rem;
+  span{
+    font-size:18px;
+  }
+  .right{
+    text-align:right;
+  }
+  .left{
+    text-align:left;
+  }
   width:100%;
   text-align:center;
   input[type=number]{
