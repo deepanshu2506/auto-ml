@@ -142,6 +142,13 @@ class DatasetService:
             "-createdAt"
         )
 
+    def getDataset(self,id, user_id) -> DataFrame:
+        dataset = self.find_by_id(id, user_id)
+        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
+            dataset.datasetLocation
+        )        
+        return dataset_frame
+
     def find_by_id(self, id, user_id) -> Dataset:
         datasets = Dataset.objects(createdBy=user_id, id=id, isDeleted=False)
         if len(datasets) == 0:

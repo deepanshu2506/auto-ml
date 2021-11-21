@@ -41,7 +41,7 @@ const ListDatasetScreen = (props) => {
                 variant="outline-success"
               >
                 {" "}
-                Create a dataset <i class="fa fa-plus" aria-hidden="true"></i>
+                Create a dataset <i className="fa fa-plus" aria-hidden="true"></i>
               </Button>
             </Link>
           </Col>

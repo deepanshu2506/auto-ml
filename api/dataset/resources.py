@@ -3,7 +3,7 @@ from io import StringIO
 
 from pandas.core.frame import DataFrame
 from utils.exceptions import DatasetNotFound
-from flask import Response, jsonify, make_response, send_file
+from flask import request,Response, jsonify, make_response, send_file
 from mongoengine.errors import ValidationError
 from services.DatasetService import DatasetService
 from api.dataset.requestParsers import (
@@ -74,6 +74,40 @@ class DatasetAPI(Resource):
         except ValidationError:
             raise DatasetNotFound
 
+class DatasetPreviewAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    def __init__(self, datasetService: DatasetService) -> None:
+        super().__init__()
+        self.datasetService = datasetService
+
+    def get(self, id):
+        user_id = get_jwt_identity()    
+        export_to_file=request.args.get('exportToFile')
+
+        try:
+            df = self.datasetService.getDataset(id, user_id)
+            if export_to_file=='false':
+                df=df.head(100)
+            headers=list(df.columns.values)
+            values=df.values.tolist()  
+            if export_to_file=='false':
+                return {"headers":headers,"values":values}
+            else:
+                result_df = DataFrame(values, columns=headers)
+                csv_file = StringIO()
+                filename = "%s.csv" % ('imputation')
+                df.to_csv(csv_file, encoding='utf-8',index=False)
+                csv_output = csv_file.getvalue()
+                csv_file.close()
+
+                resp = make_response(csv_output)
+                resp.headers["Content-Disposition"] = ("attachment; filename=%s" % filename)
+                resp.headers["Content-Type"] = "text/csv"
+                resp.headers['x-suggested-filename'] = filename
+                return resp
+        except ValidationError:
+            raise DatasetNotFound
 
 class PerformAggregationAPI(Resource):
     method_decorators = [jwt_required()]

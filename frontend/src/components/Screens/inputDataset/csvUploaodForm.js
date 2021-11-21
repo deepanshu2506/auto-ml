@@ -86,7 +86,7 @@ const CSVUploadForm = () => {
         <Row>
           <Form.Group as={Col} md="6" controlId="dataset-name">
             <Form.Label>Dataset Name</Form.Label>
-            <InputGroup hasValidation>
+            <InputGroup>
               <Form.Control
                 type="text"
                 placeholder="Dataset Name"
@@ -106,7 +106,7 @@ const CSVUploadForm = () => {
           </Form.Group>
           <Form.Group as={Col} md="6" controlId="null-placeholder">
             <Form.Label>Null Placeholder</Form.Label>
-            <InputGroup hasValidation>
+            <InputGroup>
               <Form.Control
                 type="text"
                 placeholder="Optional"
