@@ -225,7 +225,7 @@ export const AutoimputeScreen = (props) => {
                                                     </thead>
                                                     <tbody>
                                                         {datasetPreview.values.map((row) => (
-                                                            <tr>
+                                                            <tr key={(index = index + 1)}>
                                                                 {row.map((val) => (
                                                                     <td key={(index = index + 1)}>{val}</td>
                                                                 ))}
