@@ -3,7 +3,7 @@ from io import StringIO
 
 from pandas.core.frame import DataFrame
 from utils.exceptions import DatasetNotFound
-from flask import Response, jsonify, make_response, send_file
+from flask import request,Response, jsonify, make_response, send_file
 from mongoengine.errors import ValidationError
 from services.DatasetService import DatasetService
 from api.dataset.requestParsers import (
@@ -82,12 +82,33 @@ class DatasetPreviewAPI(Resource):
         self.datasetService = datasetService
 
     def get(self, id):
-        user_id = get_jwt_identity()
+        user_id = get_jwt_identity()    
+        export_to_file=request.args.get('exportToFile',None)
+        full_dataset_preview=request.args.get('fullDatasetPreview',None)
+
         try:
             df = self.datasetService.getDataset(id, user_id)
-            # df=df.head(100)
-            columnNames=list(df.columns.values)      
-            return Response(df.to_json(orient ='records'), mimetype='application/json')
+            if full_dataset_preview=='true':
+                return Response(df.to_json(orient ='records'), mimetype='application/json')
+            if export_to_file=='false':
+                df=df.head(100)
+            headers=list(df.columns.values)
+            values=df.values.tolist()  
+            if export_to_file=='false':
+                return {"headers":headers,"values":values}
+            else:
+                #result_df = DataFrame(values, columns=headers)
+                csv_file = StringIO()
+                filename = "%s.csv" % ('imputation')
+                df.to_csv(csv_file, encoding='utf-8',index=False)
+                csv_output = csv_file.getvalue()
+                csv_file.close()
+
+                resp = make_response(csv_output)
+                resp.headers["Content-Disposition"] = ("attachment; filename=%s" % filename)
+                resp.headers["Content-Type"] = "text/csv"
+                resp.headers['x-suggested-filename'] = filename
+                return resp
         except ValidationError:
             raise DatasetNotFound
 

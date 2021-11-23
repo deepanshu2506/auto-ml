@@ -5,6 +5,7 @@ import ListDatasetScreen from "../Screens/listDatasets/Screen";
 import ModelInferenceScreen from "../Screens/ModelInference/Screen";
 import DatasetPreviewScreen from "../Screens/datasetPreview/Screen";
 import AggregationScreen from "../Screens/PerformAggregation/Screen";
+import AutoimputeScreen from "../Screens/PerformAutoimputation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
 import {LoginScreen} from "../Screens/login/Screen";
@@ -37,6 +38,14 @@ const routes = [
     path: "/datasets/:datasetID/aggregation",
     exact: false,
     component: AggregationScreen,
+  },
+  {
+    sidebar: false,
+    auth: true,
+    title: "Auto imputation",
+    path: "/datasets/:datasetID/auto_impute",
+    exact: false,
+    component: AutoimputeScreen,
   },
   {
     sidebar: false,

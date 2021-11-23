@@ -5,11 +5,13 @@ export const apiURLs = {
   dataset: {
     create: "/datasets/",
     getFeatures: (datasetID) => `/datasets/${datasetID}/col_details`,
+    getDatasetPreview: (datasetID) => `/datasets/${datasetID}/preview`,
     performAggregation: (datasetID) =>
       `/datasets/${datasetID}/perform_aggregation`,
-
+      performAutoimputation: (datasetID) =>
+      `/datasets/${datasetID}/auto_impute`,
     getDatasetDetails: (datasetID) => `/datasets/${datasetID}`,
-    getDatasetPreview: (datasetID) => `/datasets/${datasetID}/preview`,
+    deleteDataset:(datasetID) => `/datasets/${datasetID}`,
     singleColImputation:(datasetID)=> `/datasets/${datasetID}/impute_advanced`,
   },
 

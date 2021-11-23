@@ -212,7 +212,9 @@ const DatasetInfoScreen = (props) => {
               Datasets Fields description :
               <span style={{ float: "right" }} className="pb-2">
                 {" "}
-                <Button variant="outline-primary">Auto Impute</Button>{" "}
+                <Link to={`${location.pathname}/auto_impute`}>
+                  <Button variant="outline-primary">Auto Impute</Button>{" "}
+                </Link>
               </span>
             </h4>
 

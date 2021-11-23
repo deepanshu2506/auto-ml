@@ -6,7 +6,7 @@ import CustomTable from "./CustomTable";
 const DatasetPreview = (props) => {
   const [datasetDetails, setDatasetDetails] = useState([]);
   // const [columnNames, setColumnNames] = useState([]);
-  const [columnFinal, setColumnFianl] = useState([]);
+  const [columnFinal, setColumnFinal] = useState([]);
   const [loading, setLoading] = useState(false);
   const params = props.rootParams.params;
 
@@ -14,10 +14,11 @@ const DatasetPreview = (props) => {
   const fetchDataset = async () => {
     try {
       setLoading(true);
-      const {data} =  await API.json.get(apiURLs.dataset.getDatasetPreview(params.datasetID));
-      // console.log(data);
+      const {data} =  await API.json.get(apiURLs.dataset.getDatasetPreview(params.datasetID),{
+      params: {
+        fullDatasetPreview:true
+      }});
       const columnList=Object.keys(data[0]);
-      // console.log(columnList);
       const columnObjList=[];
       for(let column of columnList){
         var x= {
@@ -27,8 +28,7 @@ const DatasetPreview = (props) => {
           };
           columnObjList.push(x);
       }
-      setColumnFianl(columnObjList);
-      // setColumnNames(columnList);
+      setColumnFinal(columnObjList);
       setDatasetDetails(data);
       setLoading(false);
 
