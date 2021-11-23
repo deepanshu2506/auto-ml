@@ -83,10 +83,13 @@ class DatasetPreviewAPI(Resource):
 
     def get(self, id):
         user_id = get_jwt_identity()    
-        export_to_file=request.args.get('exportToFile')
+        export_to_file=request.args.get('exportToFile',None)
+        full_dataset_preview=request.args.get('fullDatasetPreview',None)
 
         try:
             df = self.datasetService.getDataset(id, user_id)
+            if full_dataset_preview=='true':
+                return Response(df.to_json(orient ='records'), mimetype='application/json')
             if export_to_file=='false':
                 df=df.head(100)
             headers=list(df.columns.values)
@@ -94,7 +97,7 @@ class DatasetPreviewAPI(Resource):
             if export_to_file=='false':
                 return {"headers":headers,"values":values}
             else:
-                result_df = DataFrame(values, columns=headers)
+                #result_df = DataFrame(values, columns=headers)
                 csv_file = StringIO()
                 filename = "%s.csv" % ('imputation')
                 df.to_csv(csv_file, encoding='utf-8',index=False)

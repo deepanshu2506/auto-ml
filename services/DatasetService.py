@@ -148,12 +148,12 @@ class DatasetService:
             dataset.datasetLocation
         )        
         return dataset_frame
-
+        
     def find_by_id(self, id, user_id) -> Dataset:
         datasets = Dataset.objects(createdBy=user_id, id=id, isDeleted=False)
         if len(datasets) == 0:
             raise DatasetNotFound
-        return datasets[0]
+        return datasets[0]              
 
     def delete_dataset(self, id, user_id) -> None:
         dataset = self.find_by_id(id, user_id)
