@@ -11,6 +11,7 @@ export const apiURLs = {
       performAutoimputation: (datasetID) =>
       `/datasets/${datasetID}/auto_impute`,
     getDatasetDetails: (datasetID) => `/datasets/${datasetID}`,
+    deleteDataset:(datasetID) => `/datasets/${datasetID}`,
     singleColImputation:(datasetID)=> `/datasets/${datasetID}/impute_advanced`,
   },
 

@@ -1,6 +1,6 @@
 import { Col, Container, Row, Table, Button, Spinner } from "react-bootstrap";
 import styles from "./styles.module.scss";
-import API from "../../../API";
+import API, { apiURLs } from "../../../API";
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { FaInfoCircle, FaTrash } from "react-icons/fa";
@@ -14,7 +14,7 @@ const ListDatasetScreen = (props) => {
     try {
       const pathname = await location.pathname;
       const response = await API.getRequest.get(pathname);
-      setInfo(response.data);
+      setInfo(response.data.data);
     } catch (err) {
       console.log(err);
     }
@@ -22,9 +22,24 @@ const ListDatasetScreen = (props) => {
   };
 
   useEffect(() => {
-    console.log("useEffect called");
     getDatasetList();
   }, []);
+
+  const deleteDataset = async (datasetID) => {
+    try {
+      const response = await API.json.delete(apiURLs.dataset.deleteDataset(datasetID));
+      if(response.status===204){
+        var newinfo = info.filter((item) => item.id !== datasetID);
+        setInfo(newinfo)
+        alert("Selected dataset deleted successfully!")     
+      }
+      
+    }
+    catch (err) {
+      alert("SORRY!Try again!")
+      console.log(err)
+    }
+  }
 
   return (
     <Container>
@@ -66,8 +81,8 @@ const ListDatasetScreen = (props) => {
               </Row>
             ) : (
               info &&
-              info.data.map((column) => [
-                <tr>
+              info.map((column) => [
+                <tr key={column.id}>
                   <td style={{ width: "10%" }}>{(index = index + 1)}</td>
                   <td style={{ width: "25%" }}>{column.dataset_name}</td>
                   <td style={{ width: "25%" }}>
@@ -85,14 +100,12 @@ const ListDatasetScreen = (props) => {
                     </Link>
                   </td>
                   <td style={{ width: "15%", textAlign: "center" }}>
-                    <Link to={{ pathname: `/datasets/${column.id}` }}>
-                      <Button
-                        style={{ padding: "0.1em 0.5rem" }}
-                        variant="danger"
-                      >
-                        <FaTrash />
-                      </Button>
-                    </Link>
+                    <Button onClick={()=>deleteDataset(column.id)}
+                      style={{ padding: "0.1em 0.5rem" }}
+                      variant="danger"
+                    >
+                      <FaTrash />
+                    </Button>
                   </td>
                 </tr>,
               ])
