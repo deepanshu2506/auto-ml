@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const { loggedIn,user } = useSelector(state => state.authentication);
-  console.log(loggedIn);
   //const isAuthenticated = localStorage.getItem('user') ? true : false;
   const isAuthenticated=loggedIn
   return isAuthenticated ? (

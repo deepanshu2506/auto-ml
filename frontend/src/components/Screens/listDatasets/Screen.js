@@ -9,9 +9,15 @@ const ListDatasetScreen = (props) => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   var index = 0;
+
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }  
+
   const getDatasetList = async () => {
     setLoading(true);
     try {
+      await sleep(100);//wait till token is saved in local storage
       const pathname = await location.pathname;
       const response = await API.getRequest.get(pathname);
       setInfo(response.data.data);
@@ -28,12 +34,12 @@ const ListDatasetScreen = (props) => {
   const deleteDataset = async (datasetID) => {
     try {
       const response = await API.json.delete(apiURLs.dataset.deleteDataset(datasetID));
-      if(response.status===204){
+      if (response.status === 204) {
         var newinfo = info.filter((item) => item.id !== datasetID);
         setInfo(newinfo)
-        alert("Selected dataset deleted successfully!")     
+        alert("Selected dataset deleted successfully!")
       }
-      
+
     }
     catch (err) {
       alert("SORRY!Try again!")
@@ -76,9 +82,13 @@ const ListDatasetScreen = (props) => {
           </thead>
           <tbody>
             {loading ? (
-              <Row style={{ alignItems: "center", flexDirection: "column" }}>
-                <Spinner animation="border" size="lg" />
-              </Row>
+              <tr>
+                <td colSpan="6">
+                  <Row style={{ alignItems: "center", flexDirection: "column" }}>
+                    <Spinner animation="border" size="lg" />
+                  </Row>
+                </td>
+              </tr>
             ) : (
               info &&
               info.map((column) => [
@@ -100,7 +110,7 @@ const ListDatasetScreen = (props) => {
                     </Link>
                   </td>
                   <td style={{ width: "15%", textAlign: "center" }}>
-                    <Button onClick={()=>deleteDataset(column.id)}
+                    <Button onClick={() => deleteDataset(column.id)}
                       style={{ padding: "0.1em 0.5rem" }}
                       variant="danger"
                     >

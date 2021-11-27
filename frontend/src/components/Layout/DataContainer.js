@@ -40,7 +40,7 @@ const DataContainer = (props) => {
   return (
     <Switch>
       {routes}
-      <Route path="/" component={() => <Redirect to="/datasets" />} />
+      <Route path="/" component={() => <Redirect to="/datasets/" />} />
     </Switch>
   );
 };
