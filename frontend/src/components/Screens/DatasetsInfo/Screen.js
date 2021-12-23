@@ -4,7 +4,7 @@ import API from "../../../API";
 import {useState,useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import CanvasJSReact from '../../../assets/canvasjs.react';
-import ImputeModal from "../dataImpute/singleImpute";
+import ImputeModal from "../PerformSingleimputation/singleImpute";
 
 const DatasetInfoScreen = (props) => {
   const [info, setInfo] = useState(null);
@@ -17,7 +17,7 @@ const DatasetInfoScreen = (props) => {
   const [modalOpen,setModalOpen] = useState(false);
   const [datasetId,setDatasetId] = useState("");
   const [columnDetail,setcolumnDetail] = useState({});
-
+  const [isImputed, setIsImputed] = useState(false);
 
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
   const handleExpandRow = (event, columnId) => {
@@ -34,6 +34,7 @@ const DatasetInfoScreen = (props) => {
     setExpandedRows(newExpandedRows);
   }
   const openModal=(datasetId,columnDetail)=>{
+    setIsImputed(false);
     setcolumnDetail(columnDetail);
     setModalOpen(true);
   }
@@ -124,13 +125,15 @@ const DatasetInfoScreen = (props) => {
   };
 
   useEffect(() => {
+    console.log(isImputed);
     console.log("useEffect called");
     getDatasetInfo();
-  }, []);
+    setIsImputed(false);
+  }, [isImputed]);
 
   return (
     <Container className={`${styles.screen}  pt-3 pl-4 `} fluid>
-    <ImputeModal key={columnDetail.column_name} modalOpen={modalOpen} datasetId={datasetId} columnDetail={columnDetail}></ImputeModal>
+    <ImputeModal key={columnDetail.column_name} passIsImputed={setIsImputed} modalOpen={modalOpen} datasetId={datasetId} columnDetail={columnDetail}></ImputeModal>
       <Container className={styles.nav} fluid>
         <span>Dataset info screen</span>
       </Container>
