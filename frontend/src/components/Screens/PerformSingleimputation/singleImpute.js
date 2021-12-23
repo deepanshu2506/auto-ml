@@ -32,8 +32,11 @@ const ImputeModal = (props) => {
         apiURLs.dataset.singleColImputation(props.datasetId),
         body
       );
-      // console.log(data);
+      console.log(data);
       setResult(data);
+      console.log("data imputed"+ data.imputed);
+      props.passIsImputed(data.imputed);
+      console.log(data.imputed);
     } catch (err) {
       console.log(err);
     }
