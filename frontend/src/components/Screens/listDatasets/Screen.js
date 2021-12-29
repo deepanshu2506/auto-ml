@@ -48,7 +48,8 @@ const ListDatasetScreen = (props) => {
   }
 
   return (
-    <Container>
+    <Container className={`${styles.screen} ${styles.inputDatasetScreen}  pt-3 pl-4 `}
+    fluid>
       <Container className={`${styles.nav} pt-3 pl-4 pb-3`} fluid>
         <Row>
           <Col>

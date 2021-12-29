@@ -8,6 +8,8 @@ import AggregationScreen from "../Screens/PerformAggregation/Screen";
 import AutoimputeScreen from "../Screens/PerformAutoimputation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
+import Tour from "../tour/tour";
+
 import {LoginScreen} from "../Screens/login/Screen";
 import {SignupScreen} from "../Screens/signup/Screen";
 
@@ -111,6 +113,14 @@ const routes = [
     auth: false,
     exact: true,
     component: SignupScreen,
+  },
+  {
+    sidebar: false,
+    title: "Tour",
+    path: "/tour",
+    auth: false,
+    exact: false,
+    component: Tour,
   },
 ];
 

@@ -1,12 +1,12 @@
 import { Button, Form, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import styles from "./Appbar.module.scss";
-
-import { useSelector } from 'react-redux';
+import { useState, } from "react";
 import { connect } from 'react-redux';
 import { userActions } from '../../../actions';
 
 const Appbar = (props) => {
+  const [isActive, setActive] = useState(true);
   //const { loggedIn,user } = useSelector(state => state.authentication);
   return (
   <Navbar bg="primary" className={styles.Appbar} variant="dark">
@@ -20,12 +20,17 @@ const Appbar = (props) => {
             Logout
           </Button>
       </Form> :
-      <Form inline>
+      <Form inline >
         <Link to="/login">
-          <Button variant="light">Login</Button>
+          <Button 
+           className={isActive ? styles.login: null} 
+           onClick={()=>setActive(true)}>
+             Login</Button>
         </Link>
-        <Link to="/signup">
-          <Button variant="outline-light" className="ml-2">Signup</Button>
+        <Link to="/signup" className="ml-2">
+        <Button 
+           className={isActive ? null:styles.login} 
+           onClick={()=>setActive(false)}>Signup</Button>
         </Link>
       </Form>
     }

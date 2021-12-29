@@ -17,7 +17,10 @@ const InputDatasetScreen = (props) => {
       className={`${styles.screen} ${styles.inputDatasetScreen}  pt-3 pl-4 `}
       fluid
     >
-      <Row className={styles.nav}>
+       <Container className={styles.nav} fluid>
+        <span>Input Dataset</span>
+      </Container>
+      <Row className={styles.navupload}>
         <Nav
           onSelect={changeUploadType}
           variant="pills"

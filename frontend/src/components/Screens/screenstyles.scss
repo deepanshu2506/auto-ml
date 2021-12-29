@@ -13,7 +13,24 @@
     }
   }
 }
-
+.nav {
+  background-color: white;
+  border: 1px solid #eee;
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  span{
+    color: #1769aa;
+    background-color: white;
+    padding: 0.7rem;
+    /* border-radius: 5px; */
+    font-family: georgia;
+    margin-left: -11px;
+    font-weight: 600;
+  }
+}
 .scrollableContainer {
   overflow-y: auto;
   padding-left: 0;

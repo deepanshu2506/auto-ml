@@ -2,23 +2,7 @@
 @import "../../../../node_modules/bootstrap/scss/variables";
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
-.nav {
-  background-color: white;
-  border: 1px solid #eee;
-  width: 100%;
-  padding: 0.7rem;
-  border-radius: 5px;
-  margin: 0;
-  font-size: 1.2rem;
-  span{
-    color: #fff;
-    background-color: #1769aa;
-  padding: 0.7rem;
-  border-radius: 5px;
-  margin-left: -11px;
 
-  }
-}
 .previewDatasetTableContainer {
     max-height: 80vh;
     max-width: 100%;
@@ -58,7 +42,6 @@
 }
 
 .content {
-    margin-top: 1rem;
     background-color: white;
     border: 1px solid #eee;
     border-radius: 5px;

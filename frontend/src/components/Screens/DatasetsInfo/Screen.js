@@ -125,8 +125,8 @@ const DatasetInfoScreen = (props) => {
   };
 
   useEffect(() => {
-    console.log(isImputed);
-    console.log("useEffect called");
+    // console.log(isImputed);
+    // console.log("useEffect called");
     getDatasetInfo();
     setIsImputed(false);
   }, [isImputed]);
@@ -138,7 +138,7 @@ const DatasetInfoScreen = (props) => {
         <span>Dataset info screen</span>
       </Container>
       {err?
-      <Container className={styles.content} fluid>
+      <Container className={`${styles.content} my-1`} fluid>
         <Container className={styles.err}>
         <h5>{errMsg} !</h5>
         </Container>
@@ -151,7 +151,7 @@ const DatasetInfoScreen = (props) => {
         </Row>
       ) : (
         <>
-          <Container className={styles.content} fluid>
+          <Container className={`${styles.content} mb-2`} fluid>
             <h4 className={styles.datasetname}>
               Dataset name :<span> {info.dataset_name}</span>
             </h4>
@@ -192,16 +192,16 @@ const DatasetInfoScreen = (props) => {
               </Col>
             </Row>
           </Container>
-          <Row>
-            <Col md={2}>
+          <Row className={styles.functions}>
+            <Col md={3}>
               <Link to={`${location.pathname}/aggregation`}>
                 <Button block>Aggregation</Button>
               </Link>
             </Col>
-            <Col md={2}>
+            <Col md={3}>
               <Button block>Visualization</Button>
             </Col>
-            <Col md={2}>
+            <Col md={3}>
               <Button block>Create Model</Button>
             </Col>
             <Col md={3}>
@@ -210,8 +210,8 @@ const DatasetInfoScreen = (props) => {
               </Link>
             </Col>
           </Row>
-          <Container className={styles.content} fluid>
-            <h4 className={`${styles.datasetname} pb-1`}>
+          <Container className={`${styles.content} mt-2`} fluid>
+            <h4 className={`${styles.headtable} pb-1`}>
               Datasets Fields description :
               <span style={{ float: "right" }} className="pb-2">
                 {" "}
