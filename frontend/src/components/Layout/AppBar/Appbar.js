@@ -11,7 +11,7 @@ const Appbar = (props) => {
   return (
   <Navbar bg="primary" className={styles.Appbar} variant="dark">
     <Link to="/">
-      <Navbar.Brand>AUTO ML</Navbar.Brand>
+      <Navbar.Brand>DATA GENIE</Navbar.Brand>
     </Link>
     <Nav className="mr-auto"></Nav>
     {props.loggedIn ?
