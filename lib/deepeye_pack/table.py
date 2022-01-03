@@ -1,7 +1,7 @@
 
 import datetime
 from .features import Features, Type
-from .view import View, Chart
+from .view import View, ChartType
 month = ['','Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec']
 
 
@@ -225,18 +225,18 @@ class Table(object):
                     if fi.type == Type.categorical and fj.type == Type.numerical and fi.ratio == 1.0:
                         charts = []
                         if fj.minmin != '' and fj.minmin > 0 and fi.distinct <= 5 and not (len(fj.name) >= 6 and fj.name[0:4] == 'AVG(' and fj.name[-1] == ')'):
-                            charts.append(Chart.pie)
+                            charts.append(ChartType.pie)
                         if fi.distinct <= 20:
-                            charts.append(Chart.bar)
-                        # charts.append(Chart.bar)
+                            charts.append(ChartType.bar)
+                        # charts.append(ChartType.bar)
                     elif fi.type == Type.temporal and fj.type == Type.numerical and fi.ratio == 1.0:
                         charts = []
                         if fi.distinct < 7:
-                            charts.append(Chart.bar)
+                            charts.append(ChartType.bar)
                         else:
-                            charts.append(Chart.line)
+                            charts.append(ChartType.line)
                     elif (not self.transformed) and fi.type == Type.numerical and fj.type == Type.numerical and i < j:
-                        charts = [Chart.scatter]
+                        charts = [ChartType.scatter]
                     else:
                         charts = []
                     for chart in charts:
@@ -250,12 +250,12 @@ class Table(object):
                     fi = self.features[i]
                     fj = self.features[j]
                     if fi.type == Type.categorical and fj.type == Type.numerical:# and fj.minmin > 0:
-                        charts = [Chart.bar]
+                        charts = [ChartType.bar]
                     elif fi.type == Type.temporal and fj.type == Type.numerical:
                         if self.tuple_num / self.classify_num < 7:
-                            charts = [Chart.bar]
+                            charts = [ChartType.bar]
                         else:
-                            charts = [Chart.line]
+                            charts = [ChartType.line]
                     else:
                         charts = []
                     for chart in charts:
@@ -278,7 +278,7 @@ class Table(object):
                         id += self.classes[k][1]
                         X.append(x)
                         Y.append(y)
-                    v = View(self,i,j,self.classify_id,self.classify_num,X,Y,Chart.scatter)
+                    v = View(self,i,j,self.classify_id,self.classify_num,X,Y,ChartType.scatter)
                     self.views.append(v)
                     self.view_num+=1
 
