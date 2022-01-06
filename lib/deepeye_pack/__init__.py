@@ -214,7 +214,7 @@ class deepeye(object):
                 if x[i][0] == "'" or x[i][0] == '"':
                     x[i] = x[i].replace("'", "").replace('"', "")
                 for j in test[x[i]]:
-                    if not (j == 0 or (j > 1000 and j < 2100)):
+                    if not (j > 1000 and j < 2100):
                         types[i] = test.dtypes[i].name[0:5]
                         break
                     else:
@@ -229,7 +229,7 @@ class deepeye(object):
                     else:
                         types[i] = "date"
 
-        name = path.rsplit("/", 1)[-1][:-4]
+        name = path.rsplit("/", 1)[-1].rsplit("\\", 1)[-1][:-4]
         self.table_info(name, x, types)
         self.import_method = methods_of_import[2]  # = 'csv'
 

@@ -8,9 +8,9 @@ from api.visualization.requestParsers import autoVisualizationRequestParser
 
 
 class AutoVisualizationAPI(Resource):
-    def __init__(self, visualuzationService: VisualizationService) -> None:
+    def __init__(self, visualizationService: VisualizationService) -> None:
         super().__init__()
-        self.visualizationService = visualuzationService
+        self.visualizationService = visualizationService
 
     method_decorators = [jwt_required()]
 
@@ -20,4 +20,5 @@ class AutoVisualizationAPI(Resource):
         visualizations: List[Chart] = self.visualizationService.get_visualizations(
             dataset_id, user_id, **body
         )
-        return jsonify(list(map(lambda x: x.to_dict())))
+        print(len(visualizations))
+        return jsonify(list(map(lambda x: x.to_dict(), visualizations)))

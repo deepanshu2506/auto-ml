@@ -14,11 +14,11 @@ class VisualizationService:
         pass
 
     def get_visualizations(
-        self, dataset_id: str, user_id: str, count: int = 10
+        self, dataset_id: str, user_id: str, count: int = None
     ) -> List[Chart]:
         dataset = self.datasetService.find_by_id(dataset_id, user_id)
         dp = deepeye(dataset.name)
         dp.from_csv(dataset.datasetLocation)
-        dp.learning_to_rank()
+        dp.partial_order()
         visualizations: List[Chart] = dp.to_list()[:count]
         return visualizations

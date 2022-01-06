@@ -75,15 +75,15 @@ class Chart:
 
     def to_dict(self) -> dict:
         result: dict = {}
-        result["order1"] = from_int(self.order1)
-        result["order2"] = from_int(self.order2)
-        result["describe"] = from_str(self.describe)
-        result["x_name"] = from_str(self.x_name)
-        result["y_name"] = from_str(self.y_name)
-        result["chart"] = from_str(self.chart)
-        result["classify"] = from_list(lambda x: x, self.classify)
-        result["x_data"] = from_list(lambda x: from_list(from_str, x), self.x_data)
-        result["y_data"] = from_list(lambda x: from_list(from_int, x), self.y_data)
+        result["order1"] = self.order1
+        result["order2"] = self.order2
+        result["describe"] = self.describe
+        result["x_name"] = self.x_name
+        result["y_name"] = self.y_name
+        result["chart"] = self.chart
+        result["classify"] = self.classify
+        result["x_data"] = self.x_data
+        result["y_data"] = self.y_data
         return result
 
 

@@ -1,4 +1,6 @@
 from flask_restful import reqparse
 
 autoVisualizationRequestParser = reqparse.RequestParser()
-autoVisualizationRequestParser.add_argument("count",type=int,required=False)
+autoVisualizationRequestParser.add_argument(
+    "count", type=int, required=False, default=10
+)
