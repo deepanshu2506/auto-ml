@@ -1,5 +1,5 @@
 from utils.enums import AggregationMethods, ImputationMethods
-from utils.validators import enum_validator
+from utils.validators import enum_validator, nested_list
 from flask_restful import reqparse
 from werkzeug.datastructures import FileStorage
 
@@ -56,3 +56,18 @@ singleColImputationRequestParser.add_argument("value", type=str)
 
 autoImputationRequestParser = reqparse.RequestParser()
 autoImputationRequestParser.add_argument("target_col_name", type=str, required=True)
+
+colDescriptionSchema = {
+    "col_name": {
+        "type": "string",
+        "required": True,
+    },
+    "description": {
+        "type": "string",
+        "required": True,
+    },
+}
+colDescriptionRequestParser = reqparse.RequestParser()
+colDescriptionRequestParser.add_argument(
+    "data", type=nested_list(colDescriptionSchema), location="json"
+)

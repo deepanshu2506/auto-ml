@@ -1,15 +1,17 @@
 from http import HTTPStatus
 from io import StringIO
+from typing import Dict, List
 
 from pandas.core.frame import DataFrame
 from utils.exceptions import DatasetNotFound
-from flask import request,Response, jsonify, make_response, send_file
+from flask import request, Response, jsonify, make_response, send_file
 from mongoengine.errors import ValidationError
 from services.DatasetService import DatasetService
 from api.dataset.requestParsers import (
     NewDatasetRequestParser,
     aggregationRequestParser,
     colDetailsRequestParser,
+    colDescriptionRequestParser,
 )
 from flask_restful import Resource, marshal_with
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -74,6 +76,7 @@ class DatasetAPI(Resource):
         except ValidationError:
             raise DatasetNotFound
 
+
 class DatasetPreviewAPI(Resource):
     method_decorators = [jwt_required()]
 
@@ -82,35 +85,40 @@ class DatasetPreviewAPI(Resource):
         self.datasetService = datasetService
 
     def get(self, id):
-        user_id = get_jwt_identity()    
-        export_to_file=request.args.get('exportToFile',None)
-        full_dataset_preview=request.args.get('fullDatasetPreview',None)
+        user_id = get_jwt_identity()
+        export_to_file = request.args.get("exportToFile", None)
+        full_dataset_preview = request.args.get("fullDatasetPreview", None)
 
         try:
             df = self.datasetService.getDataset(id, user_id)
-            if full_dataset_preview=='true':
-                return Response(df.to_json(orient ='records'), mimetype='application/json')
-            if export_to_file=='false':
-                df=df.head(100)
-            headers=list(df.columns.values)
-            values=df.values.tolist()  
-            if export_to_file=='false':
-                return {"headers":headers,"values":values}
+            if full_dataset_preview == "true":
+                return Response(
+                    df.to_json(orient="records"), mimetype="application/json"
+                )
+            if export_to_file == "false":
+                df = df.head(100)
+            headers = list(df.columns.values)
+            values = df.values.tolist()
+            if export_to_file == "false":
+                return {"headers": headers, "values": values}
             else:
-                #result_df = DataFrame(values, columns=headers)
+                # result_df = DataFrame(values, columns=headers)
                 csv_file = StringIO()
-                filename = "%s.csv" % ('imputation')
-                df.to_csv(csv_file, encoding='utf-8',index=False)
+                filename = "%s.csv" % ("imputation")
+                df.to_csv(csv_file, encoding="utf-8", index=False)
                 csv_output = csv_file.getvalue()
                 csv_file.close()
 
                 resp = make_response(csv_output)
-                resp.headers["Content-Disposition"] = ("attachment; filename=%s" % filename)
+                resp.headers["Content-Disposition"] = (
+                    "attachment; filename=%s" % filename
+                )
                 resp.headers["Content-Type"] = "text/csv"
-                resp.headers['x-suggested-filename'] = filename
+                resp.headers["x-suggested-filename"] = filename
                 return resp
         except ValidationError:
             raise DatasetNotFound
+
 
 class PerformAggregationAPI(Resource):
     method_decorators = [jwt_required()]
@@ -131,15 +139,15 @@ class PerformAggregationAPI(Resource):
         else:
             result_df = DataFrame(values, columns=headers)
             csv_file = StringIO()
-            filename = "%s.csv" % ('aggregation')
-            result_df.to_csv(csv_file, encoding='utf-8',index=False)
+            filename = "%s.csv" % ("aggregation")
+            result_df.to_csv(csv_file, encoding="utf-8", index=False)
             csv_output = csv_file.getvalue()
             csv_file.close()
 
             resp = make_response(csv_output)
-            resp.headers["Content-Disposition"] = ("attachment; filename=%s" % filename)
+            resp.headers["Content-Disposition"] = "attachment; filename=%s" % filename
             resp.headers["Content-Type"] = "text/csv"
-            resp.headers['x-suggested-filename'] = filename
+            resp.headers["x-suggested-filename"] = filename
             return resp
 
 
@@ -156,3 +164,29 @@ class DatasetColDetailsAPI(Resource):
 
         cols = self.datasetService.get_discrete_col_details(id, user_id, **body)
         return jsonify({"data": cols})
+
+
+class DatasetColumnDescriptionAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    def __init__(self, datasetService: DatasetService) -> None:
+        super().__init__()
+        self.datasetService = datasetService
+
+    def _get_descriptions(body: dict) -> List[Dict]:
+        return body.get("data")
+
+    def _update_descriptions(self, id):
+        user_id = get_jwt_identity()
+        body = colDescriptionRequestParser.parse_args()
+        column_descriptions = self._get_descriptions(body)
+        self.datasetService.set_col_description(id, user_id, column_descriptions)
+
+    def post(self, id):
+        self._update_descriptions(id)
+
+    def put(self, id):
+        self._update_descriptions(id)
+
+    def patch(self, id):
+        self._update_descriptions(id)
