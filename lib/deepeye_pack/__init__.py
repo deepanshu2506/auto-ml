@@ -4,7 +4,7 @@ import sys
 
 import numpy as np
 import pandas as pd
-import datetime
+from .chart import Chart
 from pprint import *
 from pyecharts.charts import Bar, Line, Scatter, Pie, Grid, Page
 from pyecharts import options as opts
@@ -214,7 +214,7 @@ class deepeye(object):
                 if x[i][0] == "'" or x[i][0] == '"':
                     x[i] = x[i].replace("'", "").replace('"', "")
                 for j in test[x[i]]:
-                    if not (j == 0 or (j > 1000 and j < 2100)):
+                    if not (j > 1000 and j < 2100):
                         types[i] = test.dtypes[i].name[0:5]
                         break
                     else:
@@ -229,11 +229,9 @@ class deepeye(object):
                     else:
                         types[i] = "date"
 
-        name = path.rsplit("/", 1)[-1][:-4]
+        name = path.rsplit("/", 1)[-1].rsplit("\\", 1)[-1][:-4]
         self.table_info(name, x, types)
         self.import_method = methods_of_import[2]  # = 'csv'
-
-        self.show_csv_info()
 
     def csv_handle(self, instance):
         """
@@ -864,9 +862,9 @@ class deepeye(object):
         else:
             print("not valid chart")
 
-        if not data["classify"]:  # 在图片上只需展示一组数据
-            attr = data["x_data"][0]  # 横坐标
-            val = data["y_data"][0]  # 纵坐标
+        if not data["classify"]:
+            attr = data["x_data"][0]
+            val = data["y_data"][0]
             if data["chart"] == "bar":
                 chart.add_xaxis(attr).add_yaxis(
                     "", val, label_opts=opts.LabelOpts(is_show=False)
@@ -887,10 +885,10 @@ class deepeye(object):
                 chart.add_xaxis(attr).add_yaxis(
                     "", val, label_opts=opts.LabelOpts(is_show=False)
                 )
-        else:  # 在图片上需要展示多组数据
-            attr = data["x_data"][0]  # 横坐标
-            for i in range(len(data["classify"])):  # 循环输出每组数据
-                val = data["y_data"][i]  # 每组纵坐标的值
+        else:
+            attr = data["x_data"][0]
+            for i in range(len(data["classify"])):
+                val = data["y_data"][i]
                 name = (
                     data["classify"][i][0]
                     if type(data["classify"][i]) == type(("a", "b"))
@@ -912,7 +910,7 @@ class deepeye(object):
                     chart.add("", [list(z) for z in zip(attr, val)])
                 elif data["chart"] == "scatter":
                     attr_scatter = data["x_data"][i]
-                    if isinstance(attr_scatter[0], str):  # 去除散点图的空点，并将字符类型转化为数字类型
+                    if isinstance(attr_scatter[0], str):
                         attr_scatter = [x for x in attr_scatter if x != ""]
                         attr_scatter = list(map(float, attr_scatter))
                     if isinstance(val[0], str):

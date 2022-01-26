@@ -1,4 +1,3 @@
-
 class Type(object):
     none = 0
     categorical = 1
@@ -15,19 +14,19 @@ class Type(object):
 
         Returns:
             data type expressed by number 0(none), 1(categorical), 2(numerical), 3(temporal)
-            
+
         """
-        if len(s) >= 7 and s[0:7] == 'varchar':
+        if len(s) >= 7 and s[0:7] == "varchar":
             return Type.categorical
-        elif len(s) >= 4 and s[0:4] == 'year':
+        elif len(s) >= 4 and s[0:4] == "year":
             return Type.temporal
-        elif len(s) >= 4 and s[0:4] == 'char':
+        elif len(s) >= 4 and s[0:4] == "char":
             return Type.categorical
-        elif len(s) >= 3 and s[0:3] == 'int':
+        elif len(s) >= 3 and s[0:3] == "int":
             return Type.numerical
-        elif s == 'int' or s == 'double' or s == 'float':
+        elif s == "int" or s == "double" or s == "float":
             return Type.numerical
-        elif s == 'date' or s == 'datetime' or s == 'year':
+        elif s == "date" or s == "datetime" or s == "year":
             return Type.temporal
         else:
             return Type.none
@@ -44,11 +43,14 @@ class Features(object):
         minmin(float): used in table.py
         max(float): max value of the column.
     """
+
     def __init__(self, name, type, origin):
         self.name = name
         self.type = type
         self.origin = origin  # origin data from db
-        self.min = self.minmin = self.max = self.distinct = self.ratio = self.bin_num = 0
-        self.interval = ''
+        self.min = (
+            self.minmin
+        ) = self.max = self.distinct = self.ratio = self.bin_num = 0
+        self.interval = ""
         self.distinct_values = []
         self.interval_bins = []
