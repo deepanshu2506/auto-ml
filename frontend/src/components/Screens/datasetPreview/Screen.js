@@ -45,16 +45,16 @@ const DatasetPreview = (props) => {
  
   return (
     <Container className={`${styles.screen}  pt-3 pl-4 `} fluid>
-      <Container className={`${styles.nav} pt-3 pl-4 pb-3`} fluid>
+      <Container className={`${styles.nav} pt-3 pl-4 `} fluid>
         <span>Dataset Preview</span>
       </Container>
+      <Container className={`${styles.content}`}  fluid>
           {loading ? (
             <Row>
               <Spinner animation="border" variant="primary" />
             </Row>
           ) : (
             datasetDetails && columnFinal && (
-            <Container className={`${styles.content}  pt-1 `}  fluid>
               <Row
                 className={`${styles.previewDatasetTableContainer} flex-grow-1 `}
               >
@@ -87,9 +87,10 @@ const DatasetPreview = (props) => {
                     </tbody>
                   </Table> */}
               </Row>
-            </Container>
             )
           )}
+          </Container>
+
         </Container>
  
   );

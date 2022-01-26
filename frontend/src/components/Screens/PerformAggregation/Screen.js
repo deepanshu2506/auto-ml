@@ -92,6 +92,10 @@ const AggregationScreen = (props) => {
     query?.aggregate === null;
   return (
     <Container className={`${styles.screen} pt-3 pl-4 `} fluid>
+      <Container className={styles.nav} fluid>
+        <span>Dataset Aggregation</span>
+      </Container>
+      <Container className={styles.content} fluid>
       {featuresLoading ? (
         <Spinner animation="border" variant="primary" />
       ) : (
@@ -153,7 +157,10 @@ const AggregationScreen = (props) => {
           )}
         </>
       )}
+      
     </Container>
+    </Container>
+
   );
 };
 

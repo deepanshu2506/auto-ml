@@ -3,6 +3,14 @@
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
 
+.content {
+  background-color: white;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  width: 100%;
+  padding: 1rem;
+}
+
 .tablecontainer {
   overflow-x: auto;
   overflow-y: auto;

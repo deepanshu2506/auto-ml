@@ -2,3 +2,13 @@
   height: 60px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+.login{
+     outline-color: white;
+     color:rgb(23, 105, 170);
+    background-color: white;
+    &:focus{
+      color:rgb(23, 105, 170);
+      background-color: white;
+     outline-color:white;
+    }
+}

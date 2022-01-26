@@ -3,32 +3,18 @@
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
 
-.nav {
-  background-color: white;
-  border: 1px solid #eee;
-  width: 100%;
-  padding: 0.7rem;
-  border-radius: 5px;
-  margin: 0;
-  font-size: 1.2rem;
-  span{
-    color: #fff;
-    background-color: #1769aa;
-  padding: 0.7rem;
-  border-radius: 5px;
-  margin-left: -11px;
-
+.functions{
+  div{
+    button{
+      letter-spacing: 2px;
+    }
   }
 }
-
 .content {
   background-color: white;
-  // height: 100px;
-  // overflow-y: auto;
   border: 1px solid #eee;
   border-radius: 5px;
   width: 100%;
-  margin: 1rem 0 0.5rem;
   padding: 1rem;
 }
 
@@ -42,6 +28,13 @@
     letter-spacing: 2px;
     text-transform: uppercase;
   }
+}
+
+.headtable{
+  font-family:Rubik;
+  font-size:1.2rem ;
+  font-weight: 600;
+  margin:0 2rem;
 }
 
 .cardcounter{
@@ -131,8 +124,9 @@
   }
 
 .infotable{
-  width:90%;
-  margin:2rem 3rem;
+  width:95%;
+  margin:2rem;
+  margin-top: 1rem;
   text-transform: capitalize;
 
   .btn{

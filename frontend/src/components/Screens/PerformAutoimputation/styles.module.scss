@@ -3,22 +3,6 @@
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
 
-.nav {
-  background-color: white;
-  border: 1px solid #eee;
-  width: 100%;
-  padding: 1.0rem;
-  border-radius: 5px;
-  margin: 0;
-  span {
-    color: #fff;
-    font-size: 1.1rem;
-    background-color: #1769aa;
-    padding: 0.5rem;
-    border-radius: 5px;
-    margin-left: -5px;
-  }
-}
 
 .content {
   background-color: white;
