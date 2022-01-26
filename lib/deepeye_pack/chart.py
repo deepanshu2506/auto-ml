@@ -32,8 +32,8 @@ class Chart:
     y_name: str
     chart: str
     classify: List[Any]
-    x_data: List[List[str]]
-    y_data: List[List[int]]
+    x_data: List[List[Any]]
+    y_data: List[List[Any]]
 
     def __init__(
         self,
@@ -44,8 +44,8 @@ class Chart:
         y_name: str,
         chart: str,
         classify: List[Any],
-        x_data: List[List[str]],
-        y_data: List[List[int]],
+        x_data: List[List[Any]],
+        y_data: List[List[Any]],
     ) -> None:
         self.order1 = order1
         self.order2 = order2

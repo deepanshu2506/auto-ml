@@ -22,3 +22,17 @@ class VisualizationService:
         dp.partial_order()
         visualizations: List[Chart] = dp.to_list()[:count]
         return visualizations
+
+    def get_visualizations_by_cols(
+        self, dataset_id: str, user_id: str, x_col: str, y_col: str, count: int = None
+    ) -> List[Chart]:
+        visualizations = self.get_visualizations(dataset_id, user_id)
+        visualizations_by_col = list(
+            filter(self.get_visualizations_by_cols(x_col, y_col), visualizations)
+        )
+        return visualizations_by_col[:count]
+
+    def get_filter_by_col_method(x_col: str, y_col: str):
+        def filter_method(chart: Chart):
+            return chart.x_name == x_col and chart.y_name == y_col
+        return filter_method
