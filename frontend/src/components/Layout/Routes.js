@@ -12,6 +12,7 @@ import Tour from "../tour/tour";
 
 import {LoginScreen} from "../Screens/login/Screen";
 import {SignupScreen} from "../Screens/signup/Screen";
+import AdvanceVisualizationScreen from "../Screens/AdvanceVisualization/Screen";
 
 // const routes = [
 //   {
@@ -121,6 +122,14 @@ const routes = [
     auth: false,
     exact: false,
     component: Tour,
+  },
+  {
+    sidebar: false,
+    auth: true,
+    title: "Advance visualizetion",
+    path: "/visualize/:datasetID/advance_visualize",
+    exact: false,
+    component: AdvanceVisualizationScreen,
   },
 ];
 

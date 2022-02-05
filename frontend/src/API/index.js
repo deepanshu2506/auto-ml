@@ -14,7 +14,10 @@ export const apiURLs = {
     deleteDataset:(datasetID) => `/datasets/${datasetID}`,
     singleColImputation:(datasetID)=> `/datasets/${datasetID}/impute_advanced`,
   },
-
+  visualize:{
+    performAutoVisualization: (datasetID) => `/visualization/${datasetID}/auto_visualize`,
+    performAdvanceVisualization: (datasetID) => `/visualization/${datasetID}/advance_visualize`,
+  },
   misc: {
     checkDbConn: "/misc/checkDBConn",
     previewDataFromDb: "/misc/previewDataFromDb",
