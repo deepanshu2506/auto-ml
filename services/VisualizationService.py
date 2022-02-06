@@ -70,6 +70,7 @@ class VisualizationService:
         if not export_to_file:
             aggregation_result = aggregation_result[:max_records]
         meta["returned_records"] = len(aggregation_result)
+        meta["chart_type"]=chart_type
         headers = (
             (
                 groupby_field,

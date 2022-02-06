@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import QueryBuilder from "./QueryBuilder";
 import styles from "./styles.module.scss";
 import API, { apiURLs } from "../../../API";
-
+import VisualizeChart from "./visualize";
 const AdvanceVisualizationScreen = (props) => {
   const [featuresLoading, setFeaturesLoading] = useState(true);
   const [dataset, setDataset] = useState({});
@@ -34,13 +34,16 @@ const AdvanceVisualizationScreen = (props) => {
   const onQueryChange = (query) => setQuery(query);
   console.log(query);
 
-  const getAggregationResult = async (exportToFile = false) => {
+  const getVisualizationResult = async (exportToFile = false) => {
     const payload = {
       aggregate_method: query.aggregate?.method,
       aggregate_by_field: query.aggregate?.col,
       groupby_field: query.groupBy,
       filter: query.filters,
       export_to_file: exportToFile,
+      chart_type:query.chart_type,
+      field1:query.field1,
+      field2:query.field2
     };
 
     const reqConfig = exportToFile ? { responseType: "blob" } : {};
@@ -53,20 +56,20 @@ const AdvanceVisualizationScreen = (props) => {
     return response;
   };
 
-  const performAggregation = async () => {
+  const performVisualization = async () => {
     try {
       const {
         data: { data },
-      } = await getAggregationResult();
+      } = await getVisualizationResult();
       setResult(data);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const downloadAggregation = async () => {
+  const downloadVisualization = async () => {
     try {
-      const response = await getAggregationResult(true);
+      const response = await getVisualizationResult(true);
       const fileNameHeader = "x-suggested-filename";
       const suggestedFileName = response.headers[fileNameHeader];
       const effectiveFileName =
@@ -93,7 +96,7 @@ const AdvanceVisualizationScreen = (props) => {
   return (
     <Container className={`${styles.screen} pt-3 pl-4 `} fluid>
       <Container className={styles.nav} fluid>
-        <span>Dataset AdvanceVisualization</span>
+        <span>Dataset Advance Visualization</span>
       </Container>
       <Container className={styles.content} fluid>
       {featuresLoading ? (
@@ -111,7 +114,7 @@ const AdvanceVisualizationScreen = (props) => {
                 disabled={isValidQuery()}
                 block
                 variant="primary"
-                onClick={performAggregation}
+                onClick={performVisualization}
               >
                 View Result
               </Button>
@@ -121,7 +124,7 @@ const AdvanceVisualizationScreen = (props) => {
                 disabled={isValidQuery()}
                 block
                 variant="primary"
-                onClick={downloadAggregation}
+                onClick={downloadVisualization}
               >
                 download Result
               </Button>
@@ -130,6 +133,10 @@ const AdvanceVisualizationScreen = (props) => {
 
           {result && (
             <>
+             <Row style={{ padding: "0 5%" }}>
+                <VisualizeChart
+                chart data={result} />
+              </Row>
               <p
                 className={styles.legend}
               >{`(showing ${result.meta.returned_records} of ${result.meta.total_records})`}</p>

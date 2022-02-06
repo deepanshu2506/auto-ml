@@ -21,8 +21,16 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
     filters: [],
     groupBy: null,
     aggregate: null,
+    chart_type:null,
+    field1:null,
+    field2:null
   });
-  const charts=["Pie","Line","Scatter","Bar"];
+  const charts=[
+    {"name":"Line Chart", "value":"line"},
+    {"name":"Bar Chart", "value":"bar"},
+    {"name":"Scatter Chart", "value":"scatter"},
+    {"name":"Pie Chart", "value":"pie"},
+  ]
   const closeAddFilterDialog = () =>
     setDialogStates((prev) => ({ ...prev, addFilter: false }));
   const openAddFilterDialog = () =>
@@ -74,7 +82,7 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
         <InputGroup hasValidation>
           <Form.Control
             onChange={(e) => {
-              setState((prev) => ({
+              setQuery((prev) => ({
                 ...prev,
                 field1: e.target.value,
               }));
@@ -97,7 +105,7 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
         <InputGroup hasValidation>
           <Form.Control
             onChange={(e) => {
-              setState((prev) => ({
+              setQuery((prev) => ({
                 ...prev,
                 field2: e.target.value,
               }));
@@ -120,9 +128,9 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
         <InputGroup hasValidation>
           <Form.Control
             onChange={(e) => {
-              setState((prev) => ({
+              setQuery((prev) => ({
                 ...prev,
-                charttype: e.target.value,
+                chart_type: e.target.value,
               }));
             }}
             as="select"
@@ -130,7 +138,7 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
           >
               <option value="">Select Chart</option>
               {charts.map((chart) => (
-                <option value={chart}>{chart}</option>
+                <option value={chart.value}>{chart.name}</option>
               ))}
           </Form.Control>
           <Form.Control.Feedback type="invalid">

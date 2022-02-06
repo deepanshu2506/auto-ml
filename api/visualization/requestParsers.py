@@ -16,7 +16,7 @@ manualVisualizationRequestParser.add_argument(
 )
 manualVisualizationRequestParser.add_argument("field1", type=str)
 manualVisualizationRequestParser.add_argument("field2", type=str)
-manualVisualizationRequestParser.add_argument("chart_type", type=str)
+manualVisualizationRequestParser.add_argument("chart_type", type=str,required=True)
 manualVisualizationRequestParser.add_argument("groupby_field", type=str)
 manualVisualizationRequestParser.add_argument("aggregate_by_field", type=str)
 manualVisualizationRequestParser.add_argument("filter", type=dict, action="append")
