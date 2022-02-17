@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import QueryBuilder from "./QueryBuilder";
 import styles from "./styles.module.scss";
 import API, { apiURLs } from "../../../API";
+import VisualizeChart,{AddVisualizationDialog} from "./visualize";
 
 const AggregationScreen = (props) => {
   const [featuresLoading, setFeaturesLoading] = useState(true);
@@ -12,6 +13,11 @@ const AggregationScreen = (props) => {
   const [result, setResult] = useState(null);
   const params = props.rootParams.params;
 
+  const clearAggregation=()=>{
+    setQuery(null)
+    setResult(null)
+    setShowChart(false)
+  }
   const getFeatures = async () => {
     setFeaturesLoading(true);
 
@@ -86,6 +92,28 @@ const AggregationScreen = (props) => {
       console.log(err);
     }
   };
+  const [showDialog, setShowDialog] = useState(false);
+  const [showChart, setShowChart] = useState(false);
+  const [chartState, setChartState] = useState({
+    field1:null,
+    field2:null,
+    chart_type:null
+  });
+
+  const visualize=()=>{
+    setShowDialog(true);
+  }
+  const closeDialog=()=>{
+    setShowDialog(false);
+}
+const onVisualizationAdd=(state)=>{
+  console.log("options");
+  console.log(state)
+  setShowDialog(false);
+  setChartState(state)
+  setShowChart(true);
+  // VisualizeChart.defineChart(state);
+  }
   const isValidQuery = () =>
     query?.filters?.length === 0 &&
     query?.groupBy === null &&
@@ -94,6 +122,19 @@ const AggregationScreen = (props) => {
     <Container className={`${styles.screen} pt-3 pl-4 `} fluid>
       <Container className={styles.nav} fluid>
         <span>Dataset Aggregation</span>
+        
+        {result &&
+        <div className={styles.clear}>
+        <Button
+                block
+                variant="primary"
+                onClick={clearAggregation}
+              >
+                Clear 
+        </Button>
+        </div>
+        
+        }
       </Container>
       <Container className={styles.content} fluid>
       {featuresLoading ? (
@@ -118,6 +159,16 @@ const AggregationScreen = (props) => {
             </Col>
             <Col>
               <Button
+                disabled={!result}
+                block
+                variant="primary"
+                onClick={()=>visualize()}
+              >
+                Visualize Result
+              </Button>
+            </Col>
+            <Col>
+              <Button
                 disabled={isValidQuery()}
                 block
                 variant="primary"
@@ -130,6 +181,18 @@ const AggregationScreen = (props) => {
 
           {result && (
             <>
+            <AddVisualizationDialog
+            show={showDialog}
+            onClose={closeDialog}
+            onAdd={onVisualizationAdd}
+            columns={result.headers}
+          />
+            <Row style={{ padding: "0 5%" }}>
+              {showChart && 
+                  <VisualizeChart
+                  chart chartState={chartState} data={result} showChart={showChart} />
+              }
+              </Row>
               <p
                 className={styles.legend}
               >{`(showing ${result.meta.returned_records} of ${result.meta.total_records})`}</p>
@@ -137,15 +200,17 @@ const AggregationScreen = (props) => {
                 <Col className=" table-containepx-0">
                   <Table hover className={styles.table}>
                     <thead className="bg-primary">
+                      <tr>
                       {result.headers.map((header) => (
-                        <th>{header}</th>
+                        <td key={header}>{header}</td>
                       ))}
+                      </tr>
                     </thead>
                     <tbody>
-                      {result.values.map((row) => (
-                        <tr>
-                          {row.map((val) => (
-                            <td>{val}</td>
+                      {result.values.map((row,i) => (
+                        <tr key={i}>
+                          {row.map((val,j) => (
+                            <td key={i*10+j}>{val}</td>
                           ))}
                         </tr>
                       ))}

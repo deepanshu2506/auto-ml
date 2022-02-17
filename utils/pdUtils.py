@@ -61,7 +61,6 @@ def perform_aggregation(df: DataFrame, aggregate_func: AggregationMethods) -> Da
     return func()
     pass
 
-
 def build_query(query: list) -> str:
 
     def reduce_func(acc, curr):
@@ -70,8 +69,10 @@ def build_query(query: list) -> str:
             rhs = float(rhs)
         except ValueError:
             rhs = '"' + rhs + '"'
-
-        return acc + f"`{curr['lhs']}` {curr['op']} {rhs}"
+        if(acc):
+            return acc + f" and `{curr['lhs']}` {curr['op']} {rhs}"
+        else:
+            return acc + f"`{curr['lhs']}` {curr['op']} {rhs}"
 
     q = reduce(reduce_func, query, "")
     print(q)
@@ -87,3 +88,11 @@ def build_query(query: list) -> str:
     #     return f"`{query['lhs']}` {query['op']} {rhs}"
     # else:
     #     return f"{build_query(query['expr1'])} {(query.get('op') or '').lower()} {build_query(query['expr2']) if query.get('expr2') else ''}"
+
+
+def getCorrelation(df: DataFrame):
+    # correlation matrix
+    matrix = df.corr()
+    return matrix
+ 
+    
