@@ -40,7 +40,7 @@ const DatasetPreview = (props) => {
     useEffect(() => {
     console.log("useEffect called");
     fetchDataset();
-  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
  
   return (
@@ -62,30 +62,6 @@ const DatasetPreview = (props) => {
               <CustomTable
                columns={columnFinal} 
                data={datasetDetails}/>
-                  {/* <Table striped className={styles.table}>
-                    <thead className="bg-primary">
-                      <tr>
-                        {columnNames.map((item, idx) => (
-                          <th key={idx}>{item}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {datasetDetails.map((item, idx) => (
-                        <tr key={idx}>
-                          {Object.values(item).map((cell, idx) => (
-                            <td key={idx}>
-                              {cell && cell !== "" ? (
-                                cell
-                              ) : (
-                                <span className="not-available">N/A</span>
-                              )}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table> */}
               </Row>
             )
           )}

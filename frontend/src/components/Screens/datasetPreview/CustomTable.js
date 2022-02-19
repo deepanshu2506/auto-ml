@@ -3,7 +3,7 @@ import React from "react";
 import { useTable, usePagination, useGlobalFilter, useSortBy } from "react-table";
 import styles from "./styles.module.scss";
 import { Table,Button,Row,Col} from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import GlobalFilter from "./GlobalFilter";
 
 export default function CustomTable({columns,
@@ -12,7 +12,6 @@ export default function CustomTable({columns,
       getTableProps, 
       getTableBodyProps, 
       headerGroups,
-      footerGroups,
       page, 
       nextPage,
       previousPage,

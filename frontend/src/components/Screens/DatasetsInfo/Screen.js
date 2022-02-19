@@ -125,10 +125,9 @@ const DatasetInfoScreen = (props) => {
   };
 
   useEffect(() => {
-    // console.log(isImputed);
-    // console.log("useEffect called");
     getDatasetInfo();
     setIsImputed(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isImputed]);
 
   return (

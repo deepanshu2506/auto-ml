@@ -29,6 +29,7 @@ const ListDatasetScreen = (props) => {
 
   useEffect(() => {
     getDatasetList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteDataset = async (datasetID) => {
