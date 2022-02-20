@@ -37,6 +37,13 @@ class FileService:
     def get_model(self, modelPath) -> Model:
         return load_model(modelPath)
 
+    def save_readme_file(self, content, dataset_id, path=None):
+        file_path = os.path.join(Config.README_SAVE_DIRECTORY, f"{dataset_id}.md")
+        f = open(path or file_path, mode="w")
+        f.write(content)
+        f.close()
+        return file_path
+
 
 class MockFileService(FileService):
     path = "C:\\Users\\deepa\\Desktop\\winequalityN.csv"
