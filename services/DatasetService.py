@@ -236,6 +236,7 @@ class DatasetService:
     def set_readme(self, dataset_id, user_id, readme_file_url):
         dataset = self.find_by_id(dataset_id, user_id)
         dataset.readmeURL = readme_file_url
+        dataset.save()
 
     def get_readme(self, dataset_id, user_id):
         dataset = self.find_by_id(dataset_id, user_id)
