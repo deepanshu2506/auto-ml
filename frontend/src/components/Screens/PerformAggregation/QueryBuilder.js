@@ -5,12 +5,13 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaLayerGroup, FaFilter } from "react-icons/fa";
+import { HiOutlineViewGridAdd } from "react-icons/hi";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useState, useEffect } from "react";
 import styles from "./QueryBuilder.module.scss";
 import FormModal from "../../Content/FormModal/FormModal";
-const QueryBuilder = ({ features, discreteCols, onChange }) => {
+const QueryBuilder = ({ features, discreteCols, onChange,clear }) => {
   const [dialogStates, setDialogStates] = useState({
     addFilter: false,
     addAggregation: false,
@@ -66,6 +67,17 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
     onChange(query);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
+
+  useEffect(() => {
+    if(clear){
+      setQuery({
+        filters: [],
+        groupBy: null,
+        aggregate: null,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clear]);
   return (
     <Row className={styles.container}>
       <Col className={styles.whereContainer}>
@@ -84,7 +96,7 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
               >{`${filter.lhs} ${filter.op} ${filter.rhs}`}</Tag>
             ))
           ) : (
-            <p className={styles.empty}>Add filter</p>
+            <p className={styles.empty}>Add filter <FaFilter/></p>
           )}
         </div>
         <div className={styles.addButtonContainer}>
@@ -109,7 +121,7 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
             {query.groupBy ? (
               <Tag onRemove={removeGroupBy}>{query.groupBy}</Tag>
             ) : (
-              <p className={styles.empty}>Add Group By</p>
+              <p className={styles.empty}>Add Group By <FaLayerGroup/></p>
             )}
           </div>
           <div className={styles.addButtonContainer}>
@@ -136,7 +148,7 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
                 onRemove={removeAggregate}
               >{`${query.aggregate.method} of ${query.aggregate.col}`}</Tag>
             ) : (
-              <p className={styles.empty}>Add Aggregation</p>
+              <p className={styles.empty}>Add Aggregation  <HiOutlineViewGridAdd/></p>
             )}
           </div>
           <div className={styles.addButtonContainer}>
@@ -279,7 +291,6 @@ const AddFilterDialog = ({ show, onClose, onAdd, columns, discreteCols }) => {
 
 const AddAggregationDialog = ({ show, onClose, onAdd, columns }) => {
   const [state, setState] = useState({});
-
   const onSubmit = () => onAdd(state);
 
   return (
@@ -303,9 +314,10 @@ const AddAggregationDialog = ({ show, onClose, onAdd, columns }) => {
               as="select"
               required
             >
+           
               <option value="">Select Column</option>
               {columns
-                .filter((column) => column.dataType !== "string")
+                .filter((column) => column.datatype !== "STRING")
                 .map((column) => (
                   <option key={column.column_name} value={column.column_name}>
                     {column.column_name}
@@ -374,10 +386,16 @@ const AddGroupByDialog = ({ show, onClose, onAdd, columns }) => {
               as="select"
               required
             >
-              <option value="">Select Column</option>
-              {columns.map((column) => (
-                <option key={column.column_name} value={column.column_name}>{column.column_name}</option>
-              ))}
+             
+
+            <option value="">Select Column</option>
+              {columns
+                .filter((column) => column.column_Type === "discrete")
+                .map((column) => (
+                  <option key={column.column_name} value={column.column_name}>
+                    {column.column_name}
+                  </option>
+                ))}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               Please select Column

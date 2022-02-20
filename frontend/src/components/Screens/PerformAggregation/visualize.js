@@ -10,29 +10,21 @@ import {
   } from "react-bootstrap";
 
 const VisualizeChart = ({data,showChart,chartState}) => {
-  console.log(data);
   const {headers,values}=data;
   const [options,setOptions]=useState(null)
   const[loading,setLoading]=useState(true);
-  const [chartProp,setChartProp]=useState(chartState)
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
   
  useEffect(() => {
-     console.log("hereeeee");
-  console.log(chartState)
-  setChartProp(chartState)
-  defineChart(headers,chartProp)
- },[chartState,chartProp])
+  defineChart(chartState)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+ },[chartState,data])
  
-function defineChart(headers,chartState){
+function defineChart(chartState){
   setLoading(true);
   let dp=[]
-  console.log(chartState)
   var i=headers.indexOf(chartState.field1)
   var j=headers.indexOf(chartState.field2)
-  console.log("Selected fieldsssssss")
-  console.log(headers[i])
-  console.log(headers[j]);
   var chart_type=chartState.chart_type
 
   values.map((tuple) => {
@@ -50,8 +42,6 @@ function defineChart(headers,chartState){
        },
       axisY: {
           title: headers[j],
-          //minimum: 0,
-      maximum: 100
       },
       exportEnabled: true,
       animationEnabled: true,
@@ -65,8 +55,6 @@ function defineChart(headers,chartState){
           }
           ]
       };
-      console.log("options")
-      console.log(optionDefine)
       setOptions(optionDefine)
       setLoading(false);
 }
@@ -96,19 +84,28 @@ export const AddVisualizationDialog = ({ show,onClose, onAdd, columns }) => {
       field2:null,
       chart_type:null
     });
+    const [field,setField]=useState(false)
    
     useEffect(()=>{
       if (columns.length===2){
+        setField(true)
         setState({field1:columns[0],
         field2:columns[1]})
+      }else{
+    
+        setState({
+          field1:null,
+          field2:null,
+          chart_type:null
+        });
       }
     },[columns])
     const onSubmit = () => onAdd(state);
     const charts=[
-        {"name":"Line Chart", "value":"line"},
-        {"name":"Bar Chart", "value":"bar"},
-        {"name":"Scatter Chart", "value":"scatter"},
-        {"name":"Pie Chart", "value":"pie"},
+        {label:"Line Chart", value:"line"},
+        {label:"Bar Chart", value:"bar"},
+        {label:"Scatter Chart", value:"scatter"},
+        {label:"Pie Chart", value:"pie"},
       ]
     return (
       <FormModal
@@ -120,6 +117,75 @@ export const AddVisualizationDialog = ({ show,onClose, onAdd, columns }) => {
         closeOnSubmit={true}
       >
         <Row>
+          {field ?
+          <>
+          <Form.Group as={Col} md="4" controlId="col-name">
+          <Form.Label>Field 1(X-axis)</Form.Label>
+          <InputGroup hasValidation>
+            <Form.Control
+              onChange={(e) => {
+                setState((prev) => ({
+                  ...prev,
+                  field1: e.target.value,
+                }));
+              }}
+              as="select"
+              required
+            >
+              <option value={state.field1}>{state.field1}</option>
+            </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Please select X-axis
+            </Form.Control.Feedback>
+          </InputGroup>
+        </Form.Group>
+        <Form.Group as={Col} md="4" controlId="col-name">
+          <Form.Label>Field 2(Y-axis)</Form.Label>
+          <InputGroup hasValidation>
+            <Form.Control
+              onChange={(e) => {
+                setState((prev) => ({
+                  ...prev,
+                  field2: e.target.value,
+                }));
+              }}
+              as="select"
+              required
+            >
+              <option value={state.field2}>{state.field2}</option>
+            </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Please select Y-axis
+            </Form.Control.Feedback>
+          </InputGroup>
+        </Form.Group>
+        <Form.Group as={Col} md="4" controlId="aggregation-name">
+          <Form.Label>Chart Type</Form.Label>
+          <InputGroup hasValidation>
+            <Form.Control
+              onChange={(e) => {
+                setState((prev) => ({
+                  ...prev,
+                  chart_type: e.target.value,
+                }));
+              }}
+              as="select"
+              required
+            >
+        
+              <option value="">Select Chart</option>
+            {charts.map((chart) => (
+              <option key={chart.value} value={chart.value}>{chart.label}</option>
+            ))}
+            </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Please select chart type
+            </Form.Control.Feedback>
+          </InputGroup>
+        </Form.Group>
+        </>
+          :
+          <>
           <Form.Group as={Col} md="4" controlId="col-name">
             <Form.Label>Field 1</Form.Label>
             <InputGroup hasValidation>
@@ -133,7 +199,7 @@ export const AddVisualizationDialog = ({ show,onClose, onAdd, columns }) => {
                 as="select"
                 required
               >
-                <option value="">Select Field1</option>
+                <option  value="">Select Field1(X-axis)</option>
                 {columns
                   // .filter((column) => column.dataType !== "string")
                   .map((column) => (
@@ -160,7 +226,7 @@ export const AddVisualizationDialog = ({ show,onClose, onAdd, columns }) => {
                 as="select"
                 required
               >
-                <option value="">Select Field2</option>
+                <option value="">Select Field2(Y-axis)</option>
                 {columns
                   // .filter((column) => column.dataType !== "string")
                   .map((column) => (
@@ -187,9 +253,10 @@ export const AddVisualizationDialog = ({ show,onClose, onAdd, columns }) => {
                 as="select"
                 required
               >
+          
                 <option value="">Select Chart</option>
               {charts.map((chart) => (
-                <option key={chart.value} value={chart.value}>{chart.name}</option>
+                <option key={chart.value} value={chart.value}>{chart.label}</option>
               ))}
               </Form.Control>
               <Form.Control.Feedback type="invalid">
@@ -197,6 +264,8 @@ export const AddVisualizationDialog = ({ show,onClose, onAdd, columns }) => {
               </Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
+          </>
+         }
         </Row>
       </FormModal>
     );

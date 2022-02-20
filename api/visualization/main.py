@@ -1,5 +1,5 @@
 from flask_restful import Api
-from api.visualization.resources import AutoVisualizationAPI,ManualVisualizationAPI
+from api.visualization.resources import AutoVisualizationAPI,CorrelationAPI
 from services import FileService, DatasetService
 from services.VisualizationService import VisualizationService
 
@@ -18,7 +18,8 @@ def initialize(api: Api) -> None:
         resource_class_kwargs={"visualizationService": visualizationService},
     )
     api.add_resource(
-        ManualVisualizationAPI,
-        f"{API_PREFIX}/<dataset_id>/advance_visualize",
+        CorrelationAPI,
+        f"{API_PREFIX}/<dataset_id>/correlate",
         resource_class_kwargs={"visualizationService": visualizationService},
     )
+

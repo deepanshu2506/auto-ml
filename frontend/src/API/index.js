@@ -17,6 +17,7 @@ export const apiURLs = {
   visualize:{
     performAutoVisualization: (datasetID) => `/visualization/${datasetID}/auto_visualize`,
     performAdvanceVisualization: (datasetID) => `/visualization/${datasetID}/advance_visualize`,
+    getCorrelation: (datasetID) => `/visualization/${datasetID}/correlate`,
   },
   misc: {
     checkDbConn: "/misc/checkDBConn",

@@ -93,6 +93,7 @@ def build_query(query: list) -> str:
 def getCorrelation(df: DataFrame):
     # correlation matrix
     matrix = df.corr()
-    return matrix
+    return numpy.around(matrix, decimals=3)
+
  
     
