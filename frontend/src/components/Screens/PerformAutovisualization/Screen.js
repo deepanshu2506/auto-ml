@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import { Col, Container, Row, Spinner, Table, Button, Form, InputGroup, } from "react-bootstrap";
+import {
+    Col, Container, Row, Spinner, Table, Button, Form, InputGroup, Card,
+} from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 
@@ -49,12 +51,30 @@ const AutovisualizationScreen = (props) => {
             ) : (
                 <Col>
                     {visualizationResults ? (
-                        <Col>
-                            {visualizationResults.map((graphData) => (
-                                <GraphType menu={graphData['chart']} graphData={graphData} key={(index = index + 1)} />
+                        <Container>
+                            <Row>
+                                {visualizationResults.map((graphData) => (
+                                    <Col xs={12} lg={6} className='mt-3' >
+                                        <Card>
+                                            <Card.Body>
+                                                <Card.Title tag="h5">A {graphData['chart']} chart with the x-axis <b>{graphData['x_name']}</b> and y-axis <b>{graphData['y_name']}</b></Card.Title>
+                                                <hr/>
+                                                <Card.Subtitle tag="h6" className="mb-2 text-muted">
+                                                This {graphData['chart']} chart shows the change of {graphData['y_name']} over {graphData['x_name']}
+                                                <br/>
+                                                <div>{graphData['describe'].length ? <div>Operation : {graphData['describe']}</div> :null}</div>
+                                                </Card.Subtitle>
+                                                <Card.Text>
+                                                    <GraphType menu={graphData['chart']} graphData={graphData} key={(index = index + 1)} />
+                                                </Card.Text>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                ))}
+                            </Row>
+                        </Container>
 
-                            ))}
-                        </Col>) : (
+                    ) : (
                         <Col>
                         </Col>)}
                 </Col>

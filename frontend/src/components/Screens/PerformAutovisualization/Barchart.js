@@ -66,7 +66,7 @@ const Barchart = (data) => {
     var CanvasJSChart = CanvasJSReact.CanvasJSChart;
     const options = {
         title: {
-            text: graphData['describe']
+            text: graphData['x_name']+"  vs  "+graphData['y_name']
         },
         animationEnabled: true,
         exportEnabled: true,
