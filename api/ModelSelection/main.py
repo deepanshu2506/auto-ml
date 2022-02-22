@@ -13,7 +13,7 @@ from services.ModelSelectionJobService import ModelSelectionJobService
 from services.SavedModelService import SavedModelService
 
 
-API_PREFIX: str = "/dataset/model_selection"
+API_PREFIX: str = "/datasets/model_selection"
 
 
 def initialize(api: Api) -> None:
@@ -27,7 +27,7 @@ def initialize(api: Api) -> None:
     
     api.add_resource(
         ModelSelectionResource,
-        f"{API_PREFIX}/",
+        f"{API_PREFIX}/<id>",
         resource_class_kwargs={"modelGenerationService": modelGeneratorService},
     )
     api.add_resource(

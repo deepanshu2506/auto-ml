@@ -202,7 +202,9 @@ const DatasetInfoScreen = (props) => {
               <Button block>Visualization</Button>
             </Col>
             <Col md={3}>
-              <Button block>Create Model</Button>
+              <Link to={{pathname: `/datasets/model_selection/${info.id}`}}>
+                <Button block>Create Model</Button>
+              </Link>
             </Col>
             <Col md={3}>
               <Link to={`${location.pathname}/preview`}>

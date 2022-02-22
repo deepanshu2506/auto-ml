@@ -20,12 +20,13 @@ class ModelSelectionResource(Resource):
 
     method_decorators = [jwt_required()]
 
-    def post(self):
+    def post(self, id):
         body = modelSelectionRequestParser.parse_args()
         user_id = get_jwt_identity()
         job = self.modelGenerationService.generateModels(
             user_id=user_id,
-            dataset_id=body["dataset_id"],
+            # dataset_id=body["dataset_id"],
+            dataset_id=id,
             target_col=body["target_col"],
         )
         response = {"job_id": str(job.id)}

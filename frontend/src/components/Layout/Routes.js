@@ -8,6 +8,7 @@ import AggregationScreen from "../Screens/PerformAggregation/Screen";
 import AutoimputeScreen from "../Screens/PerformAutoimputation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
+import ModelSelectionScreen from "../Screens/ModelSelection/Screen";
 import Tour from "../tour/tour";
 
 import {LoginScreen} from "../Screens/login/Screen";
@@ -27,7 +28,7 @@ const routes = [
   {
     sidebar: true,
     title: "Datasets",
-    path: "/datasets/",
+    path: "/datasets",
     auth: true,
     exact: true,
     // Icon: () => <Avatar src="/teams-icon.png" round={true} size={35} />,
@@ -74,6 +75,14 @@ const routes = [
     component: InputDatasetScreen,
   },
   {
+    sidebar: false,
+    auth: true,
+    title: "Model Selection",
+    path: "/datasets/model_selection/:datasetID",
+    exact: false,
+    component: ModelSelectionScreen,
+  },
+  {
     sidebar: true,
     auth: true,
     title: "Saved Models",
@@ -97,7 +106,6 @@ const routes = [
     exact: false,
     component: SavedModelDetailsScreen,
   },
-
   {
     sidebar: false,
     auth: false,
