@@ -125,10 +125,9 @@ const DatasetInfoScreen = (props) => {
   };
 
   useEffect(() => {
-    // console.log(isImputed);
-    // console.log("useEffect called");
     getDatasetInfo();
     setIsImputed(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isImputed]);
 
   return (
@@ -199,7 +198,9 @@ const DatasetInfoScreen = (props) => {
               </Link>
             </Col>
             <Col md={3}>
+            <Link to={`/visualize/${datasetId}/advance_visualize`}>
               <Button block>Visualization</Button>
+            </Link>
             </Col>
             <Col md={3}>
               <Button block>Create Model</Button>

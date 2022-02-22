@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import QueryBuilder from "./QueryBuilder";
 import styles from "./styles.module.scss";
 import API, { apiURLs } from "../../../API";
+import VisualizeChart,{AddVisualizationDialog} from "./visualize";
+import { FaDownload, FaChartLine, FaTable } from "react-icons/fa";
+import HeatMap from 'react-heatmap-grid';
 
 const AggregationScreen = (props) => {
   const [featuresLoading, setFeaturesLoading] = useState(true);
@@ -10,8 +13,29 @@ const AggregationScreen = (props) => {
   const [query, setQuery] = useState(null);
 
   const [result, setResult] = useState(null);
-  const params = props.rootParams.params;
+  const [clear,setClear]=useState(false)
+  const [heatmapData, setHeatmapData] = useState({ data:null,xLabels:null,yLabels:null });
+  const [heatmapLoading, setHeatmapLoading] = useState(true);
 
+  const params = props.rootParams.params;
+  const getHeatmapData = async () => {
+    setHeatmapLoading(true);
+
+    try {
+      const {data} = await API.json.get(
+        apiURLs.visualize.getCorrelation(params.datasetID)
+      );
+      console.log(data)
+      console.log(data.arr)
+
+     
+      setHeatmapData({ data:data.arr,xLabels:data.labels,yLabels:data.labels  });
+      setHeatmapLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+ 
   const getFeatures = async () => {
     setFeaturesLoading(true);
 
@@ -30,10 +54,16 @@ const AggregationScreen = (props) => {
   };
   useEffect(() => {
     getFeatures();
+    // getHeatmapData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const clearAggregation=()=>{
+    setQuery(null)
+    setResult(null)
+    setShowChart(false)
+    setClear(true)
+  }
   const onQueryChange = (query) => setQuery(query);
-  console.log(query);
-
   const getAggregationResult = async (exportToFile = false) => {
     const payload = {
       aggregate_method: query.aggregate?.method,
@@ -59,6 +89,16 @@ const AggregationScreen = (props) => {
         data: { data },
       } = await getAggregationResult();
       setResult(data);
+      setClear(false)
+      if(data.headers.length===2)
+     { setChartState({
+        field1:data.headers[0],
+        field2:data.headers[1],
+        chart_type:'bar'
+      })
+      setShowChart(true)
+    }
+    else{setShowChart(false)}
     } catch (err) {
       console.log(err);
     }
@@ -86,16 +126,71 @@ const AggregationScreen = (props) => {
       console.log(err);
     }
   };
+  const [showDialog, setShowDialog] = useState(false);
+  const [showChart, setShowChart] = useState(false);
+  const [chartState, setChartState] = useState({
+    field1:null,
+    field2:null,
+    chart_type:null
+  });
+
+  const visualize=()=>{
+    setShowDialog(true);
+  }
+  const closeDialog=()=>{
+    setShowDialog(false);
+}
+const onVisualizationAdd=(state)=>{
+  setShowDialog(false);
+  setChartState(state)
+  setShowChart(true);
+  }
   const isValidQuery = () =>
     query?.filters?.length === 0 &&
     query?.groupBy === null &&
     query?.aggregate === null;
+
   return (
     <Container className={`${styles.screen} pt-3 pl-4 `} fluid>
+      
       <Container className={styles.nav} fluid>
         <span>Dataset Aggregation</span>
+        
+        {result &&
+        <div className={styles.clear}>
+        <Button
+                block
+                variant="primary"
+                onClick={clearAggregation}
+              >
+                Clear 
+        </Button>
+        </div>
+        
+        }
       </Container>
+      {/* <Container className={styles.content} fluid>
+        <h5>HeatMap</h5>
+      { !heatmapLoading &&
+          <HeatMap
+        xLabels={heatmapData.xLabels}
+        yLabels={heatmapData.yLabels}
+        data={heatmapData.data}
+        xLabelsLocation={"bottom"}
+        // squares
+        onHover={(x, y) => alert(`Clicked ${x}, ${y}`)}
+        onClick={(x, y) => alert(`Clicked ${x}, ${y}`)}
+        // cellStyle={(background, value, min, max, data, x, y) => ({
+        //   // background: `rgba(66, 86, 244, ${value*100})`,
+        //   // fontSize: "12px",
+        //   // width:"20px"
+        // })}
+      cellRender={(value) => `${value}`}
+      title={(value, unit) => `${value}`}
+      />}
+      </Container> */}
       <Container className={styles.content} fluid>
+     
       {featuresLoading ? (
         <Spinner animation="border" variant="primary" />
       ) : (
@@ -104,6 +199,7 @@ const AggregationScreen = (props) => {
             features={dataset.datasetFields}
             discreteCols={dataset.discreteCols}
             onChange={onQueryChange}
+            clear={clear}
           />
           <Row className="my-2">
             <Col>
@@ -114,6 +210,19 @@ const AggregationScreen = (props) => {
                 onClick={performAggregation}
               >
                 View Result
+                {"  "}
+                <FaTable/>
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                disabled={isValidQuery()}
+                block
+                variant="primary"
+                onClick={()=>visualize()}
+              >
+                Visualize Result {"  "}
+                <FaChartLine/>
               </Button>
             </Col>
             <Col>
@@ -123,13 +232,29 @@ const AggregationScreen = (props) => {
                 variant="primary"
                 onClick={downloadAggregation}
               >
-                download Result
+                Download Result {"  "}
+                <FaDownload/>
               </Button>
             </Col>
+          </Row>
+          <Row>
+         
           </Row>
 
           {result && (
             <>
+            <AddVisualizationDialog
+            show={showDialog}
+            onClose={closeDialog}
+            onAdd={onVisualizationAdd}
+            columns={result.headers}
+          />
+            <Row style={{ padding: "0 5%" }}>
+              {showChart && 
+                  <VisualizeChart
+                  chart chartState={chartState} data={result} showChart={showChart} />
+              }
+              </Row>
               <p
                 className={styles.legend}
               >{`(showing ${result.meta.returned_records} of ${result.meta.total_records})`}</p>
@@ -137,15 +262,17 @@ const AggregationScreen = (props) => {
                 <Col className=" table-containepx-0">
                   <Table hover className={styles.table}>
                     <thead className="bg-primary">
+                      <tr>
                       {result.headers.map((header) => (
-                        <th>{header}</th>
+                        <td key={header}>{header}</td>
                       ))}
+                      </tr>
                     </thead>
                     <tbody>
-                      {result.values.map((row) => (
-                        <tr>
-                          {row.map((val) => (
-                            <td>{val}</td>
+                      {result.values.map((row,i) => (
+                        <tr key={i}>
+                          {row.map((val,j) => (
+                            <td key={i*10+j}>{val}</td>
                           ))}
                         </tr>
                       ))}

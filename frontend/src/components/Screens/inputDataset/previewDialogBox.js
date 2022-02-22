@@ -33,6 +33,7 @@ const PreviewDialogBox = ({ open, onClose, datasetProps, ...props }) => {
     if (open) {
       fetchDataset();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   return (

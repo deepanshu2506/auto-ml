@@ -122,6 +122,7 @@ const routes = [
     exact: false,
     component: Tour,
   },
+  
 ];
 
 export default routes;

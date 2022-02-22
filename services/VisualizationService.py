@@ -1,9 +1,9 @@
 from typing import List
 from lib.deepeye_pack import deepeye
 from lib.deepeye_pack.chart import Chart
-
+from utils.pdUtils import build_query, get_col_type, get_datatype, perform_aggregation,getCorrelation
 from services import FileService, DatasetService
-
+from utils.enums import AggregationMethods
 
 class VisualizationService:
     def __init__(
@@ -20,5 +20,22 @@ class VisualizationService:
         dp = deepeye(dataset.name)
         dp.from_csv(dataset.datasetLocation)
         dp.partial_order()
+        # dp.learning_to_rank()
         visualizations: List[Chart] = dp.to_list()[:count]
         return visualizations
+
+    def get_correlation(
+        self,
+         dataset_id: str,
+        user_id: str
+    ):
+        dataset: Dataset = self.datasetService.find_by_id(dataset_id, user_id)
+        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
+            dataset.datasetLocation
+        )
+        corrMat=getCorrelation(dataset_frame)
+        print(corrMat)
+        labels=list(corrMat)
+        arr=corrMat.values.tolist()
+        return labels,arr
+

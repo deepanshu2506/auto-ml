@@ -5,7 +5,7 @@ import styles from "./styles.module.scss";
 import { useSelector } from 'react-redux';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const { loggedIn,user } = useSelector(state => state.authentication);
+  const { loggedIn } = useSelector(state => state.authentication);
   //const isAuthenticated = localStorage.getItem('user') ? true : false;
   const isAuthenticated=loggedIn
   return isAuthenticated ? (

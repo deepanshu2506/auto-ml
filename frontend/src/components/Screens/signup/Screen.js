@@ -27,6 +27,7 @@ const SignupScreen = (props) => {
                 setErrors(newErrors)
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [form]);
 
     const setField = (field, value) => {
