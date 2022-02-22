@@ -19,8 +19,8 @@ class InferenceAPI(Resource):
         body = InferenceParser.parse_args()
         inference = self.savedModelService.perform_inference(
             saved_model_id, user_id, **body
-        )
-        return jsonify({"inference": inference})
+        )  
+        return jsonify({"inference": inference.tolist()})
 
 
 class GetSavedModelsAPI(Resource):
