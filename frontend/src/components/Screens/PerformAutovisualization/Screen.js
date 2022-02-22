@@ -54,7 +54,7 @@ const AutovisualizationScreen = (props) => {
                         <Container>
                             <Row>
                                 {visualizationResults.map((graphData) => (
-                                    <Col xs={12} lg={6} className='mt-3' >
+                                    <Col xs={12} lg={6} className='mt-3'key={(index = index + 1)}>
                                         <Card>
                                             <Card.Body>
                                                 <Card.Title tag="h5">A {graphData['chart']} chart with the x-axis <b>{graphData['x_name']}</b> and y-axis <b>{graphData['y_name']}</b></Card.Title>
@@ -62,10 +62,10 @@ const AutovisualizationScreen = (props) => {
                                                 <Card.Subtitle tag="h6" className="mb-2 text-muted">
                                                 This {graphData['chart']} chart shows the change of {graphData['y_name']} over {graphData['x_name']}
                                                 <br/>
-                                                <div>{graphData['describe'].length ? <div>Operation : {graphData['describe']}</div> :null}</div>
+                                                <div>{graphData['describe'].length ? <p>Operation : {graphData['describe']}</p> :null}</div>
                                                 </Card.Subtitle>
                                                 <Card.Text>
-                                                    <GraphType menu={graphData['chart']} graphData={graphData} key={(index = index + 1)} />
+                                                    <GraphType menu={graphData['chart']} graphData={graphData} />
                                                 </Card.Text>
                                             </Card.Body>
                                         </Card>
