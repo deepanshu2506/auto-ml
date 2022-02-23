@@ -40,7 +40,7 @@ export const ModelSelectionScreen = (props) => {
 
 
         const response = await API.json.post(
-            apiURLs.dataset.performModelSelection(params.datasetID),
+            apiURLs.modelSelectionJob.modelSelection(params.datasetID),
             payload,
         );
         return response;

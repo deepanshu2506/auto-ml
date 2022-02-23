@@ -63,7 +63,7 @@ const routes = [
     auth: true,
     title: "Dataset Info",
     path: "/datasets/:datasetID",
-    exact: false,
+    exact: true,
     component: DatasetInfoScreen,
   },
   {

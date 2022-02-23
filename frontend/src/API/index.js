@@ -13,10 +13,10 @@ export const apiURLs = {
     getDatasetDetails: (datasetID) => `/datasets/${datasetID}`,
     deleteDataset:(datasetID) => `/datasets/${datasetID}`,
     singleColImputation:(datasetID)=> `/datasets/${datasetID}/impute_advanced`,
-    modelSelection:(datasetID)=> `/datasets/model_selection/${datasetID}`  ,
-    exportModel: (modelJobID, modelID)=>`/dataset/model_selection/${modelJobID}/export/${modelID}`,
   },
-
+  modelSelectionJob:{
+    modelSelection:(datasetID)=>`/dataset/model_selection/${datasetID}`,
+  },
   misc: {
     checkDbConn: "/misc/checkDBConn",
     previewDataFromDb: "/misc/previewDataFromDb",

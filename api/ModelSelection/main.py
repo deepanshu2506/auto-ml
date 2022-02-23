@@ -13,7 +13,7 @@ from services.ModelSelectionJobService import ModelSelectionJobService
 from services.SavedModelService import SavedModelService
 
 
-API_PREFIX: str = "/datasets/model_selection"
+API_PREFIX: str = "/dataset/model_selection"
 
 
 def initialize(api: Api) -> None:
