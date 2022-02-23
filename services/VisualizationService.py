@@ -20,5 +20,6 @@ class VisualizationService:
         dp = deepeye(dataset.name)
         dp.from_csv(dataset.datasetLocation)
         dp.partial_order()
-        visualizations: List[Chart] = dp.to_list()[:count]
+        #visualizations: List[Chart] = dp.to_list()[:count]
+        visualizations: List[Chart] = dp.to_list()
         return visualizations
