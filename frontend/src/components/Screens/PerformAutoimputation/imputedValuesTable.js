@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Table,Row } from "react-bootstrap";
+import { Table,Row } from "react-bootstrap";
 import styles from "./styles.module.scss";
 
 const ImputedValuesTable = (data) => {
