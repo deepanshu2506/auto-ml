@@ -19,10 +19,10 @@ from lib.model_selection.model_selection import ModelGenerator
 from lib.Logger.SocketLogger import SocketLogger
 from services.DatasetService import DatasetService
 from services.FileService import FileService
-from utils.exceptions import ModelNotFound, UnimputedDatasetError
+from utils.exceptions import ModelNotFound, UnimputedDatasetError, JobsNotFound
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-
+import dateutil.parser as p
 
 class ModelGeneratorService:
     def __init__(
@@ -272,3 +272,23 @@ class ModelGeneratorService:
         savedModel.feature_importance = impact
         savedModel.state = TrainingStates.COMPLETED
         savedModel.save()
+
+    def findById(self, dataset_id, user_id) -> ModelSelectionJob:
+        jobs = ModelSelectionJob.objects(dataset=dataset_id,created_by=user_id)
+        if len(jobs) == 0:
+            raise JobsNotFound
+        return jobs[0]
+
+    def get_jobs_by_user(self,user_id):
+        jobs = ModelSelectionJob.objects(created_by=user_id)
+        if len(jobs) == 0:
+            raise JobsNotFound
+        # return jobs[0]
+        return jobs
+
+    def list_models(self, user_id):
+        print("yo")
+        job_lst = self.get_jobs_by_user(user_id)
+        print(job_lst)
+        return job_lst
+        # print(sorted(job_lst,key=lambda x: p.parse(x[1])))

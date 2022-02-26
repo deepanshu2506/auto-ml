@@ -9,6 +9,7 @@ import AutoimputeScreen from "../Screens/PerformAutoimputation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
 import ModelSelectionScreen from "../Screens/ModelSelection/Screen";
+import ModelSelectionJobsScreen from "../Screens/ModelSelectionJobs/Screen";
 import Tour from "../tour/tour";
 
 import {LoginScreen} from "../Screens/login/Screen";
@@ -78,9 +79,17 @@ const routes = [
     sidebar: false,
     auth: true,
     title: "Model Selection",
-    path: "/datasets/model_selection/:datasetID",
-    exact: false,
+    path: "/dataset/model_selection/:datasetID",
+    exact: true,
     component: ModelSelectionScreen,
+  },
+  {
+    sidebar: false,
+    auth: true,
+    title: "Model Selection Jobs",
+    path: "/datasets/model_selection_jobs",
+    exact: false,
+    component: ModelSelectionJobsScreen,
   },
   {
     sidebar: true,

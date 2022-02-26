@@ -2,6 +2,7 @@ from api.ModelSelection.resources import (
     ExportGeneratedModelResource,
     ModelSelectionJobResource,
     ModelSelectionResource,
+    ModelSelectionJobListResource,
 )
 from services.ModelGeneratorService import ModelGeneratorService
 from services.DatasetService import DatasetService
@@ -26,10 +27,17 @@ def initialize(api: Api) -> None:
     savedModelService = SavedModelService(fileService=fileService)
     
     api.add_resource(
+        ModelSelectionJobListResource,
+        f"/datasets/model_selection_jobs",
+        resource_class_kwargs={"modelGenerationService": modelGeneratorService},
+    )
+
+    api.add_resource(
         ModelSelectionResource,
         f"{API_PREFIX}/<id>",
         resource_class_kwargs={"modelGenerationService": modelGeneratorService},
     )
+    
     api.add_resource(
         ModelSelectionJobResource,
         f"{API_PREFIX}/<model_selection_job_id>",
