@@ -31,10 +31,11 @@ const JobDetailsScreen = (props) => {
   const getModelSelectionDetails = async (modelSelectionJobID) => {
     setLoading(true);
     try {
-      const { data: modelDetails } = await API.json.get(
+      const { data: jobDetails } = await API.json.get(
         apiURLs.modelSelectionJob.jobDetails(modelSelectionJobID)
       );
-      setJobDetails(modelDetails);
+      console.log(jobDetails)
+      setJobDetails(jobDetails);
     } catch (err) {
       console.log(err);
     }
@@ -103,7 +104,7 @@ const JobDetailsScreen = (props) => {
                   
                   </Col>
                   <Col className={styles.buttonContainer}>
-                    <Link to={`/datasets/${jobDetails.dataset.$oid}`}>
+                    <Link to={`/datasets/${jobDetails.dataset_id}`}>
                       <Button block variant="outline-primary">
                         View Dataset
                       </Button>
@@ -132,11 +133,10 @@ const JobDetailsScreen = (props) => {
                 label={`Model ${idx}`}
                 checked={modelSelectedIdx ===idx}
                 onChange={()=>{setModelSelectedIdx(idx);
-                  setModelSelectedId(model._id.$oid);
+                  setModelSelectedId(model.model_id);
                 }}/>
-              <label for={`Model ${idx}`}>{`Model ${idx}`}</label>
-  
-                <ModelDetails key={idx} model={model} idx={idx}/>
+              <label htmlFor={`Model ${idx}`}>{`Model ${idx}`}</label>
+                <ModelDetails key={idx} model={model} problemType={jobDetails.problemType} />
                 </div>
                 )}
             
@@ -165,11 +165,11 @@ const JobDetailsScreen = (props) => {
   );
 };
 
-const ModelDetails=({model})=>{
+const ModelDetails=({model,problemType})=>{
   return(
     
       <Container>
-      <p>Model Id: {model._id.$oid}</p>
+      <p>Model Id: {model.model_id}</p>
 
         <Row pt={2} mt={2}>
           <Col md={6}>
@@ -184,7 +184,17 @@ const ModelDetails=({model})=>{
           <Card style={{width:"100%",height:"100%"}}>
             <Card.Header>Model Parameters</Card.Header>
             <Card.Body className={styles.modelCard}>
-              <h6><b>Error</b> - {model.error}</h6>
+              {problemType===1?
+              <div>
+                <h6><b>Error</b> - {model.error}</h6>
+              </div>:
+              <div>
+                <h6><b>Accuracy</b> - {model.accuracy}</h6>
+                <h6><b>Pprecision</b> - {model.precision}</h6>
+                <h6><b>Recall</b> - {model.recall}</h6>
+                <h6><b>Fitness Score</b> - {model.fitness_score}</h6>
+                <h6><b>Accuracy dev</b> - {model.accuracy_dev}</h6>
+              </div>}
               <h6><b>Trainable Parameters</b> - {model.trainable_params}</h6>
             </Card.Body>
           </Card>
