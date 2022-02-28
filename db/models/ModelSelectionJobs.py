@@ -1,10 +1,8 @@
 from datetime import datetime
-
 from mongoengine.base.fields import ObjectIdField
 from utils.enums import ModelSelectionJobStates
 from db.models.Dataset import Dataset
 from bson.objectid import ObjectId
-
 from mongoengine.document import DynamicEmbeddedDocument
 from lib.model_selection.ann_encoding import Layers, ProblemType
 from mongoengine import Document
@@ -20,7 +18,10 @@ from mongoengine.fields import (
     ReferenceField,
     StringField,
 )
-
+from flask_restful import fields
+from utils.customFields import (
+    EnumField as OutputEnumField,
+)
 
 class ModelSelectionConfiguration(DynamicEmbeddedDocument):
     architecture_type = EnumField(Layers)
@@ -37,7 +38,24 @@ class ModelSelectionConfiguration(DynamicEmbeddedDocument):
     binary_selection = BooleanField()
     mutation_ratio = FloatField(min_value=0, max_value=1)
     similarity_threshold = FloatField(min_value=0, max_value=1)
-
+    @classmethod
+    def to_output(cls):
+        return {
+            "architecture_type" :  OutputEnumField(enum=Layers),
+            "problem_type" :OutputEnumField(enum=ProblemType),
+            "output_shape" : fields.Integer(),
+            "pop_size" :  fields.Integer(),
+            "tournament_size" :  fields.Integer(),
+            "max_similar" :  fields.Integer(),
+            "size_scaler" : fields.Float(),
+            "epochs" :  fields.Integer(),
+            "cross_val" : fields.Float(),
+            "more_layers_prob" :fields.Float(),
+            "max_generations" :  fields.Integer(),
+            "binary_selection" :fields.Boolean(),
+            "mutation_ratio" : fields.Float(),
+            "similarity_threshold" :fields.Float(),
+        }
 
 class GeneratedModel(DynamicEmbeddedDocument):
     accuracy = FloatField()
@@ -50,13 +68,27 @@ class GeneratedModel(DynamicEmbeddedDocument):
     model_id = ObjectIdField(
         required=True, default=ObjectId, unique=True, primary_key=True, sparse=True
     )
-
-    pass
-
+    @classmethod
+    def to_output(cls):
+        return {
+            "accuracy" : fields.Float(),
+            "precision" : fields.Float(),
+            "recall" : fields.Float(),
+            "fitness_score" : fields.Float(),
+            "model_arch" :fields.Raw(),
+            "trainable_params" : fields.Integer(),
+            "error" : fields.Float(),
+            "model_id" : fields.String(attribute="model.id"),
+        }
 
 class ModelSelectionJobResult(DynamicEmbeddedDocument):
     models = EmbeddedDocumentListField(GeneratedModel)
-    pass
+    @classmethod
+    def to_output(cls):
+        return {
+            "models":fields.List(fields.Nested(GeneratedModel.to_output())),
+        }
+
 
 
 class ModelSelectionJob(Document):
@@ -70,6 +102,20 @@ class ModelSelectionJob(Document):
     target_col = StringField()
     configuration = EmbeddedDocumentField(ModelSelectionConfiguration)
     results = EmbeddedDocumentField(ModelSelectionJobResult)
-
     created_by = ObjectIdField()
     pass
+
+    @classmethod
+    def to_output(cls):
+        return {
+            "dataset_id" : fields.String(attribute="dataset.id"),
+            "startedAt" : fields.DateTime(),
+            "state" :  OutputEnumField(ModelSelectionJobStates),
+            "jobEndtime" : fields.DateTime(),
+            "architecture_type" : OutputEnumField(enum=Layers),
+            "problemType" :  OutputEnumField(enum=ProblemType),
+            "num_classes" : fields.Integer(),
+            "target_col" : fields.String(),
+            "configuration" : fields.Nested(ModelSelectionConfiguration.to_output()),
+            "results" : fields.Nested(ModelSelectionJobResult.to_output()),           
+        }
