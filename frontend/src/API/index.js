@@ -32,6 +32,10 @@ export const apiURLs = {
     modelDetails: (model_id) => `/saved_model/${model_id}`,
     infer: (model_id) => `/saved_model/${model_id}/infer`,
   },
+  modelSelectionJob:{
+    jobDetails:(model_selection_job_id)=>`/dataset/model_selection/${model_selection_job_id}`,
+    exportModel:(model_selection_job_id,model_id)=>`/dataset/model_selection/${model_selection_job_id}/export/${model_id}`
+  },
   user:{
     register:"/auth/register",
     login:"/auth/login"

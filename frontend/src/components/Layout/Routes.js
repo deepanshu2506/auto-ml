@@ -11,7 +11,7 @@ import SavedModelScreen from "../Screens/SavedModels/Screen";
 import ModelSelectionScreen from "../Screens/ModelSelection/Screen";
 import ModelSelectionJobsScreen from "../Screens/ModelSelectionJobs/Screen";
 import Tour from "../tour/tour";
-
+import JobDetailsScreen from "../Screens/JobDetails/Screen"
 import {LoginScreen} from "../Screens/login/Screen";
 import {SignupScreen} from "../Screens/signup/Screen";
 
@@ -115,6 +115,18 @@ const routes = [
     exact: false,
     component: SavedModelDetailsScreen,
   },
+<<<<<<< HEAD
+=======
+  {
+    sidebar: false,
+    auth: true,
+    title: "Job Details",
+    path: "/jobDetails/:jobID",
+    exact: false,
+    component: JobDetailsScreen,
+  },
+
+>>>>>>> 030f1a0fe3f957993460325b3b003aa8aac68f24
   {
     sidebar: false,
     auth: false,
