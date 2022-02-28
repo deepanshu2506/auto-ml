@@ -60,14 +60,6 @@ const routes = [
     component: DatasetPreviewScreen,
   },
   {
-    sidebar: false,
-    auth: true,
-    title: "Dataset Info",
-    path: "/datasets/:datasetID",
-    exact: true,
-    component: DatasetInfoScreen,
-  },
-  {
     sidebar: true,
     auth: true,
     title: "Create dataset",
@@ -98,6 +90,14 @@ const routes = [
     path: "/savedModels",
     exact: true,
     component: SavedModelScreen,
+  },
+  {
+    sidebar: false,
+    auth: true,
+    title: "Dataset Info",
+    path: "/datasets/:datasetID",
+    exact: true,
+    component: DatasetInfoScreen,
   },
   {
     sidebar: false,

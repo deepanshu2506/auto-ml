@@ -20,6 +20,7 @@ const ListDatasetScreen = (props) => {
       await sleep(100);//wait till token is saved in local storage
       const pathname = await location.pathname;
       const response = await API.getRequest.get(pathname);
+      console.log("yooooo123",response);
       setInfo(response.data.data);
     } catch (err) {
       console.log(err);

@@ -18,12 +18,23 @@ const ModelSelectionJobsScreen = (props) => {
     setLoading(true);
     try {
         await sleep(100);
-        const {response} = await API.json.get(
-            apiURLs.modelSelectionJob.getJobs(),
-            // payload,
+        const pathname=await location.pathname;
+        console.log("pathname123",pathname);
+        // setDatasetId(pathname.substring(10));
+        const response = await API.getRequest.get(
+          pathname
         );
+        // const {response} = await API.json.get(
+        //     apiURLs.modelSelectionJob.getJobs,
+        //     // payload,
+        // );
         console.log(response);
-        setInfo(response);
+        console.log("yo");
+        console.log(response.data);
+        console.log(typeof(response.data));
+        // console.log("yo123");
+        // console.log(response.data[1]);
+        setInfo(response.data);
         
     } catch (err) {
       console.log(err);
