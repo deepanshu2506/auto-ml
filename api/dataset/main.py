@@ -11,11 +11,12 @@ from api.dataset.resources import (
     DatasetPreviewAPI,
     DatasetColDetailsAPI,
     PerformAggregationAPI,
+    DatasetReadmeAPI,
 )
 from flask_restful import Api
 import pickle
 
-from services.ReadMeService import ReadmeService
+from services import ReadmeService
 
 
 API_PREFIX: str = "/datasets"
@@ -73,7 +74,7 @@ def initialize(api: Api) -> None:
     )
 
     api.add_resource(
-        DatasetAutoImputation,
+        DatasetReadmeAPI,
         f"{API_PREFIX}/<id>/readme",
         resource_class_kwargs={"readmeService": readmeService},
     )
