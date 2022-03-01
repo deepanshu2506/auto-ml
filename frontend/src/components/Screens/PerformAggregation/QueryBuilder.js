@@ -5,12 +5,13 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaLayerGroup, FaFilter } from "react-icons/fa";
+import { HiOutlineViewGridAdd } from "react-icons/hi";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useState, useEffect } from "react";
 import styles from "./QueryBuilder.module.scss";
 import FormModal from "../../Content/FormModal/FormModal";
-const QueryBuilder = ({ features, discreteCols, onChange }) => {
+const QueryBuilder = ({ features, discreteCols, onChange,clear }) => {
   const [dialogStates, setDialogStates] = useState({
     addFilter: false,
     addAggregation: false,
@@ -41,11 +42,15 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
   const onFilterAdd = (filter) =>
     setQuery((prev) => ({ ...prev, filters: [...prev.filters, filter] }));
 
-  const onAggregationAdd = (aggregate) =>
+  const onAggregationAdd = (aggregate) =>{
     setQuery((prev) => ({ ...prev, aggregate }));
+    closeAggregationDialog();
+  }
 
-  const onGroupByAdd = (col) =>
+  const onGroupByAdd = (col) =>{
     setQuery((prev) => ({ ...prev, groupBy: col.col }));
+    closeGroupByDialog();
+  }
 
   const removeAggregate = () => {
     setQuery((prev) => ({ ...prev, aggregate: null }));
@@ -62,6 +67,17 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
     onChange(query);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
+
+  useEffect(() => {
+    if(clear){
+      setQuery({
+        filters: [],
+        groupBy: null,
+        aggregate: null,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clear]);
   return (
     <Row className={styles.container}>
       <Col className={styles.whereContainer}>
@@ -80,7 +96,7 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
               >{`${filter.lhs} ${filter.op} ${filter.rhs}`}</Tag>
             ))
           ) : (
-            <p className={styles.empty}>Add filter</p>
+            <p className={styles.empty}>Add filter <FaFilter/></p>
           )}
         </div>
         <div className={styles.addButtonContainer}>
@@ -105,7 +121,7 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
             {query.groupBy ? (
               <Tag onRemove={removeGroupBy}>{query.groupBy}</Tag>
             ) : (
-              <p className={styles.empty}>Add Group By</p>
+              <p className={styles.empty}>Add Group By <FaLayerGroup/></p>
             )}
           </div>
           <div className={styles.addButtonContainer}>
@@ -132,7 +148,7 @@ const QueryBuilder = ({ features, discreteCols, onChange }) => {
                 onRemove={removeAggregate}
               >{`${query.aggregate.method} of ${query.aggregate.col}`}</Tag>
             ) : (
-              <p className={styles.empty}>Add Aggregation</p>
+              <p className={styles.empty}>Add Aggregation  <HiOutlineViewGridAdd/></p>
             )}
           </div>
           <div className={styles.addButtonContainer}>
@@ -196,7 +212,7 @@ const AddFilterDialog = ({ show, onClose, onAdd, columns, discreteCols }) => {
             >
               <option value="">Select Column</option>
               {columns.map((column) => (
-                <option value={column.column_name}>{column.column_name}</option>
+                <option key={column.column_name} value={column.column_name}>{column.column_name}</option>
               ))}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
@@ -218,11 +234,11 @@ const AddFilterDialog = ({ show, onClose, onAdd, columns, discreteCols }) => {
               required
             >
               <option value="">Select Operator</option>
-              <option value=">">{">"}</option>
-              <option value=">=">{">="}</option>
-              <option value="<=">{"<="}</option>
-              <option value="<">{"<"}</option>
-              <option value="==">{"="}</option>
+              <option  key=">" value=">">{">"}</option>
+              <option key=">=" value=">=">{">="}</option>
+              <option key="<=" value="<=">{"<="}</option>
+              <option key="<" value="<">{"<"}</option>
+              <option key="==" value="==">{"="}</option>
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               Please Column
@@ -246,7 +262,7 @@ const AddFilterDialog = ({ show, onClose, onAdd, columns, discreteCols }) => {
               >
                 <option value="">Select Column</option>
                 {discreteCols[state.lhs].values.map((val) => (
-                  <option value={val}>{val}</option>
+                  <option key={val} value={val}>{val}</option>
                 ))}
               </Form.Control>
             ) : (
@@ -275,7 +291,6 @@ const AddFilterDialog = ({ show, onClose, onAdd, columns, discreteCols }) => {
 
 const AddAggregationDialog = ({ show, onClose, onAdd, columns }) => {
   const [state, setState] = useState({});
-
   const onSubmit = () => onAdd(state);
 
   return (
@@ -299,11 +314,12 @@ const AddAggregationDialog = ({ show, onClose, onAdd, columns }) => {
               as="select"
               required
             >
+           
               <option value="">Select Column</option>
               {columns
-                .filter((column) => column.dataType !== "string")
+                .filter((column) => column.datatype !== "STRING")
                 .map((column) => (
-                  <option value={column.column_name}>
+                  <option key={column.column_name} value={column.column_name}>
                     {column.column_name}
                   </option>
                 ))}
@@ -327,12 +343,12 @@ const AddAggregationDialog = ({ show, onClose, onAdd, columns }) => {
               required
             >
               <option value="">Select aggregation method</option>
-              <option value="min">{"min"}</option>
-              <option value="max">{"max"}</option>
-              <option value="sum">{"sum"}</option>
-              <option value="count">{"count"}</option>
-              <option value="mean">{"mean"}</option>
-              <option value="unique">{"Unique"}</option>
+              <option key="min" value="min">{"min"}</option>
+              <option key="max" value="max">{"max"}</option>
+              <option key="sum" value="sum">{"sum"}</option>
+              <option key="count" value="count">{"count"}</option>
+              <option key="mean" value="mean">{"mean"}</option>
+              <option key="unique" value="unique">{"Unique"}</option>
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               Please select aggregation method
@@ -370,10 +386,16 @@ const AddGroupByDialog = ({ show, onClose, onAdd, columns }) => {
               as="select"
               required
             >
-              <option value="">Select Column</option>
-              {columns.map((column) => (
-                <option value={column.column_name}>{column.column_name}</option>
-              ))}
+             
+
+            <option value="">Select Column</option>
+              {columns
+                .filter((column) => column.column_Type === "discrete")
+                .map((column) => (
+                  <option key={column.column_name} value={column.column_name}>
+                    {column.column_name}
+                  </option>
+                ))}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               Please select Column

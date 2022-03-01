@@ -16,7 +16,11 @@ export const apiURLs = {
     deleteDataset: (datasetID) => `/datasets/${datasetID}`,
     singleColImputation: (datasetID) => `/datasets/${datasetID}/impute_advanced`,
   },
-
+  visualize:{
+    performAutoVisualization: (datasetID) => `/visualization/${datasetID}/auto_visualize`,
+    performAdvanceVisualization: (datasetID) => `/visualization/${datasetID}/advance_visualize`,
+    getCorrelation: (datasetID) => `/visualization/${datasetID}/correlate`,
+  },
   misc: {
     checkDbConn: "/misc/checkDBConn",
     previewDataFromDb: "/misc/previewDataFromDb",
@@ -26,16 +30,19 @@ export const apiURLs = {
     modelDetails: (model_id) => `/saved_model/${model_id}`,
     infer: (model_id) => `/saved_model/${model_id}/infer`,
   },
-  user: {
-    register: "/auth/register",
-    login: "/auth/login"
+  modelSelectionJob:{
+    jobDetails:(model_selection_job_id)=>`/dataset/model_selection/${model_selection_job_id}`,
+    exportModel:(model_selection_job_id,model_id)=>`/dataset/model_selection/${model_selection_job_id}/export/${model_id}`
+  },
+  user:{
+    register:"/auth/register",
+    login:"/auth/login"
   }
 };
 
 const addTokenToConfig = (config) => {
   // let user = JSON.parse(localStorage.getItem('user'));
   // const Token=user.auth_token;
-  console.log("Token")
 
   let redux_store = JSON.parse(localStorage.getItem('persist:root'));
   let user = JSON.parse(redux_store.user)

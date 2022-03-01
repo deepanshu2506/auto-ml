@@ -94,7 +94,7 @@ const SavedModelDetailsScreen = (props) => {
                   </Col>
                   <Col className={styles.buttonContainer}>
                     <Link
-                      to={`/model_selection/${model.model_selection_job_id}`}
+                      to={`/jobDetails/${model.model_selection_job_id}`}
                     >
                       <Button block variant="outline-primary">
                         View Model Selection Job

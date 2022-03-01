@@ -10,7 +10,7 @@ import AutoimputeScreen from "../Screens/PerformAutoimputation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
 import Tour from "../tour/tour";
-
+import JobDetailsScreen from "../Screens/JobDetails/Screen"
 import {LoginScreen} from "../Screens/login/Screen";
 import {SignupScreen} from "../Screens/signup/Screen";
 
@@ -106,6 +106,14 @@ const routes = [
     exact: false,
     component: SavedModelDetailsScreen,
   },
+  {
+    sidebar: false,
+    auth: true,
+    title: "Job Details",
+    path: "/jobDetails/:jobID",
+    exact: false,
+    component: JobDetailsScreen,
+  },
 
   {
     sidebar: false,
@@ -131,6 +139,7 @@ const routes = [
     exact: false,
     component: Tour,
   },
+  
 ];
 
 export default routes;

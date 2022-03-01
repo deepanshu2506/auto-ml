@@ -4,7 +4,6 @@ import CanvasJSReact from "../../../assets/canvasjs.react";
 
 const Piechart = (data) => {
     const { graphData } = data;
-    //console.log(graphData);
 
     let datapointsArr = []
 
@@ -22,7 +21,6 @@ const Piechart = (data) => {
         datapointsArr.push({ name: xdata[0][i], y: ydata[0][i] })
     }
 
-    //console.log(datapointsArr);
     var dp;
     dp = [
         {
@@ -34,7 +32,6 @@ const Piechart = (data) => {
         }
     ]
 
-    console.log(datapointsArr);
     var CanvasJSChart = CanvasJSReact.CanvasJSChart;
     const options = {
         title: {

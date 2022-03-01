@@ -4,7 +4,6 @@ import CanvasJSReact from "../../../assets/canvasjs.react";
 
 const Scatterchart = (data) => {
     const { graphData } = data;
-    //console.log(graphData);
 
     let datapointsArr = []
 
@@ -17,12 +16,11 @@ const Scatterchart = (data) => {
     var xdata = graphData['x_data']
     xdata = xdata.replace(/'/g, '"');
     xdata = JSON.parse(xdata);
-    var toolTipShared = false;
+
     for (var i = 0; i < xdata[0].length; i++) {
         datapointsArr.push({ x: xdata[0][i], y: ydata[0][i] })
     }
 
-    //console.log(datapointsArr);
     var dp;
     dp = [
         {
@@ -32,7 +30,6 @@ const Scatterchart = (data) => {
         }
     ]
 
-    //console.log(datapointsArr);
     var CanvasJSChart = CanvasJSReact.CanvasJSChart;
     const options = {
         title: {
@@ -43,16 +40,12 @@ const Scatterchart = (data) => {
         exportEnabled: true,
         axisX: {
             title: graphData['x_name'],
-            //minimum: 790,
-            //maximum: 2260
         },
         axisY: {
             title: graphData['y_name'],
-            //valueFormatString: "$#,##0k"
         },
         legend: {
             cursor: "pointer",
-            //itemclick: toggleDataSeries
         },
         data: dp,
     }

@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import {
-    Col, Container, Row, Spinner, Table, Button, Form, InputGroup, Card,
+    Col, Container, Row, Spinner, Form, InputGroup, Card,
 } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
 
 import styles from "./styles.module.scss";
 import API, { apiURLs } from "../../../API";
@@ -14,13 +13,12 @@ import Linechart from "./Linechart";
 
 const AutovisualizationScreen = (props) => {
     const [state, setState] = useState({});
-    // const [validated, setValidated] = useState(false);
     const [featuresLoading, setFeaturesLoading] = useState(true);
+    const [kValues, setKValues] = useState([]);
     const [visualizationResults, setVisualizationResults] = useState([]);
     const [topKVisualizationResults, setTopKVisualizationResults] = useState([]);
     const params = props.rootParams.params;
 
-    var kValues = [5, 10, 15, 20, 25, 30];
     var index = 0;
 
     const sleep = (milliseconds) => {
@@ -30,7 +28,7 @@ const AutovisualizationScreen = (props) => {
     const getVisualizationResults = async () => {
         setFeaturesLoading(true);
         const payload = {
-            count: 10,
+            count: 5,
         };
         try {
             const response = await API.json.post(
@@ -38,10 +36,11 @@ const AutovisualizationScreen = (props) => {
                 payload,
             );
             setVisualizationResults(response.data);
-            console.log(response.data.slice(0, 10))
+            for (var i = 2; i <= response.data.length / 5; i++) {
+                kValues.push(5 * i)
+            }
             await sleep(200);
-            setTopKVisualizationResults(response.data.slice(0, 10))
-            console.log(response.data.slice(0, 10))
+            setTopKVisualizationResults(response.data.slice(0, 5))
             setFeaturesLoading(false);
 
         } catch (err) {
@@ -87,14 +86,11 @@ const AutovisualizationScreen = (props) => {
                                     as="select"
                                     required
                                 >
-                                    <option value="10">10</option>
+                                    <option value="5">5</option>
                                     {kValues.map((k) => (
                                         <option key={k} value={k}>{k}</option>
                                     ))}
                                 </Form.Control>
-                                {/* <Form.Control.Feedback type="invalid">
-                                        Please k value
-                                    </Form.Control.Feedback> */}
                             </InputGroup>
                         </Form.Group>
                     </Form>
@@ -117,11 +113,9 @@ const AutovisualizationScreen = (props) => {
                                                     <Card.Subtitle tag="h6" className="mb-2 text-muted">
                                                         This {graphData['chart']} chart shows the change of {graphData['y_name']} over {graphData['x_name']}
                                                         <br />
-                                                        <div>{graphData['describe'].length > 0 ? <div>Operation : {graphData['describe']}</div> : null}</div>
+                                                        <div>{graphData['describe'].length > 0 ? <div>Operation : {graphData['describe']}</div> : <div></div>}</div>
                                                     </Card.Subtitle>
-                                                    <Card.Text>
-                                                        <GraphType menu={graphData['chart']} graphData={graphData} />
-                                                    </Card.Text>
+                                                    <GraphType menu={graphData['chart']} graphData={graphData} />
                                                 </Card.Body>
                                             </Card>
                                         </Col>

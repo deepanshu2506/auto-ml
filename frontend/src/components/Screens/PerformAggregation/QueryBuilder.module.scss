@@ -23,6 +23,11 @@
       color: #888;
       font-style: italic;
       font-weight: lighter;
+      svg{
+        font-size: 19px;
+        color: rgba($color: $primary-color, $alpha: 0.2);
+        font-weight: bold;
+      }
     }
   }
 }

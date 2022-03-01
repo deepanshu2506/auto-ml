@@ -11,6 +11,11 @@
   padding: 1rem;
 }
 
+.clear{
+  position: fixed;
+    right: 3rem;
+    top: 80px;
+}
 .tablecontainer {
   overflow-x: auto;
   overflow-y: auto;
@@ -25,7 +30,13 @@
   td {
     text-align: center;
   }
+  thead{
+
+    color: white;
+      font-weight: normal;
+  }
 }
+
 
 .legend {
   color: #888;

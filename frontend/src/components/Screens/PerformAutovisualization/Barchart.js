@@ -4,7 +4,6 @@ import CanvasJSReact from "../../../assets/canvasjs.react";
 
 const Barchart = (data) => {
     const { graphData } = data;
-    //console.log(graphData);
 
     let datapointsArr = []
 
@@ -34,8 +33,6 @@ const Barchart = (data) => {
         }
     }
 
-
-    //console.log(datapointsArr);
     if (datapointsArr.length > 0 && datapointsArr[0].length > 0) {
         datapointsArr = datapointsArr[0].map((_, colIndex) => datapointsArr.map(row => row[colIndex]));
         var dp = []

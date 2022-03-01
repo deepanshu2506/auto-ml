@@ -6,7 +6,24 @@ from lib.deepeye_pack.chart import Chart
 from services import VisualizationService
 from api.visualization.requestParsers import autoVisualizationRequestParser
 
+class CorrelationAPI(Resource):
+    method_decorators = [jwt_required()]
+    def __init__(self, visualizationService: VisualizationService) -> None:
+        super().__init__()
+        self.visualizationService = visualizationService
 
+    def get(self, dataset_id):
+        print("Correlation")
+        user_id = get_jwt_identity()
+        labels,arr = self.visualizationService.get_correlation(dataset_id,user_id)
+        return jsonify(
+            {
+                "labels":labels,
+                "arr":arr
+            }
+        )
+
+    
 class AutoVisualizationAPI(Resource):
     def __init__(self, visualizationService: VisualizationService) -> None:
         super().__init__()
@@ -22,3 +39,5 @@ class AutoVisualizationAPI(Resource):
         )
         print(len(visualizations))
         return jsonify(list(map(lambda x: x.to_dict(), visualizations)))
+
+   
