@@ -81,8 +81,3 @@ class Dataset(Document):
     datasource_type = StringField()
     isDeleted = BooleanField(default=False)
 
-    @classmethod
-    def to_output(cls):
-        return {
-            "name" : fields.String(attribute="dataset.id"),          
-        }

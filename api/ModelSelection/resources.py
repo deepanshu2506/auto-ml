@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from flask_jwt_extended.utils import get_jwt_identity
-from flask_restful import Resource, marshal_with
+from flask_restful import Resource, marshal_with,marshal_with_field,fields
 from flask_jwt_extended import jwt_required
 from db.models.SavedModels import SavedModel
 from db.models.ModelSelectionJobs import ModelSelectionJob
@@ -52,8 +52,9 @@ class ModelSelectionJobListResource(Resource):
 
     method_decorators = [jwt_required()]
 
-    @jwt_required()
-    @marshal_with(ModelSelectionJob.joblist_output())
+    @marshal_with_field(
+        fields.List(fields.Nested(ModelSelectionJob.to_output(detailed=False)))
+    )
     def get(self):
         print("inside get")
         user_id = get_jwt_identity()
@@ -77,7 +78,7 @@ class ModelSelectionJobResource(Resource):
         self.modelSelectionJobService = modelSelectionJobService
 
     method_decorators = [jwt_required()]
-    @marshal_with(ModelSelectionJob.to_output())
+    @marshal_with(ModelSelectionJob.to_output(detailed=True))
     def get(self, model_selection_job_id):
         user_id = get_jwt_identity()
         model_selection_job = self.modelSelectionJobService.find_by_id(
