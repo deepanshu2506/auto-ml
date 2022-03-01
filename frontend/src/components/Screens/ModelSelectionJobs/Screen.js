@@ -68,7 +68,7 @@ const ModelSelectionJobsScreen = (props) => {
               <th>Job Details</th>
             </tr>
           </thead>
-          <tbody>
+          {/* <tbody>
             {loading ? (
               <tr>
                 <td colSpan="6">
@@ -104,7 +104,7 @@ const ModelSelectionJobsScreen = (props) => {
                 </tr>,
               ])
             )}
-          </tbody>
+          </tbody> */}
         </Table>
       </Container>
     </Container>

@@ -119,3 +119,33 @@ class ModelSelectionJob(Document):
             "configuration" : fields.Nested(ModelSelectionConfiguration.to_output()),
             "results" : fields.Nested(ModelSelectionJobResult.to_output()),           
         }
+    
+    @classmethod
+    def joblist_output(cls, detailed=True):
+        summary_fields = {
+            # "dataset_id" : fields.String(attribute="job.dataset"),
+            # "dataset_id" : fields.Nested(Dataset.to_output()),
+            "startedAt" : fields.DateTime(),
+            "state" :  OutputEnumField(ModelSelectionJobStates),
+            "jobEndtime" : fields.DateTime(),
+            "target_col" : fields.String(),
+        }
+        dataset_fields = {
+            "dataset_name": fields.List(fields.Nested(Dataset.to_output())),
+        }
+        # detailed_fields = {
+        #     "classes": fields.List(fields.Raw()),
+        #     "feature_importance": fields.Raw(),
+        #     "features": fields.List(fields.Nested(ModelFeatures.to_output())),
+        #     "dataset_id": fields.String(attribute="job.dataset.id"),
+        #     "model_selection_job_id": fields.String(attribute="job.id"),
+        #     "architecture": fields.Raw(),
+        #     "param_count": fields.Integer(),
+        #     "metrics": fields.Nested(ModelMetrics.to_output()),
+        # # }
+        output_fields = (
+            {**summary_fields, **dataset_fields} if detailed else summary_fields
+        )
+        # return summary_fields
+        return output_fields
+

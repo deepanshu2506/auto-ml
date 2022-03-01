@@ -29,7 +29,7 @@ const routes = [
   {
     sidebar: true,
     title: "Datasets",
-    path: "/datasets",
+    path: "/datasets/",
     auth: true,
     exact: true,
     // Icon: () => <Avatar src="/teams-icon.png" round={true} size={35} />,
@@ -115,8 +115,6 @@ const routes = [
     exact: false,
     component: SavedModelDetailsScreen,
   },
-<<<<<<< HEAD
-=======
   {
     sidebar: false,
     auth: true,
@@ -126,7 +124,6 @@ const routes = [
     component: JobDetailsScreen,
   },
 
->>>>>>> 030f1a0fe3f957993460325b3b003aa8aac68f24
   {
     sidebar: false,
     auth: false,

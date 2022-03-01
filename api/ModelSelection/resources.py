@@ -53,7 +53,7 @@ class ModelSelectionJobListResource(Resource):
     method_decorators = [jwt_required()]
 
     @jwt_required()
-    @marshal_with(ModelSelectionJob.to_output())
+    @marshal_with(ModelSelectionJob.joblist_output())
     def get(self):
         print("inside get")
         user_id = get_jwt_identity()

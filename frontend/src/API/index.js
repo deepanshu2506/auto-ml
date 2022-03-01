@@ -3,7 +3,7 @@ import axios from "axios";
 const endpoint = "http://localhost:5000";
 export const apiURLs = {
   dataset: {
-    create: "/datasets",
+    create: "/datasets/",
     getFeatures: (datasetID) => `/datasets/${datasetID}/col_details`,
     getDatasetPreview: (datasetID) => `/datasets/${datasetID}/preview`,
     performAggregation: (datasetID) =>
