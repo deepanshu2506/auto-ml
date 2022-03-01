@@ -22,6 +22,8 @@ class VisualizationService:
         dp.partial_order()
         #visualizations: List[Chart] = dp.to_list()[:count]
         visualizations: List[Chart] = dp.to_list()
+        if len(visualizations)>50:
+            visualizations=visualizations[:50]
         return visualizations
 
     def get_correlation(

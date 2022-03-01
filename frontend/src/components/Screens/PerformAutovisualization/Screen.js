@@ -36,10 +36,11 @@ const AutovisualizationScreen = (props) => {
                 payload,
             );
             setVisualizationResults(response.data);
+            var values = []
             for (var i = 2; i <= response.data.length / 5; i++) {
-                kValues.push(5 * i)
+                values.push(5 * i)
             }
-            await sleep(200);
+            setKValues((prev) => [...prev, ...values]);
             setTopKVisualizationResults(response.data.slice(0, 5))
             setFeaturesLoading(false);
 
@@ -100,7 +101,7 @@ const AutovisualizationScreen = (props) => {
                 <Spinner animation="border" variant="primary" />
             ) : (
                 <Col>
-                    {visualizationResults ? (
+                    {topKVisualizationResults ? (
                         <Col>
                             <Container>
                                 <Row>
