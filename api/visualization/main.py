@@ -3,7 +3,7 @@ from api.visualization.resources import AutoVisualizationAPI,CorrelationAPI
 from services import FileService, DatasetService
 from services.VisualizationService import VisualizationService
 
-API_PREFIX: str = "/visualization"
+API_PREFIX: str = "/datasets"
 
 
 def initialize(api: Api) -> None:
@@ -14,7 +14,7 @@ def initialize(api: Api) -> None:
     )
     api.add_resource(
         AutoVisualizationAPI,
-        f"{API_PREFIX}/<dataset_id>/",
+        f"{API_PREFIX}/<dataset_id>/visualization",
         resource_class_kwargs={"visualizationService": visualizationService},
     )
     api.add_resource(

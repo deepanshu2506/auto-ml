@@ -20,8 +20,8 @@ class VisualizationService:
         dp = deepeye(dataset.name)
         dp.from_csv(dataset.datasetLocation)
         dp.partial_order()
-        # dp.learning_to_rank()
-        visualizations: List[Chart] = dp.to_list()[:count]
+        #visualizations: List[Chart] = dp.to_list()[:count]
+        visualizations: List[Chart] = dp.to_list()
         return visualizations
 
     def get_correlation(
