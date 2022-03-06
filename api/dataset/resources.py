@@ -173,7 +173,7 @@ class DatasetColumnDescriptionAPI(Resource):
         super().__init__()
         self.datasetService = datasetService
 
-    def _get_descriptions(body: dict) -> List[Dict]:
+    def _get_descriptions(self, body: dict) -> List[Dict]:
         return body.get("data")
 
     def _update_descriptions(self, id):
