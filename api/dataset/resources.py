@@ -166,6 +166,8 @@ class DatasetColDetailsAPI(Resource):
 
 
 class DatasetReadmeAPI(Resource):
+    method_decorators = [jwt_required()]
+
     def __init__(self, readmeService: ReadmeService) -> None:
         super().__init__()
         self.readmeService = readmeService
@@ -180,8 +182,8 @@ class DatasetReadmeAPI(Resource):
         resp.headers["Content-Type"] = "text/markdown"
         return resp
 
-    def post(self, dataset_id):
+    def post(self, id):
         user_id = get_jwt_identity()
         body = readmeInputRequestParser.parse_args()
-        self.readmeService.create_update_readme_file(dataset_id, user_id, **body)
+        self.readmeService.create_update_readme_file(id, user_id, **body)
         return {"status": "created"}, 201
