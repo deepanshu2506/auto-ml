@@ -14,8 +14,6 @@ from api.ModelSelection.requestParsers import (
 )
 from services.ModelSelectionJobService import ModelSelectionJobService
 from services.SavedModelService import SavedModelService
-# import json
-# from flask import jsonify
 class ModelSelectionResource(Resource):
     def __init__(self, modelGenerationService: ModelGeneratorService) -> None:
         super().__init__()
@@ -23,22 +21,11 @@ class ModelSelectionResource(Resource):
 
     method_decorators = [jwt_required()]
 
-    # def get(self):
-    #     print("inside get")
-    #     user_id = get_jwt_identity()
-    #     jobs_list = self.modelGenerationService.list_models(
-    #         user_id=user_id,
-    #     )
-    #     print(jobs_list)
-    #     return jobs_list.to_json()
-
-
     def post(self, id):
         body = modelSelectionRequestParser.parse_args()
         user_id = get_jwt_identity()
         job = self.modelGenerationService.generateModels(
             user_id=user_id,
-            # dataset_id=body["dataset_id"],
             dataset_id=id,
             target_col=body["target_col"],
         )
@@ -56,15 +43,10 @@ class ModelSelectionJobListResource(Resource):
         fields.List(fields.Nested(ModelSelectionJob.to_output(detailed=False)))
     )
     def get(self):
-        print("inside get")
         user_id = get_jwt_identity()
         jobs_list = self.modelGenerationService.list_models(
             user_id=user_id,
         )
-        print("yooo11",jobs_list)
-        # print("Type",type(jobs_list))
-        # dicts = json.loads(jobs_list)
-        # print("Type2",type(dicts))
         return jobs_list
 
 class ModelSelectionJobResource(Resource):

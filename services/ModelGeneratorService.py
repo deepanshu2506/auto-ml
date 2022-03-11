@@ -23,9 +23,6 @@ from utils.exceptions import ModelNotFound, UnimputedDatasetError, JobsNotFound
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import dateutil.parser as p
-# from tensorflow import convert_to_tensor
-# from flask import jsonify
-# import json
 
 
 class ModelGeneratorService:
@@ -288,19 +285,7 @@ class ModelGeneratorService:
         if len(jobs) == 0:
             raise JobsNotFound
         return jobs
-        # return jobs
-
-    # def _convert_to_tensor(self, input_dict):
-    #     tensor = {
-    #         name: convert_to_tensor([value]) for name, value in input_dict.items()
-    #     }
-    #     return tensor
 
     def list_models(self, user_id):
-        print("yo11")
         job_lst = self.get_jobs_by_user(user_id)
-        # print(job_lst, type(job_lst))
-        # tensor = self._convert_to_tensor(job_lst)
-        # print("hey", tensor)
         return job_lst
-        # print(sorted(job_lst,key=lambda x: p.parse(x[1])))

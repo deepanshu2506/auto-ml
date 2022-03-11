@@ -9,37 +9,33 @@ const ModelSelectionJobsScreen = (props) => {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const location = useLocation();
-  var index = 0;
   var temp;
+
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }  
 
+  function sortFunction(a,b){ 
+    var dateA = new Date(a.startedAt.slice(0, -5).trim()).getTime();
+    var dateB = new Date(b.startedAt.slice(0, -5).trim()).getTime();
+    return dateA < dateB ? 1 : -1;  
+  }; 
+
   const getJobsList = async () => {
     setLoading(true);
     try {
-        await sleep(100);
+        await sleep(1000);
         const pathname=await location.pathname;
         console.log("pathname123",pathname);
-        // setDatasetId(pathname.substring(10));
         const response = await API.getRequest.get(
           pathname
         );
-        // const {response} = await API.json.get(
-        //     apiURLs.modelSelectionJob.getJobs,
-        //     // payload,
-        // );
-        console.log(response);
-        console.log("yo");
+        // console.log(response);
         temp = response.data;
-        console.log(response.data);
-        console.log(typeof(temp));
-        // temp.sort((a, b)=>a-b);
-        temp.sort();
-        console.log(temp);
-        // console.log("yo123");
-        // console.log(response.data[5].jobEndtime);
-        setInfo(temp);
+        // console.log(response.data);
+        temp.sort(sortFunction);
+        // console.log(response.data);
+        setInfo(response.data);
         
     } catch (err) {
       console.log(err);
@@ -61,7 +57,7 @@ const ModelSelectionJobsScreen = (props) => {
         </Col>
         <Col>
         <span className={styles.search}>
-          <input placeholder="Search by the Dataset Name" onChange={event => setQuery(event.target.value)}/>
+          <input placeholder=" Search by the Dataset Name " onChange={event => setQuery(event.target.value)}/>
         </span>
         </Col>
       </Row>
@@ -91,9 +87,6 @@ const ModelSelectionJobsScreen = (props) => {
                         <h3 className={styles.modelName}>{column.dataset_name}</h3>
                         <p className={styles.modelState}>Status: {column.state}</p>
                         <p className={styles.modelState}>Target Column: {column.target_col}</p>
-                        {/* <p className={styles.modelType}>
-                          {MODEL_TYPES[column.type]} Model
-                        </p> */}
                         <p className={styles.modelCreationDate}>
                           Job started at: {column.startedAt.slice(0, -14).trim()}
                         </p>
@@ -107,15 +100,6 @@ const ModelSelectionJobsScreen = (props) => {
                             disabled={column.state !== "completed"}
                             block>Details</Button>
                         </Link>
-                        {/* <Link to={`/savedModels/${column.id}/inference`}>
-                          <Button
-                            disabled={column.state !== "completed"}
-                            block
-                            variant="outline-primary"
-                          >
-                            Details
-                          </Button>
-                        </Link> */}
                       </Col>
                     </Row>
                   </Card.Body>

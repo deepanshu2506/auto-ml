@@ -51,7 +51,7 @@ export const ModelSelectionScreen = (props) => {
         if (!state.col) {
             setValidated(true);
         } else {
-            try {
+            try {    
                 const {
                     data
                 } = await getResult();
