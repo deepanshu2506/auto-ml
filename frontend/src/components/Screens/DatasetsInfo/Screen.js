@@ -199,9 +199,9 @@ const DatasetInfoScreen = (props) => {
               </Link>
             </Col>
             <Col md={3}>
-            <Link to={`/visualize/${datasetId}/advance_visualize`}>
-              <Button block>Visualization</Button>
-            </Link>
+              <Link to={`${location.pathname}/visualization`}>
+                <Button block>Visualization</Button>
+              </Link>
             </Col>
             <Col md={3}>
               <Link to={`/dataset/model_selection/${info.id}`}>

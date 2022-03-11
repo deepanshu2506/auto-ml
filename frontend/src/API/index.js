@@ -8,11 +8,13 @@ export const apiURLs = {
     getDatasetPreview: (datasetID) => `/datasets/${datasetID}/preview`,
     performAggregation: (datasetID) =>
       `/datasets/${datasetID}/perform_aggregation`,
-      performAutoimputation: (datasetID) =>
+    performAutoimputation: (datasetID) =>
       `/datasets/${datasetID}/auto_impute`,
+    performAutovisualization: (datasetID) =>
+      `/datasets/${datasetID}/visualization`,
     getDatasetDetails: (datasetID) => `/datasets/${datasetID}`,
-    deleteDataset:(datasetID) => `/datasets/${datasetID}`,
-    singleColImputation:(datasetID)=> `/datasets/${datasetID}/impute_advanced`,
+    deleteDataset: (datasetID) => `/datasets/${datasetID}`,
+    singleColImputation: (datasetID) => `/datasets/${datasetID}/impute_advanced`,
   },
   modelSelectionJob: {
     modelSelection:(datasetID)=>`/dataset/model_selection/${datasetID}`,
@@ -45,11 +47,10 @@ export const apiURLs = {
 const addTokenToConfig = (config) => {
   // let user = JSON.parse(localStorage.getItem('user'));
   // const Token=user.auth_token;
-  // console.log(user)
 
   let redux_store = JSON.parse(localStorage.getItem('persist:root'));
-  let user=JSON.parse(redux_store.user)
-  const Token=user["auth_token"];
+  let user = JSON.parse(redux_store.user)
+  const Token = user["auth_token"];
   if (Token) config.headers["Authorization"] = "Bearer " + Token;
 
   return config;
@@ -93,7 +94,7 @@ formDataAPI.interceptors.request.use(addTokenToConfig, function (error) {
 const API = {
   json: jsonAPI,
   formData: formDataAPI,
-  getRequest:getRequestAPI,
+  getRequest: getRequestAPI,
   authData: authDataAPI
 };
 export default API;

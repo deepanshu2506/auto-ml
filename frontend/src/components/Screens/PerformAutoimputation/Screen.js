@@ -135,7 +135,7 @@ export const AutoimputeScreen = (props) => {
                                                 }));
                                             }}
                                             as="select"
-                                            required
+                                            //required
                                         >
                                             <option value="">Select target Column</option>
                                             {dataset.datasetFields.map((column) => (
