@@ -1,19 +1,17 @@
-import { Col, Container, Row, Spinner, Table, Button, Form, InputGroup, } from "react-bootstrap";
+import { Col, Container, Row, Spinner, Button, Form, InputGroup, } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { Link, useLocation, Redirect } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./styles.module.scss";
 import API, { apiURLs } from "../../../API";
 
 export const ModelSelectionScreen = (props) => {
     const [state, setState] = useState({});
-    const [validated, setValidated, redirect, setRedirect] = useState(false);
+    const [validated, setValidated] = useState(false);
     const [featuresLoading, setFeaturesLoading] = useState(true);
     const [dataset, setDataset] = useState({});
-    const [datasetPreview, setDatasetPreview] = useState(null);
     const [result, setResult] = useState(null);
     const location = useLocation();
     const params = props.rootParams.params;
-    // state = { redirect: false };
 
     var index = 0;
     const getFeatures = async () => {
@@ -31,17 +29,6 @@ export const ModelSelectionScreen = (props) => {
         }
     };
     
-    // setRedirect = () => {
-    //     this.setState({
-    //       redirect: true
-    //     })
-    //   };
-
-    // renderRedirect = () => {
-    // if (this.state.redirect) {
-    //     return <Redirect to='/datasets/model_selection_jobs' />
-    // }
-    // };
 
     useEffect(() => {
         getFeatures();
@@ -53,9 +40,8 @@ export const ModelSelectionScreen = (props) => {
             target_col: state.col,
         };
 
-
         const response = await API.json.post(
-            apiURLs.modelSelectionJob.modelSelection(params.datasetID),
+            apiURLs.dataset.modelSelection(params.datasetID),
             payload,
         );
         return response;
@@ -66,18 +52,12 @@ export const ModelSelectionScreen = (props) => {
             setValidated(true);
         } else {
             try {
-                // const {
-                //     data
-                // } = await getResult();
-                // setResult(data);
-                // console.log(data);
+                const {
+                    data
+                } = await getResult();
+                setResult(data);
+                console.log(data);
                 console.log("hey");
-                // console.log(data.job_id);
-                // return <Redirect to="/datasets/model_selection_jobs" />
-                // setRedirect;
-                // setRedirect(true);
-
-                // <Redirect to="/datasets/model_selection_jobs" />
             } catch (err) {
                 console.log(err);
             }
@@ -138,8 +118,6 @@ export const ModelSelectionScreen = (props) => {
                                     >   
                                         Perform Automatic Model Selection
                                     </Button>
-
-                                    {/* { {redirect} ? (<Redirect push to="/datasets/model_selection_jobs"/>) : null } */}
                                 </Link>
                             </Col>
                             

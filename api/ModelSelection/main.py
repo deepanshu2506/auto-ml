@@ -26,15 +26,16 @@ def initialize(api: Api) -> None:
     modelSelectionJobService = ModelSelectionJobService()
     savedModelService = SavedModelService(fileService=fileService)
     
-    api.add_resource(
-        ModelSelectionJobListResource,
-        f"/datasets/model_selection_jobs",
-        resource_class_kwargs={"modelGenerationService": modelGeneratorService},
-    )
 
     api.add_resource(
         ModelSelectionResource,
         f"{API_PREFIX}/<id>",
+        resource_class_kwargs={"modelGenerationService": modelGeneratorService},
+    )
+    
+    api.add_resource(
+        ModelSelectionJobListResource,
+        f"/datasets/model_selection_jobs",
         resource_class_kwargs={"modelGenerationService": modelGeneratorService},
     )
     

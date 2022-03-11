@@ -1,4 +1,4 @@
-import { Col, Container, Row, Table, Button, Spinner } from "react-bootstrap";
+import { Col, Container, Row, Table, Button, Spinner, Card } from "react-bootstrap";
 import styles from "./styles.module.scss";
 import API, { apiURLs } from "../../../API";
 import { useState, useEffect } from "react";
@@ -7,9 +7,10 @@ import { FaInfoCircle, FaTrash } from "react-icons/fa";
 const ModelSelectionJobsScreen = (props) => {
   const [info, setInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
   const location = useLocation();
   var index = 0;
-
+  var temp;
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }  
@@ -30,11 +31,15 @@ const ModelSelectionJobsScreen = (props) => {
         // );
         console.log(response);
         console.log("yo");
+        temp = response.data;
         console.log(response.data);
-        console.log(typeof(response.data));
+        console.log(typeof(temp));
+        // temp.sort((a, b)=>a-b);
+        temp.sort();
+        console.log(temp);
         // console.log("yo123");
-        // console.log(response.data[1]);
-        setInfo(response.data);
+        // console.log(response.data[5].jobEndtime);
+        setInfo(temp);
         
     } catch (err) {
       console.log(err);
@@ -47,65 +52,77 @@ const ModelSelectionJobsScreen = (props) => {
   }, []);
 
   return (
-    <Container className={`${styles.screen} ${styles.inputDatasetScreen}  pt-3 pl-4 `}
+    <Container className={`${styles.screen} ${styles.savedModelsScreen}  pt-3 pl-4 `}
     fluid>
-      <Container className={`${styles.nav} pt-3 pl-4 pb-3`} fluid>
-        <Row>
-          <Col>
-            <span>Model Selection Jobs</span>
-          </Col>
-        </Row>
-      </Container>
-      <Container className={styles.content} fluid>
-        <Table striped bordered hover size="md">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Dataset Name</th>
-              <th>Target Column</th>
-              <th>Started At</th>
-              <th>Status</th>
-              <th>Job Details</th>
-            </tr>
-          </thead>
-          {/* <tbody>
+    <Container className={`${styles.nav} pt-3 pl-4 pb-3`} fluid>
+      <Row>
+        <Col>
+          <span>Model Selection Jobs</span>
+        </Col>
+        <Col>
+        <span className={styles.search}>
+          <input placeholder="Search by the Dataset Name" onChange={event => setQuery(event.target.value)}/>
+        </span>
+        </Col>
+      </Row>
+    </Container>
+      <Container
+        className={`${styles.screen} ${styles.savedModelsScreen} py-2 `}
+        fluid
+      >
             {loading ? (
-              <tr>
-                <td colSpan="6">
-                  <Row style={{ alignItems: "center", flexDirection: "column" }}>
-                    <Spinner animation="border" size="lg" />
-                  </Row>
-                </td>
-              </tr>
+              <Row>
+              <Spinner animation="border" variant="primary" />
+            </Row>
             ) : (
-              info &&
-              info.map((column) => [
-                <tr key={column.id}>
-                  <td style={{ width: "10%" }}>{(index = index + 1)}</td>
-                  <td style={{ width: "25%" }}>{column.dataset}</td>
-                  <td style={{ width: "10%" }}>{column.target_col}</td>
-                  <td style={{ width: "25%" }}>
-                    {column.started_at.slice(0, -14).trim()}
-                  </td>
-                  <td>{column.status == 'completed'? "Completed": 
-                        column.status == 'running'? "Running":
-                        column.status == 'submitted'? "Submitted": 
-                        column.status == 'aborted'? "Aborted": "Error"}</td>
-                  <td style={{ width: "15%", textAlign: "center" }}>
-                    <Link to={{ pathname: `` }}>
-                      <Button
-                        style={{ padding: "0.1em 0.5rem" }}
-                        variant="primary"
-                      >
-                        <FaInfoCircle />
-                      </Button>
-                    </Link>
-                  </td>
-                </tr>,
-              ])
+              info.filter(column => {
+                if (query === '') {
+                  return column;
+                }
+                else if (column.dataset_name.toLowerCase().includes(query.toLowerCase())) {
+                  return column;
+                }
+              }).map((column) =>(
+                <Row className="m-2">
+                <Card as={Col}>
+                  <Card.Body className={styles.modelCard}>
+                    <Row>
+                      <Col md={9}>
+                        <h3 className={styles.modelName}>{column.dataset_name}</h3>
+                        <p className={styles.modelState}>Status: {column.state}</p>
+                        <p className={styles.modelState}>Target Column: {column.target_col}</p>
+                        {/* <p className={styles.modelType}>
+                          {MODEL_TYPES[column.type]} Model
+                        </p> */}
+                        <p className={styles.modelCreationDate}>
+                          Job started at: {column.startedAt.slice(0, -14).trim()}
+                        </p>
+                        <p className={styles.modelCreationDate}>
+                          Job ended at: {column.jobEndtime!=undefined?column.jobEndtime.slice(0, -14).trim():"Job not completed yet"}
+                        </p>
+                      </Col>
+                      <Col className={styles.buttonContainer}>
+                        <Link to={`/jobDetails/${column.job_id}`}>
+                          <Button 
+                            disabled={column.state !== "completed"}
+                            block>Details</Button>
+                        </Link>
+                        {/* <Link to={`/savedModels/${column.id}/inference`}>
+                          <Button
+                            disabled={column.state !== "completed"}
+                            block
+                            variant="outline-primary"
+                          >
+                            Details
+                          </Button>
+                        </Link> */}
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Row>
+              ))
             )}
-          </tbody> */}
-        </Table>
       </Container>
     </Container>
   );

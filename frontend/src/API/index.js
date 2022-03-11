@@ -14,9 +14,9 @@ export const apiURLs = {
     deleteDataset:(datasetID) => `/datasets/${datasetID}`,
     singleColImputation:(datasetID)=> `/datasets/${datasetID}/impute_advanced`,
   },
-  modelSelectionJob:{
-    getJobs:"/datasets/model_selection_jobs",
+  modelSelectionJob: {
     modelSelection:(datasetID)=>`/dataset/model_selection/${datasetID}`,
+    getJobs:"/datasets/model_selection_jobs",
   },
   visualize:{
     performAutoVisualization: (datasetID) => `/visualization/${datasetID}/auto_visualize`,

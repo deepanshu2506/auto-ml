@@ -103,6 +103,7 @@ class ModelSelectionJob(Document):
     configuration = EmbeddedDocumentField(ModelSelectionConfiguration)
     results = EmbeddedDocumentField(ModelSelectionJobResult)
     created_by = ObjectIdField()
+    _id = ObjectIdField()
     pass
 
     @classmethod
@@ -118,13 +119,15 @@ class ModelSelectionJob(Document):
             "num_classes" : fields.Integer(),
             "target_col" : fields.String(),
             "configuration" : fields.Nested(ModelSelectionConfiguration.to_output()),
-            "results" : fields.Nested(ModelSelectionJobResult.to_output()),           
+            "results" : fields.Nested(ModelSelectionJobResult.to_output()),    
+            "job_id" : fields.String(attribute="_id"),         
         }
         summary_fields= {
-            "dataset_name":fields.String(attribute="dataset.name"),         
+            "job_id" : fields.String(attribute="_id"),         
             "dataset_id" : fields.String(attribute="dataset.id"),
+            "dataset_name" : fields.String(attribute="dataset.name"), 
             "startedAt" : fields.DateTime(),
-            "state" :  OutputEnumField(ModelSelectionJobStates),
+            "state" : OutputEnumField(ModelSelectionJobStates),
             "jobEndtime" : fields.DateTime(),
             "problemType" :  OutputEnumField(enum=ProblemType),
             "target_col" : fields.String(),
