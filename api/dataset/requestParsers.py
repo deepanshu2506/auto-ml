@@ -56,3 +56,6 @@ singleColImputationRequestParser.add_argument("value", type=str)
 
 autoImputationRequestParser = reqparse.RequestParser()
 autoImputationRequestParser.add_argument("target_col_name", type=str, required=True)
+
+readmeInputRequestParser = reqparse.RequestParser()
+readmeInputRequestParser.add_argument("contents", type=str, required=True)
