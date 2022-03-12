@@ -53,7 +53,9 @@ const AutovisualizationScreen = (props) => {
     }, []);
 
     useEffect(() => {
+        if(state.k){
         filterTopKVisualizations();
+        }
     }, [state.k]);
 
     const filterTopKVisualizations = async () => {
