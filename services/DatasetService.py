@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 from lib.integrations.DataSourceFactory import DatasourceFactory
 from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetType
 from utils.exceptions import DatasetNotFound
@@ -241,3 +241,18 @@ class DatasetService:
     def get_readme(self, dataset_id, user_id):
         dataset = self.find_by_id(dataset_id, user_id)
         return dataset.readmeURL
+
+    def set_col_description(
+        self, dataset_id: str, user_id: str, column_descriptions: List[Dict]
+    ) -> None:
+        dataset: Dataset = self.find_by_id(dataset_id, user_id)
+        column_descriptions_dict = {
+            col.get("col_name"): col.get("description") for col in column_descriptions
+        }
+
+        for datasetField in dataset.datasetFields:
+            datasetField: DatasetFeature = datasetField
+            description = column_descriptions_dict.get(datasetField.columnName)
+            if description:
+                datasetField.columnDescription = description
+        dataset.save()

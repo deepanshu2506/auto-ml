@@ -8,6 +8,7 @@ from services.FileService import FileService, MockFileService
 from api.dataset.resources import (
     DataSetsAPI,
     DatasetAPI,
+    DatasetColumnDescriptionAPI,
     DatasetPreviewAPI,
     DatasetColDetailsAPI,
     PerformAggregationAPI,
@@ -55,6 +56,11 @@ def initialize(api: Api) -> None:
     api.add_resource(
         PerformAggregationAPI,
         f"{API_PREFIX}/<id>/perform_aggregation",
+        resource_class_kwargs={"datasetService": datasetService},
+    )
+    api.add_resource(
+        DatasetColumnDescriptionAPI,
+        f"{API_PREFIX}/<id>/col_description",
         resource_class_kwargs={"datasetService": datasetService},
     )
     api.add_resource(

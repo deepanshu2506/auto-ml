@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from io import StringIO
+from typing import Dict, List
 
 from pandas.core.frame import DataFrame
 from utils.exceptions import DatasetNotFound
@@ -11,6 +12,7 @@ from api.dataset.requestParsers import (
     aggregationRequestParser,
     colDetailsRequestParser,
     readmeInputRequestParser,
+    colDescriptionRequestParser,
 )
 from flask_restful import Resource, marshal_with
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -187,3 +189,29 @@ class DatasetReadmeAPI(Resource):
         body = readmeInputRequestParser.parse_args()
         self.readmeService.create_update_readme_file(id, user_id, **body)
         return {"status": "created"}, 201
+
+
+class DatasetColumnDescriptionAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    def __init__(self, datasetService: DatasetService) -> None:
+        super().__init__()
+        self.datasetService = datasetService
+
+    def _get_descriptions(self, body: dict) -> List[Dict]:
+        return body.get("data")
+
+    def _update_descriptions(self, id):
+        user_id = get_jwt_identity()
+        body = colDescriptionRequestParser.parse_args()
+        column_descriptions = self._get_descriptions(body)
+        self.datasetService.set_col_description(id, user_id, column_descriptions)
+
+    def post(self, id):
+        self._update_descriptions(id)
+
+    def put(self, id):
+        self._update_descriptions(id)
+
+    def patch(self, id):
+        self._update_descriptions(id)
