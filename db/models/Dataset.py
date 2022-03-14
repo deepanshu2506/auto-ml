@@ -15,8 +15,6 @@ from mongoengine.fields import (
     DictField,
 )
 
-from flask_restful import fields
-
 from mongoengine import Document
 
 
@@ -80,4 +78,4 @@ class Dataset(Document):
     datasource_properties = EmbeddedDocumentField(DataSourceProperties)
     datasource_type = StringField()
     isDeleted = BooleanField(default=False)
-
+    readmeURL = StringField()

@@ -1,3 +1,4 @@
+from io import StringIO
 import os
 from pandas.core.frame import DataFrame
 from tensorflow.keras.models import Model, load_model
@@ -36,6 +37,18 @@ class FileService:
 
     def get_model(self, modelPath) -> Model:
         return load_model(modelPath)
+
+    def save_readme_file(self, content, dataset_id, path=None):
+        file_path = os.path.join(Config.README_SAVE_DIRECTORY, f"{dataset_id}.md")
+        f = open(path or file_path, mode="w")
+        f.write(content)
+        f.close()
+        return file_path
+
+    def get_readme_file(self, path) -> StringIO:
+        f = open(path)
+        stream = StringIO(f.read())
+        return stream
 
 
 class MockFileService(FileService):

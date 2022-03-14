@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 from lib.integrations.DataSourceFactory import DatasourceFactory
 from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetType
 from utils.exceptions import DatasetNotFound
@@ -22,7 +22,9 @@ class DatasetService:
     def __init__(self, fileService: FileService) -> None:
         self.fileService = fileService
 
-    def _build_column_metrics(self, column_metrics: Series, column_values: Series, colType:Coltype):
+    def _build_column_metrics(
+        self, column_metrics: Series, column_values: Series, colType: Coltype
+    ):
         featureMetrics = DatasetFeatureMetrics()
         if column_metrics is not None:
             lower_quantile = column_values.quantile(0.25)
@@ -81,7 +83,7 @@ class DatasetService:
                 else None
             )
             datasetFeature.metrics = self._build_column_metrics(
-                raw_column_metrics, colData,colType
+                raw_column_metrics, colData, colType
             )
             datasetFields.append(datasetFeature)
         return datasetFields
@@ -142,18 +144,18 @@ class DatasetService:
             "-createdAt"
         )
 
-    def getDataset(self,id, user_id) -> DataFrame:
+    def getDataset(self, id, user_id) -> DataFrame:
         dataset = self.find_by_id(id, user_id)
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
             dataset.datasetLocation
-        )        
+        )
         return dataset_frame
-        
+
     def find_by_id(self, id, user_id) -> Dataset:
         datasets = Dataset.objects(createdBy=user_id, id=id, isDeleted=False)
         if len(datasets) == 0:
             raise DatasetNotFound
-        return datasets[0]              
+        return datasets[0]
 
     def delete_dataset(self, id, user_id) -> None:
         dataset = self.find_by_id(id, user_id)
@@ -193,7 +195,7 @@ class DatasetService:
         aggregate_by_field: str = None,
         filter: list = None,
         max_records=100,
-        export_to_file=False
+        export_to_file=False,
     ):
         dataset: Dataset = self.find_by_id(dataset_id, get_jwt_identity())
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
@@ -230,3 +232,27 @@ class DatasetService:
         )
 
         return headers, aggregation_result, meta
+
+    def set_readme(self, dataset_id, user_id, readme_file_url):
+        dataset = self.find_by_id(dataset_id, user_id)
+        dataset.readmeURL = readme_file_url
+        dataset.save()
+
+    def get_readme(self, dataset_id, user_id):
+        dataset = self.find_by_id(dataset_id, user_id)
+        return dataset.readmeURL
+
+    def set_col_description(
+        self, dataset_id: str, user_id: str, column_descriptions: List[Dict]
+    ) -> None:
+        dataset: Dataset = self.find_by_id(dataset_id, user_id)
+        column_descriptions_dict = {
+            col.get("col_name"): col.get("description") for col in column_descriptions
+        }
+
+        for datasetField in dataset.datasetFields:
+            datasetField: DatasetFeature = datasetField
+            description = column_descriptions_dict.get(datasetField.columnName)
+            if description:
+                datasetField.columnDescription = description
+        dataset.save()

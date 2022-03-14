@@ -103,7 +103,7 @@ class ModelSelectionJob(Document):
     configuration = EmbeddedDocumentField(ModelSelectionConfiguration)
     results = EmbeddedDocumentField(ModelSelectionJobResult)
     created_by = ObjectIdField()
-    _id = ObjectIdField()
+    # _id = ObjectIdField()
     pass
 
     @classmethod
