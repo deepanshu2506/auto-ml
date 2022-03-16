@@ -1,103 +1,93 @@
 import { Steps, Hints } from 'intro.js-react';
+import {useState } from "react";
 
-import React, { Component } from 'react'
-export default class Tour extends Component {
-  constructor(props) {
-    super(props);
+import React from 'react'
 
-    this.state = {
-      stepsEnabled: true,
-      initialStep: 0,
-      steps: [
-        {
-          element: ".hello",
-          intro: "Hello step"
-        },
-        {
-          element: ".world",
-          intro: "World step"
-        }
-      ],
-      hintsEnabled: true,
-      hints: [
-        {
-          element: ".hello",
-          hint: "Hello hint",
-          hintPosition: "middle-right"
-        }
-      ]
-    };
-  }
+const GuideScreen = () => {
+  const [guide,setGuide]=useState({
+    stepsEnabled: true,
+    initialStep: 0,
+    steps: [
+      {
+        element: ".hello",
+        intro: "Hello step"
+      },
+      {
+        element: ".world",
+        intro: "World step"
+      }
+    ],
+    hintsEnabled: true,
+    hints: [
+      {
+        element: ".hello",
+        hint: "Hello hint",
+        hintPosition: "middle-right"
+      }
+    ]
+  });
+  const onExit = () => {
+   
 
-  render() {
-    const {
-      stepsEnabled,
-      steps,
-      initialStep,
-      hintsEnabled,
-      hints
-    } = this.state;
+    setGuide(() => ({...guide, stepsEnabled: false }));
+  
 
-    return (
-      <div>
-        <Steps
-          enabled={stepsEnabled}
-          steps={steps}
-          initialStep={initialStep}
-          onExit={this.onExit}
-        />
-        <Hints enabled={hintsEnabled} hints={hints} />
-
-        <div className="controls">
-          <div>
-            <button onClick={this.toggleSteps}>Toggle Steps</button>
-            <button onClick={this.addStep}>Add Step</button>
-          </div>
-          <div>
-            <button onClick={this.toggleHints}>Toggle Hints</button>
-            <button onClick={this.addHint}>Add Hint</button>
-          </div>
-        </div>
-
-        <h1 className="hello">Hello,</h1>
-        <hr />
-        <h1 className="world">World!</h1>
-        <hr />
-        <h1 className="alive">It's alive!</h1>
-      </div>
-    );
-  }
-
-  onExit = () => {
-    this.setState(() => ({ stepsEnabled: false }));
   };
 
-  toggleSteps = () => {
-    this.setState(prevState => ({ stepsEnabled: !prevState.stepsEnabled }));
+  const toggleSteps = () => {
+    setGuide(prevState => ({...guide, stepsEnabled: !prevState.stepsEnabled }));
   };
 
-  addStep = () => {
+  const addStep = () => {
     const newStep = {
       element: ".alive",
       intro: "Alive step"
     };
 
-    this.setState(prevState => ({ steps: [...prevState.steps, newStep] }));
+    setGuide(prevState => ({...guide,  steps: [...prevState.steps, newStep] }));
   };
 
-  toggleHints = () => {
-    this.setState(prevState => ({ hintsEnabled: !prevState.hintsEnabled }));
+  const toggleHints = () => {
+    setGuide(prevState =>({...guide,  hintsEnabled: !prevState.hintsEnabled }));
   };
 
-  addHint = () => {
+  const addHint = () => {
     const newHint = {
       element: ".alive",
       hint: "Alive hint",
       hintPosition: "middle-right"
     };
 
-    this.setState(prevState => ({ hints: [...prevState.hints, newHint] }));
+    setGuide(prevState => ({...guide,  hints: [...prevState.hints, newHint] }));
   };
+  return (
+    <div>
+      <Steps
+        enabled={guide.stepsEnabled}
+        steps={guide.steps}
+        initialStep={guide.initialStep}
+        onExit={onExit}
+      />
+      <Hints enabled={guide.hintsEnabled} hints={guide.hints} />
+
+      <div className="controls">
+        <div>
+          <button onClick={toggleSteps}>Toggle Steps</button>
+          <button onClick={addStep}>Add Step</button>
+        </div>
+        <div>
+          <button onClick={toggleHints}>Toggle Hints</button>
+          <button onClick={addHint}>Add Hint</button>
+        </div>
+      </div>
+
+      <h1 className="hello">Hello,</h1>
+      <hr />
+      <h1 className="world">World!</h1>
+      <hr />
+      <h1 className="alive">It's alive!</h1>
+    </div>
+  );
+
 }
-
-
+export default GuideScreen;

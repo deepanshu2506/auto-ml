@@ -5,6 +5,7 @@ import {useState,useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import CanvasJSReact from '../../../assets/canvasjs.react';
 import ImputeModal from "../PerformSingleimputation/singleImpute";
+import DatasetInfoGuideScreen from "./hints";
 
 const DatasetInfoScreen = (props) => {
   const [info, setInfo] = useState(null);
@@ -38,7 +39,7 @@ const DatasetInfoScreen = (props) => {
     setcolumnDetail(columnDetail);
     setModalOpen(true);
   }
-  
+
  const getDatasetInfo=async()=>{
   setLoading(true);
     try { 
@@ -48,7 +49,7 @@ const DatasetInfoScreen = (props) => {
         pathname
       );
       setInfo(response.data);
-      console.log(response.data);
+      // console.log(response.data);
       var data=response.data;
       var percentages={},columnData={},valPercent={},pieChartData={};
       var valPercentList=[];
@@ -110,7 +111,8 @@ const DatasetInfoScreen = (props) => {
     } 
     catch(err){
       setErr(true);
-      if (err.response.status === 404) {
+      if(err.response)
+    {  if (err.response.status === 404) {
         console.log(err.response.data.error);
         setErrMsg(err.response.data.error);
       } else if(err.response.status === 422 || err.response.status===401) 
@@ -120,6 +122,10 @@ const DatasetInfoScreen = (props) => {
       }else{
         setErrMsg(err.message);
       }
+    }
+    else{
+      setErrMsg("Sever not running!");
+    }
     }
     setLoading(false);
   };
@@ -135,6 +141,9 @@ const DatasetInfoScreen = (props) => {
     <ImputeModal key={columnDetail.column_name} passIsImputed={setIsImputed} modalOpen={modalOpen} datasetId={datasetId} columnDetail={columnDetail}></ImputeModal>
       <Container className={styles.nav} fluid>
         <span>Dataset info screen</span>
+        <div className={styles.hintbtns}>
+          <DatasetInfoGuideScreen />
+        </div>
       </Container>
       {err?
       <Container className={`${styles.content} my-1`} fluid>
@@ -194,20 +203,20 @@ const DatasetInfoScreen = (props) => {
           <Row className={styles.functions}>
             <Col md={3}>
               <Link to={`${location.pathname}/aggregation`}>
-                <Button block>Aggregation</Button>
+                <Button className="aggbtn" block>Aggregation</Button>
               </Link>
             </Col>
             <Col md={3}>
               <Link to={`${location.pathname}/visualization`}>
-                <Button block>Visualization</Button>
+                <Button className="visualizebtn" block>Visualization</Button>
               </Link>
             </Col>
             <Col md={3}>
-              <Button block>Create Model</Button>
+              <Button className="modelbtn" block>Create Model</Button>
             </Col>
             <Col md={3}>
               <Link to={`${location.pathname}/preview`}>
-                <Button block>Dataset Preview</Button>
+                <Button className="previewbtn" block>Dataset Preview</Button>
               </Link>
             </Col>
           </Row>

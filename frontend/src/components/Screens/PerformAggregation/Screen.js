@@ -6,6 +6,7 @@ import API, { apiURLs } from "../../../API";
 import VisualizeChart,{AddVisualizationDialog} from "./visualize";
 import { FaDownload, FaChartLine, FaTable } from "react-icons/fa";
 import HeatMap from 'react-heatmap-grid';
+import DatasetAggGuideScreen from "./hints";
 
 const AggregationScreen = (props) => {
   const [featuresLoading, setFeaturesLoading] = useState(true);
@@ -155,7 +156,9 @@ const onVisualizationAdd=(state)=>{
       
       <Container className={styles.nav} fluid>
         <span>Dataset Aggregation</span>
-        
+        <div className={styles.hintbtns}>
+          <DatasetAggGuideScreen />
+        </div>        
         {result &&
         <div className={styles.clear}>
         <Button
