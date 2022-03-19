@@ -103,11 +103,13 @@ class ModelSelectionJob(Document):
     configuration = EmbeddedDocumentField(ModelSelectionConfiguration)
     results = EmbeddedDocumentField(ModelSelectionJobResult)
     created_by = ObjectIdField()
+    # _id = ObjectIdField()
     pass
 
     @classmethod
-    def to_output(cls):
-        return {
+    def to_output(cls,detailed=True):
+        detailed_fields= {
+            "dataset_name":fields.String(attribute="dataset.name"),         
             "dataset_id" : fields.String(attribute="dataset.id"),
             "startedAt" : fields.DateTime(),
             "state" :  OutputEnumField(ModelSelectionJobStates),
@@ -117,5 +119,22 @@ class ModelSelectionJob(Document):
             "num_classes" : fields.Integer(),
             "target_col" : fields.String(),
             "configuration" : fields.Nested(ModelSelectionConfiguration.to_output()),
-            "results" : fields.Nested(ModelSelectionJobResult.to_output()),           
+            "results" : fields.Nested(ModelSelectionJobResult.to_output()),    
+            "job_id" : fields.String(attribute="_id"),         
         }
+        summary_fields= {
+            "job_id" : fields.String(attribute="_id"),         
+            "dataset_id" : fields.String(attribute="dataset.id"),
+            "dataset_name" : fields.String(attribute="dataset.name"), 
+            "startedAt" : fields.DateTime(),
+            "state" : OutputEnumField(ModelSelectionJobStates),
+            "jobEndtime" : fields.DateTime(),
+            "problemType" :  OutputEnumField(enum=ProblemType),
+            "target_col" : fields.String(),
+        }
+    
+        output_fields = (
+            {**summary_fields, **detailed_fields} if detailed else summary_fields
+        )
+        return output_fields
+

@@ -9,6 +9,8 @@ import AutovisualizationScreen from "../Screens/PerformAutovisualization/Screen"
 import AutoimputeScreen from "../Screens/PerformAutoimputation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
+import ModelSelectionScreen from "../Screens/ModelSelection/Screen";
+import ModelSelectionJobsScreen from "../Screens/ModelSelectionJobs/Screen";
 import Tour from "../tour/tour";
 import JobDetailsScreen from "../Screens/JobDetails/Screen"
 import {LoginScreen} from "../Screens/login/Screen";
@@ -67,14 +69,6 @@ const routes = [
     component: DatasetPreviewScreen,
   },
   {
-    sidebar: false,
-    auth: true,
-    title: "Dataset Info",
-    path: "/datasets/:datasetID",
-    exact: false,
-    component: DatasetInfoScreen,
-  },
-  {
     sidebar: true,
     auth: true,
     title: "Create dataset",
@@ -83,12 +77,36 @@ const routes = [
     component: InputDatasetScreen,
   },
   {
+    sidebar: false,
+    auth: true,
+    title: "Model Selection",
+    path: "/dataset/model_selection/:datasetID",
+    exact: true,
+    component: ModelSelectionScreen,
+  },
+  {
+    sidebar: false,
+    auth: true,
+    title: "Model Selection Jobs",
+    path: "/datasets/model_selection_jobs",
+    exact: false,
+    component: ModelSelectionJobsScreen,
+  },
+  {
     sidebar: true,
     auth: true,
     title: "Saved Models",
     path: "/savedModels",
     exact: true,
     component: SavedModelScreen,
+  },
+  {
+    sidebar: false,
+    auth: true,
+    title: "Dataset Info",
+    path: "/datasets/:datasetID",
+    exact: true,
+    component: DatasetInfoScreen,
   },
   {
     sidebar: false,

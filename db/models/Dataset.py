@@ -15,7 +15,6 @@ from mongoengine.fields import (
     DictField,
 )
 
-
 from mongoengine import Document
 
 

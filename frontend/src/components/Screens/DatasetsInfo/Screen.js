@@ -43,6 +43,7 @@ const DatasetInfoScreen = (props) => {
   setLoading(true);
     try { 
       const pathname=await location.pathname;
+      console.log("pathname",pathname);
       setDatasetId(pathname.substring(10));
       const response = await API.getRequest.get(
         pathname
@@ -203,7 +204,9 @@ const DatasetInfoScreen = (props) => {
               </Link>
             </Col>
             <Col md={3}>
-              <Button block>Create Model</Button>
+              <Link to={`/dataset/model_selection/${info.id}`}>
+                <Button block>Create Model</Button>
+              </Link>
             </Col>
             <Col md={3}>
               <Link to={`${location.pathname}/preview`}>
