@@ -11,8 +11,9 @@ import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
 import Tour from "../tour/tour";
 import JobDetailsScreen from "../Screens/JobDetails/Screen"
-import {LoginScreen} from "../Screens/login/Screen";
-import {SignupScreen} from "../Screens/signup/Screen";
+import HomeScreen from "../Screens/homePage/Screen";
+import { LoginScreen } from "../Screens/login/Screen";
+import { SignupScreen } from "../Screens/signup/Screen";
 
 // const routes = [
 //   {
@@ -130,6 +131,14 @@ const routes = [
     auth: false,
     exact: true,
     component: SignupScreen,
+  },
+  {
+    sidebar: false,
+    title: "Home page",
+    path: "/",
+    auth: false,
+    exact: true,
+    component: HomeScreen,
   },
   {
     sidebar: false,

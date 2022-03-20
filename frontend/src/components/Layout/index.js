@@ -7,11 +7,11 @@ const Layout = (props) => {
   return (
     <React.Fragment>
       <Appbar />
-      <Container fluid>
-        <Row>
+      {/* <Container fluid>
+        <Row> */}
           <DataContainer />
-        </Row>
-      </Container>
+        {/* </Row>
+      </Container> */}
     </React.Fragment>
   );
 };
