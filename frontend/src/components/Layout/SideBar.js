@@ -15,7 +15,7 @@ const SideBar = (props) => {
               <Link className="" to={item.path}>
                 <Row
                   className={`${styles.item} ${
-                    location.pathname.includes(item.path) && styles.clicked
+                    location.pathname === item.path && styles.clicked
                   }`}
                 >
                   {item.Icon && (
