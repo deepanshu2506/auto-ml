@@ -130,22 +130,22 @@
         "youtube": "youtube.com"
     },
     "Features": [{
-            "icon": "fa fa-comments-o",
+            "icon": "fa fa-info-circle ",
             "title": "User guide",
             "text": "Get familiar with the workplace with the help of process guide provided on various pages."
         },
         {
-            "icon": "fa fa-bullhorn",
+            "icon": "fa fa-pencil",
             "title": "No code writing",
             "text": "Without writing 1000 lines of codes,analyze and understand data and also build your own machine learning model."
         },
         {
-            "icon": "fa fa-group",
+            "icon": "fa fa-arrows ",
             "title": "360° Visibility"    ,
             "text": "A single workspace for data processing, visualization, and modelling."
         },
         {
-            "icon": "fa fa-magic",
+            "icon": "fa fa-hourglass",
             "title": "24 X 7",
             "text": "Our website is available 24 X 7 for our users ."
         }
