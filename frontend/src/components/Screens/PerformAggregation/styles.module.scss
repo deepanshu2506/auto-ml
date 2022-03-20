@@ -3,6 +3,35 @@
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
 
+.wrap {
+  overflow: hidden;
+  position: relative;
+
+  .bg {
+    opacity: 0.1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+  }
+  p{
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: .25px;
+    font-style: oblique;
+    color: $primary-color;
+  }
+  li{
+    // font-weight: bold;
+    background-color:transparent !important;
+  }
+}
+
+.hintbtns{
+  float:right
+}
+
 .content {
   background-color: white;
   border: 1px solid #eee;
