@@ -9,10 +9,12 @@ import AutovisualizationScreen from "../Screens/PerformAutovisualization/Screen"
 import AutoimputeScreen from "../Screens/PerformAutoimputation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
+import ModelSelectionScreen from "../Screens/ModelSelection/Screen";
+import ModelSelectionJobsScreen from "../Screens/ModelSelectionJobs/Screen";
 import GuideScreen from "../tour/tour";
-import JobDetailsScreen from "../Screens/JobDetails/Screen"
-import {LoginScreen} from "../Screens/login/Screen";
-import {SignupScreen} from "../Screens/signup/Screen";
+import JobDetailsScreen from "../Screens/JobDetails/Screen";
+import { LoginScreen } from "../Screens/login/Screen";
+import { SignupScreen } from "../Screens/signup/Screen";
 
 // const routes = [
 //   {
@@ -83,7 +85,7 @@ const routes = [
     component: ModelSelectionScreen,
   },
   {
-    sidebar: false,
+    sidebar: true,
     auth: true,
     title: "Model Selection Jobs",
     path: "/datasets/model_selection_jobs",
@@ -155,7 +157,6 @@ const routes = [
     exact: false,
     component: GuideScreen,
   },
-  
 ];
 
 export default routes;

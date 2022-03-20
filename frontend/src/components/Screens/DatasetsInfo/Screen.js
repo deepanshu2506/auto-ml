@@ -214,7 +214,7 @@ const DatasetInfoScreen = (props) => {
             </Col>
             <Col md={3}>
               <Link to={`/dataset/model_selection/${info.id}`}>
-                <Button block>Create Model</Button>
+                <Button className="modelbtn" block>Create Model</Button>
               </Link>
             </Col>
             <Col md={3}>

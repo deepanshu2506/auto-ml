@@ -19,7 +19,7 @@ const DatasetInfoGuideScreen = () => {
           },
           {
             element: ".visualizebtn",
-            intro: "Get you top visualztion chart and analyze"
+            intro: "Get you top visualization charts and analyze"
           },
           {
             element: ".modelbtn",

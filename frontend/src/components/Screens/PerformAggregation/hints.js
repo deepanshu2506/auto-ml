@@ -3,7 +3,6 @@ import {useState } from "react";
 import React from 'react'
 import styles from "./styles.module.scss";
 import {  Button,Container, Modal, Row ,ListGroup, Col} from "react-bootstrap";
-import { HiLightBulb } from "react-icons/hi";
 import { FaInfoCircle, FaQuestionCircle } from "react-icons/fa";
 
 import modalbg from "../../../assets/DataInfo.jpg";
@@ -26,14 +25,7 @@ const DatasetAggGuideScreen = () => {
             intro: "Aggregate data by fuctions like mean,sum,max,count,etc."
           },
         ],
-        hintsEnabled: false,
-        hints: [
-          {
-            element: ".aggfnbtn",
-            hint: "Hint Group and visualize your data",
-            hintPosition: "middle-right"
-          }
-        ]
+       
       });
   const onExit = () => {
     setGuide(() => ({...guide, stepsEnabled: false }));
@@ -41,10 +33,7 @@ const DatasetAggGuideScreen = () => {
   const toggleSteps = () => {
     setGuide(prevState => ({...guide, stepsEnabled: !prevState.stepsEnabled }));
   };
-  const toggleHints = () => {
-      console.log("toggle hints")
-    setGuide(prevState =>({...guide,  hintsEnabled: !prevState.hintsEnabled }));
-  };
+
   const [infoModal,setInfoModal]=useState(false);
   const openInfoModal=()=>setInfoModal(true)
   const closeInfoModal=()=>setInfoModal(false)
@@ -63,9 +52,7 @@ const DatasetAggGuideScreen = () => {
         <div className="px-1">
             <Button variant="outline-primary" onClick={toggleSteps}>Steps <FaQuestionCircle/></Button>
         </div>
-        <div className="px-1">
-            <Button variant="outline-primary" onClick={toggleHints}>Hints <HiLightBulb/></Button>
-        </div>
+   
         <div className="px-1">
             <Button variant="outline-primary" onClick={openInfoModal}>Info <FaInfoCircle/></Button>
         </div>
