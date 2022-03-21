@@ -10,10 +10,8 @@ export const ModelSelectionScreen = (props) => {
     const [featuresLoading, setFeaturesLoading] = useState(true);
     const [dataset, setDataset] = useState({});
     const [result, setResult] = useState(null);
-    const location = useLocation();
     const params = props.rootParams.params;
 
-    var index = 0;
     const getFeatures = async () => {
         setFeaturesLoading(true);
 
@@ -21,7 +19,6 @@ export const ModelSelectionScreen = (props) => {
             const { data } = await API.json.get(
                 apiURLs.dataset.getDatasetDetails(params.datasetID)
             );
-            console.log(data);
             setDataset(data);
             setFeaturesLoading(false);
         } catch (err) {
