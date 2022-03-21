@@ -28,7 +28,7 @@ export const About = (props) => {
             <div className={`${styles.aboutText}`}>
               <h2>About Us</h2>
               <p>{props.data ? props.data.paragraph : 'loading...'}</p>
-              <h6>Mail us your queries : datagenie@gmail.com</h6>
+              <h6>Mail us your queries : <a href="mailto:datagenie@gmail.com">datagenie@gmail.com</a></h6>
               <div className="row">
               <div className={styles.twelveColumns}>
               <ul className={styles.socialLinks}>{networks}</ul>

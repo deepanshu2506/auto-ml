@@ -11,12 +11,12 @@ export const Gallery = props => {
 
   const data = [
     { thumb: "img/portfolio/01-small.png", title: "Upload your dataset" },
-    { thumb: "img/portfolio/02-small.jpg", title: "Connect to your SQL database" },
-    { thumb: "img/portfolio/09-small.jpg", title: "Check all uploaded datasets" },
-    { thumb: "img/portfolio/09-small.jpg", title: "Dataset Preview" },
-    { thumb: "img/portfolio/03-small.jpg", title: "Perform aggregation" },
-    { thumb: "img/portfolio/04-small.jpg", title: "Auto imputation" },
-    { thumb: "img/portfolio/05-small.jpg", title: "Auto visualization" },
+    { thumb: "img/portfolio/02-small.png", title: "Connect to your SQL database" },
+    { thumb: "img/portfolio/03-small.png", title: "Check all uploaded datasets" },
+    { thumb: "img/portfolio/04-small.png", title: "Dataset Preview" },
+    { thumb: "img/portfolio/05-small.png", title: "Perform aggregation" },
+    { thumb: "img/portfolio/06-small.png", title: "Auto imputation" },
+    { thumb: "img/portfolio/07-small.png", title: "Auto visualization" },
     { thumb: "img/portfolio/06-small.jpg", title: "Auto model selection" },
     { thumb: "img/portfolio/07-small.jpg", title: "Generate Readme" },
   ];
@@ -49,6 +49,7 @@ export const Gallery = props => {
                     <div className={styles.hoverText}>
                       <h4>{title}</h4>
                     </div>
+                    <div></div>
                     <img src={thumb} className="img-responsive" alt="Project Title" />{" "}
                   </div>
                 </div>

@@ -276,7 +276,7 @@
   background: #f6f6f6;
   h2 {
     text-transform: uppercase;
-	font-family: "Raleway", sans-serif;
+    font-family: "Raleway", sans-serif;
     margin: 0 0 20px 0;
     font-weight: 800;
     font-size: 36px;
@@ -317,12 +317,15 @@
     font-size: 22px;
     margin: 0 0 20px 0;
   }
+  a {
+    color: white;
+  }
   h2 {
     color: #fff;
     position: relative;
-	text-transform: uppercase;
-	font-family: "Raleway", sans-serif;
-	font-weight: 800;
+    text-transform: uppercase;
+    font-family: "Raleway", sans-serif;
+    font-weight: 800;
     font-size: 36px;
     margin-bottom: 15px;
     padding-bottom: 15px;
@@ -381,7 +384,7 @@
   h2 {
     color: #fff;
     text-transform: uppercase;
-	font-family: "Raleway", sans-serif;
+    font-family: "Raleway", sans-serif;
     margin: 0 0 20px 0;
     font-weight: 800;
     font-size: 36px;
@@ -424,7 +427,7 @@
   padding: 100px 0;
   h2 {
     text-transform: uppercase;
-	font-family: "Raleway", sans-serif;
+    font-family: "Raleway", sans-serif;
     margin: 0 0 20px 0;
     font-weight: 800;
     font-size: 36px;
@@ -451,6 +454,11 @@
     overflow: hidden;
     position: relative;
     margin: 0;
+    img {
+      height: 333px;
+      width: 500px;
+      object-fit: scale-down;
+    }
   }
 }
 .hoverBg {
