@@ -11,10 +11,6 @@ const ModelSelectionJobsScreen = (props) => {
   const location = useLocation();
   var temp;
 
-  const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }  
-
   function sortFunction(a,b){ 
     var dateA = new Date(a.startedAt.slice(0, -5).trim()).getTime();
     var dateB = new Date(b.startedAt.slice(0, -5).trim()).getTime();
@@ -74,7 +70,7 @@ const ModelSelectionJobsScreen = (props) => {
                   return column;
                 }
               }).map((column) =>(
-                <Row className="m-2">
+                <Row className="m-2" key={column.job_id}>
                 <Card as={Col}>
                   <Card.Body className={styles.modelCard}>
                     <Row>
