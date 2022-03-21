@@ -17,7 +17,7 @@ export const Gallery = props => {
     { thumb: "img/portfolio/05-small.png", title: "Perform aggregation" },
     { thumb: "img/portfolio/06-small.png", title: "Auto imputation" },
     { thumb: "img/portfolio/07-small.png", title: "Auto visualization" },
-    { thumb: "img/portfolio/06-small.jpg", title: "Auto model selection" },
+    { thumb: "img/portfolio/08-small.png", title: "Auto model selection" },
     { thumb: "img/portfolio/07-small.jpg", title: "Generate Readme" },
   ];
 
