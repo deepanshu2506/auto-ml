@@ -11,10 +11,6 @@ const ModelSelectionJobsScreen = (props) => {
   const location = useLocation();
   var temp;
 
-  const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }  
-
   function sortFunction(a,b){ 
     var dateA = new Date(a.startedAt.slice(0, -5).trim()).getTime();
     var dateB = new Date(b.startedAt.slice(0, -5).trim()).getTime();
@@ -24,17 +20,12 @@ const ModelSelectionJobsScreen = (props) => {
   const getJobsList = async () => {
     setLoading(true);
     try {
-        await sleep(1000);
         const pathname=await location.pathname;
-        console.log("pathname123",pathname);
         const response = await API.getRequest.get(
           pathname
         );
-        // console.log(response);
         temp = response.data;
-        // console.log(response.data);
         temp.sort(sortFunction);
-        // console.log(response.data);
         setInfo(response.data);
         
     } catch (err) {
@@ -66,7 +57,7 @@ const ModelSelectionJobsScreen = (props) => {
         className={`${styles.screen} ${styles.savedModelsScreen} py-2 `}
         fluid
       >
-            {loading ? (
+            {!info ? (
               <Row>
               <Spinner animation="border" variant="primary" />
             </Row>
@@ -79,7 +70,7 @@ const ModelSelectionJobsScreen = (props) => {
                   return column;
                 }
               }).map((column) =>(
-                <Row className="m-2">
+                <Row className="m-2" key={column.job_id}>
                 <Card as={Col}>
                   <Card.Body className={styles.modelCard}>
                     <Row>

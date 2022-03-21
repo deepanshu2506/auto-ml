@@ -10,10 +10,8 @@ export const ModelSelectionScreen = (props) => {
     const [featuresLoading, setFeaturesLoading] = useState(true);
     const [dataset, setDataset] = useState({});
     const [result, setResult] = useState(null);
-    const location = useLocation();
     const params = props.rootParams.params;
 
-    var index = 0;
     const getFeatures = async () => {
         setFeaturesLoading(true);
 
@@ -21,15 +19,13 @@ export const ModelSelectionScreen = (props) => {
             const { data } = await API.json.get(
                 apiURLs.dataset.getDatasetDetails(params.datasetID)
             );
-            console.log(data);
             setDataset(data);
             setFeaturesLoading(false);
         } catch (err) {
             console.log(err);
         }
     };
-    
-
+   
     useEffect(() => {
         getFeatures();
     }, []);
@@ -51,7 +47,7 @@ export const ModelSelectionScreen = (props) => {
         if (!state.col) {
             setValidated(true);
         } else {
-            try {    
+            try {
                 const {
                     data
                 } = await getResult();
@@ -108,19 +104,26 @@ export const ModelSelectionScreen = (props) => {
                         </Row>
                         <Row className="my-3">
                             <Col>
-                                
+                                <Button
+                                    disabled={!state.col}
+                                    block
+                                    variant="primary"
+                                    onClick={performModelSelection}
+                                >
+                                    Perform Automatic Model Selection
+                                </Button>
+                            </Col>
+                            <Col>
                                 <Link to={{ pathname: `/datasets/model_selection_jobs` }}>
                                     <Button
-                                        disabled={!state.col}
+                                        disabled={!result}
                                         block
                                         variant="primary"
-                                        onClick={performModelSelection}
-                                    >   
-                                        Perform Automatic Model Selection
+                                    >
+                                        View AMS Results
                                     </Button>
                                 </Link>
                             </Col>
-                            
                         </Row>
                     </Container>
 
