@@ -1,0 +1,145 @@
+{
+    "Header": {
+
+        "title": "Data genie : A No Code Data Analysis Platform",
+        "paragraph": "Data genie is here to grant all your data related wishes. Perform aggregation, imputation, visualization, model selection etc. without writing any code"
+
+    },
+    "About": {
+        "paragraph": "Not everyone has knowledge of ML and their models to recognize certain types of patterns within a huge dataset. To an ordinary user, it would be very difficult training a model over a set of data and also perform operations like preprocessing, imputation, aggregation ,visualization etc. Here is when data  genie comes into picture which just takes data as input and shows appropriate diagnosis along with an auto selected model without writing any code.",
+        "social":[
+            {
+              "name":"facebook",
+              "url":"https://github.com",
+              "className":"fa fa-facebook"
+            },
+            {
+              "name":"twitter",
+              "url":"http://twitter.com",
+              "className":"fa fa-twitter"
+            },
+            {
+              "name":"linkedin",
+              "url":"https://www.linkedin.com",
+              "className":"fa fa-linkedin"
+            },
+            {
+              "name":"instagram",
+              "url":"http://instagram.com",
+              "className":"fa fa-instagram"
+            },
+            {
+              "name":"github",
+              "url":"https://github.com",
+              "className":"fa fa-github"
+            }
+          ]
+    },
+  
+    "Services": [
+        {
+            "icon": "fa fa-upload",
+            "name": "Upload your dataset",
+            "text": "Upload dataset as CSV file or as SQL connection.Access and analyze all your uploaded datasets on our platform."
+        },
+        {
+            "icon": "fa fa-filter ",
+            "name": "Aggregation",
+            "text": "Provide support to perform simple queries on the data that involve filtering and aggregation."
+        },
+        {
+            "icon": "fa fa-pencil-square-o ",
+            "name": "Auto imputation",
+            "text": "A technique used for replacing the missing data with some substitute value to retain most of the information of the dataset."
+        },
+        {
+            "icon": "fa fa-pie-chart",
+            "name": "Auto visualization",
+            "text": "A graphical representation of the data.Now understand trends,patterns in data with help of top k line,scatter,pie and bar charts."
+        },
+        {
+            "icon": "fa fa-code ",
+            "name": "Auto model seletion",
+            "text": "Generates 3 different best models relevant to your dataset which can be exported and be used for prediction purpose."
+        },
+        {
+            "icon": "fa fa-file-text ",
+            "name": "Generate Readme",
+            "text": "Provides user ability to create a readme file for the dataset. This will lead to a good documentation for the dataset."
+        }
+
+
+    ],
+    "Testimonials": [{
+            "img": "img/testimonials/01.jpg",
+            "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+            "name": "John Doe"
+        },
+        {
+            "img": "img/testimonials/02.jpg",
+            "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+            "name": "Johnathan Doe"
+        },
+        {
+            "img": "img/testimonials/03.jpg",
+            "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+            "name": "John Doe"
+        },
+        {
+            "img": "img/testimonials/04.jpg",
+            "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+            "name": "Johnathan Doe"
+        },
+        {
+            "img": "img/testimonials/05.jpg",
+            "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+            "name": "John Doe"
+        },
+        {
+            "img": "img/testimonials/06.jpg",
+            "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+            "name": "Johnathan Doe"
+        }
+    ],
+    "Team": [{
+            "img": "img/team/01.jpg",
+            "name": "John Doe",
+            "job": "Director"
+        },
+        {
+            "img": "img/team/02.jpg",
+            "name": "Mike Doe",
+            "job": "Senior Designer"
+        }, {
+            "img": "img/team/03.jpg",
+            "name": "Jane Doe",
+            "job": "Senior Designer"
+        },
+        {
+            "img": "img/team/04.jpg",
+            "name": "Karen Doe",
+            "job": "Project Manager"
+        }
+    ],
+    "Features": [{
+            "icon": "fa fa-info-circle ",
+            "title": "User guide",
+            "text": "Get familiar with the workplace with the help of process guide provided on various pages."
+        },
+        {
+            "icon": "fa fa-pencil",
+            "title": "No code writing",
+            "text": "Without writing 1000 lines of codes,analyze and understand data and also build your own machine learning model."
+        },
+        {
+            "icon": "fa fa-arrows ",
+            "title": "360° Visibility"    ,
+            "text": "A single workspace for data processing, visualization, and modelling."
+        },
+        {
+            "icon": "fa fa-hourglass",
+            "title": "24 X 7",
+            "text": "Our website is available 24 X 7 for our users ."
+        }
+    ]
+}

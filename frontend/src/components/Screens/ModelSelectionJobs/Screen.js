@@ -71,7 +71,7 @@ const ModelSelectionJobsScreen = (props) => {
               <Spinner animation="border" variant="primary" />
             </Row>
             ) : (
-              info.filter(column => {
+              info && info.filter(column => {
                 if (query === '') {
                   return column;
                 }

@@ -9,6 +9,7 @@ import AutovisualizationScreen from "../Screens/PerformAutovisualization/Screen"
 import AutoimputeScreen from "../Screens/PerformAutoimputation/Screen";
 import SavedModelDetailsScreen from "../Screens/SavedModelDetails/Screen";
 import SavedModelScreen from "../Screens/SavedModels/Screen";
+import HomeScreen from "../Screens/homePage/Screen";
 import ModelSelectionScreen from "../Screens/ModelSelection/Screen";
 import ModelSelectionJobsScreen from "../Screens/ModelSelectionJobs/Screen";
 import GuideScreen from "../tour/tour";
@@ -148,6 +149,14 @@ const routes = [
     auth: false,
     exact: true,
     component: SignupScreen,
+  },
+  {
+    sidebar: false,
+    title: "Home page",
+    path: "/",
+    auth: false,
+    exact: true,
+    component: HomeScreen,
   },
   {
     sidebar: false,

@@ -1,0 +1,510 @@
+
+{
+  "header": {
+    "reportVersion": 1,
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20220320.180638.9704.0.001.json",
+    "dumpEventTime": "2022-03-20T18:06:38Z",
+    "dumpEventTimeStamp": "1647779798077",
+    "processId": 9704,
+    "cwd": "C:\\Users\\sakshi\\Desktop\\MY PROJECTS\\auto-ml\\frontend",
+    "commandLine": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\sakshi\\Desktop\\MY PROJECTS\\auto-ml\\frontend\\node_modules\\react-scripts\\scripts\\start.js"
+    ],
+    "nodejsVersion": "v12.16.1",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "win32",
+    "componentVersions": {
+      "node": "12.16.1",
+      "v8": "7.8.279.23-node.31",
+      "uv": "1.34.0",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.40.0",
+      "napi": "5",
+      "llhttp": "2.0.4",
+      "http_parser": "2.9.3",
+      "openssl": "1.1.1d",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019c",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "lts": "Erbium",
+      "headersUrl": "https://nodejs.org/download/release/v12.16.1/node-v12.16.1-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.16.1/node-v12.16.1.tar.gz",
+      "libUrl": "https://nodejs.org/download/release/v12.16.1/win-x64/node.lib"
+    },
+    "osName": "Windows_NT",
+    "osRelease": "10.0.22000",
+    "osVersion": "Windows 10 Home Single Language",
+    "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+        "speed": 1800,
+        "user": 26077781,
+        "nice": 0,
+        "sys": 16624531,
+        "idle": 247309921,
+        "irq": 1729093
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+        "speed": 1800,
+        "user": 14627375,
+        "nice": 0,
+        "sys": 9643390,
+        "idle": 265741125,
+        "irq": 147625
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+        "speed": 1800,
+        "user": 39354671,
+        "nice": 0,
+        "sys": 20923093,
+        "idle": 229734125,
+        "irq": 254828
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+        "speed": 1800,
+        "user": 21386250,
+        "nice": 0,
+        "sys": 9503203,
+        "idle": 259122437,
+        "irq": 141671
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+        "speed": 1800,
+        "user": 23701593,
+        "nice": 0,
+        "sys": 17733984,
+        "idle": 248576312,
+        "irq": 283156
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+        "speed": 1800,
+        "user": 15769828,
+        "nice": 0,
+        "sys": 9401031,
+        "idle": 264841015,
+        "irq": 175593
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+        "speed": 1800,
+        "user": 24206546,
+        "nice": 0,
+        "sys": 14376937,
+        "idle": 251428390,
+        "irq": 265046
+      },
+      {
+        "model": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+        "speed": 1800,
+        "user": 24946937,
+        "nice": 0,
+        "sys": 10211515,
+        "idle": 254853421,
+        "irq": 159265
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "name": "Wi-Fi",
+        "internal": false,
+        "mac": "50:5b:c2:f3:4b:cf",
+        "address": "2401:4900:5178:c555:84b3:75d5:b218:84dc",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Wi-Fi",
+        "internal": false,
+        "mac": "50:5b:c2:f3:4b:cf",
+        "address": "2401:4900:5178:c555:214e:b48:8c32:72fc",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Wi-Fi",
+        "internal": false,
+        "mac": "50:5b:c2:f3:4b:cf",
+        "address": "fe80::84b3:75d5:b218:84dc",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 4
+      },
+      {
+        "name": "Wi-Fi",
+        "internal": false,
+        "mac": "50:5b:c2:f3:4b:cf",
+        "address": "192.168.95.122",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "::1",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "127.0.0.1",
+        "netmask": "255.0.0.0",
+        "family": "IPv4"
+      }
+    ],
+    "host": "LAPTOP-ACTPT79E"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x00007ff7298619f9",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729865e1c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729864dd8",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff7299634cb",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a179f4e",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a162021",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a02e57c",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a00a4d3",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a0087db",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a033d5d",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a035a94",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a02bb13",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a02a184",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a04b36d",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff729db0adf",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00007ff72a5c4ddd",
+      "symbol": ""
+    },
+    {
+      "pc": "0x00000251f2ffb25e",
+      "symbol": ""
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 147984384,
+    "totalCommittedMemory": 147984384,
+    "usedMemory": 127722424,
+    "availableMemory": 2065105496,
+    "memoryLimit": 2197815296,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 262144,
+        "committedMemory": 262144,
+        "capacity": 32808,
+        "used": 32808,
+        "available": 0
+      },
+      "new_space": {
+        "memorySize": 16777216,
+        "committedMemory": 16777216,
+        "capacity": 8379648,
+        "used": 3866904,
+        "available": 4512744
+      },
+      "old_space": {
+        "memorySize": 98713600,
+        "committedMemory": 98713600,
+        "capacity": 93814848,
+        "used": 93791952,
+        "available": 22896
+      },
+      "code_space": {
+        "memorySize": 1478656,
+        "committedMemory": 1478656,
+        "capacity": 917024,
+        "used": 917024,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 4460544,
+        "committedMemory": 4460544,
+        "capacity": 2982880,
+        "used": 2982880,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 25669632,
+        "committedMemory": 25669632,
+        "capacity": 25586568,
+        "used": 25586568,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 622592,
+        "committedMemory": 622592,
+        "capacity": 544288,
+        "used": 544288,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 8379648,
+        "used": 0,
+        "available": 8379648
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 18.296,
+    "kernelCpuSeconds": 7.234,
+    "cpuConsumptionPercent": 30.0353,
+    "maxRss": 201592832,
+    "pageFaults": {
+      "IORequired": 170222,
+      "IONotRequired": 0
+    },
+    "fsActivity": {
+      "reads": 5193,
+      "writes": 5
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "ALLUSERSPROFILE": "C:\\ProgramData",
+    "APPDATA": "C:\\Users\\sakshi\\AppData\\Roaming",
+    "BABEL_ENV": "development",
+    "CommonProgramFiles": "C:\\Program Files\\Common Files",
+    "CommonProgramFiles(x86)": "C:\\Program Files (x86)\\Common Files",
+    "CommonProgramW6432": "C:\\Program Files\\Common Files",
+    "COMPUTERNAME": "LAPTOP-ACTPT79E",
+    "ComSpec": "C:\\WINDOWS\\system32\\cmd.exe",
+    "configsetroot": "C:\\WINDOWS\\ConfigSetRoot",
+    "dp0": "C:\\Users\\sakshi\\AppData\\Roaming\\npm\\",
+    "DriverData": "C:\\Windows\\System32\\Drivers\\DriverData",
+    "FPS_BROWSER_APP_PROFILE_STRING": "Internet Explorer",
+    "FPS_BROWSER_USER_PROFILE_STRING": "Default",
+    "HOMEDRIVE": "C:",
+    "HOMEPATH": "\\Users\\sakshi",
+    "INIT_CWD": "C:\\Users\\sakshi\\Desktop\\MY PROJECTS\\auto-ml\\frontend",
+    "LOCALAPPDATA": "C:\\Users\\sakshi\\AppData\\Local",
+    "LOGONSERVER": "\\\\LAPTOP-ACTPT79E",
+    "NODE": "C:\\Program Files\\nodejs\\node.exe",
+    "NODE_ENV": "development",
+    "NODE_PATH": "",
+    "npm_config_argv": "{\"remain\":[],\"cooked\":[\"run\",\"start\"],\"original\":[\"start\"]}",
+    "npm_config_bin_links": "true",
+    "npm_config_ignore_optional": "",
+    "npm_config_ignore_scripts": "",
+    "npm_config_init_license": "MIT",
+    "npm_config_init_version": "1.0.0",
+    "npm_config_registry": "https://registry.yarnpkg.com",
+    "npm_config_save_prefix": "^",
+    "npm_config_strict_ssl": "true",
+    "npm_config_user_agent": "yarn/1.22.11 npm/? node/v12.16.1 win32 x64",
+    "npm_config_version_commit_hooks": "true",
+    "npm_config_version_git_message": "v%s",
+    "npm_config_version_git_sign": "",
+    "npm_config_version_git_tag": "true",
+    "npm_config_version_tag_prefix": "v",
+    "npm_execpath": "C:\\Users\\sakshi\\AppData\\Roaming\\npm\\node_modules\\yarn\\bin\\yarn.js",
+    "npm_lifecycle_event": "start",
+    "npm_lifecycle_script": "react-scripts start",
+    "npm_node_execpath": "C:\\Program Files\\nodejs\\node.exe",
+    "npm_package_browserslist_development_0": "last 1 chrome version",
+    "npm_package_browserslist_development_1": "last 1 firefox version",
+    "npm_package_browserslist_development_2": "last 1 safari version",
+    "npm_package_browserslist_production_0": ">0.2%",
+    "npm_package_browserslist_production_1": "not dead",
+    "npm_package_browserslist_production_2": "not op_mini all",
+    "npm_package_dependencies_axios": "^0.24.0",
+    "npm_package_dependencies_bootstrap": "^4.5.3",
+    "npm_package_dependencies_date_fns": "^2.25.0",
+    "npm_package_dependencies_intro_js": "^4.3.0",
+    "npm_package_dependencies_intro_js_react": "^0.5.0",
+    "npm_package_dependencies_jquery": "^3.6.0",
+    "npm_package_dependencies_lodash": "^4.17.20",
+    "npm_package_dependencies_papaparse": "^5.3.1",
+    "npm_package_dependencies_particles_bg": "^2.5.5",
+    "npm_package_dependencies_prop_types": "^15.7.2",
+    "npm_package_dependencies_querystring": "^0.2.0",
+    "npm_package_dependencies_react": "^17.0.1",
+    "npm_package_dependencies_react_avatar": "^3.9.7",
+    "npm_package_dependencies_react_bootstrap": "^1.4.0",
+    "npm_package_dependencies_react_dom": "^17.0.1",
+    "npm_package_dependencies_react_heatmap_grid": "^0.9.0",
+    "npm_package_dependencies_react_icons": "^4.1.0",
+    "npm_package_dependencies_react_lottie": "^1.2.3",
+    "npm_package_dependencies_react_redux": "^7.2.6",
+    "npm_package_dependencies_react_router": "^5.2.0",
+    "npm_package_dependencies_react_router_dom": "^5.2.0",
+    "npm_package_dependencies_react_scripts": "4.0.1",
+    "npm_package_dependencies_react_select": "^5.2.2",
+    "npm_package_dependencies_react_simple_image_viewer": "^1.2.1",
+    "npm_package_dependencies_react_table": "^7.7.0",
+    "npm_package_dependencies_react_validation": "^3.0.7",
+    "npm_package_dependencies_redux": "^4.1.2",
+    "npm_package_dependencies_redux_logger": "^3.0.6",
+    "npm_package_dependencies_redux_persist": "^6.0.0",
+    "npm_package_dependencies_redux_thunk": "^2.4.0",
+    "npm_package_dependencies_smooth_scroll": "^16.1.3",
+    "npm_package_dependencies_validator": "^13.6.0",
+    "npm_package_dependencies_web_vitals": "^0.2.4",
+    "npm_package_dependencies__testing_library_jest_dom": "^5.11.4",
+    "npm_package_dependencies__testing_library_react": "^11.1.0",
+    "npm_package_dependencies__testing_library_user_event": "^12.1.10",
+    "npm_package_description": "Problem Statement",
+    "npm_package_devDependencies_sass": "^1.49.7",
+    "npm_package_eslintConfig_extends_0": "react-app",
+    "npm_package_eslintConfig_extends_1": "react-app/jest",
+    "npm_package_name": "ipl-dashboard",
+    "npm_package_private": "true",
+    "npm_package_readmeFilename": "README.md",
+    "npm_package_scripts_build": "react-scripts build && echo /* /index.html  200 > build/_redirects ",
+    "npm_package_scripts_deploy": "yarn build && netlify deploy --dir=build",
+    "npm_package_scripts_deploy_prod": "netlify deploy --prod --dir=build",
+    "npm_package_scripts_eject": "react-scripts eject",
+    "npm_package_scripts_start": "react-scripts start",
+    "npm_package_scripts_test": "react-scripts test",
+    "npm_package_version": "0.1.0",
+    "NUMBER_OF_PROCESSORS": "8",
+    "OneDrive": "C:\\Users\\sakshi\\OneDrive",
+    "OneDriveConsumer": "C:\\Users\\sakshi\\OneDrive",
+    "OS": "Windows_NT",
+    "Path": "C:\\Users\\sakshi\\AppData\\Local\\Temp\\yarn--1647779711899-0.5556580437502596;C:\\Users\\sakshi\\Desktop\\MY PROJECTS\\auto-ml\\frontend\\node_modules\\.bin;C:\\Users\\sakshi\\AppData\\Local\\Yarn\\Data\\link\\node_modules\\.bin;C:\\Users\\sakshi\\AppData\\Local\\Yarn\\bin;C:\\Program Files\\libexec\\lib\\node_modules\\npm\\bin\\node-gyp-bin;C:\\Program Files\\lib\\node_modules\\npm\\bin\\node-gyp-bin;C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\node-gyp-bin;C:\\Program Files\\Java\\jdk-12\\bin;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\iCLS\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\iCLS\\;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\130\\Tools\\Binn\\;C:\\Program Files (x86)\\Microsoft SQL Server\\140\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\140\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\140\\DTS\\Binn\\;C:\\Program Files (x86)\\Microsoft SQL Server\\150\\DTS\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files\\Microsoft SQL Server\\130\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\nodejs\\;C:\\Users\\sakshi\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Python 3.8;C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\MySQL;C:\\Users\\sakshi\\Downloads\\nc111nt.zip;C:\\src\\flutter\\bin;C:\\Program Files\\MongoDB\\Server\\4.4\\bin;C:\\Program Files (x86)\\dotnet\\;C:\\Program Files\\swipl\\bin;C:\\Program Files\\CMake\\bin;C:\\Users\\sakshi\\anaconda3\\Library\\bin;C:\\Users\\sakshi\\anaconda3;C:\\Users\\sakshi\\anaconda3\\Scripts;C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin;C:\\Program Files\\Redis;C:\\Program Files\\Git\\cmd;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\sakshi\\AppData\\Local\\Programs\\Python\\Python38\\Scripts\\;C:\\Users\\sakshi\\AppData\\Local\\Programs\\Python\\Python38\\;C:\\Users\\sakshi\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\sakshi\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\sakshi\\AppData\\Roaming\\npm;C:\\Users\\sakshi\\AppData\\Local\\GitHubDesktop\\bin;C:\\Program Files\\heroku\\bin;C:\\src\\flutter\\bin;C:\\Users\\sakshi\\anaconda3\\Library\\bin\\graphviz\\;C:\\Users\\sakshi\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Snort\\bin;",
+    "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JSE;.WSF;.WSH;.MSC",
+    "PROCESSOR_ARCHITECTURE": "AMD64",
+    "PROCESSOR_IDENTIFIER": "Intel64 Family 6 Model 142 Stepping 10, GenuineIntel",
+    "PROCESSOR_LEVEL": "6",
+    "PROCESSOR_REVISION": "8e0a",
+    "ProgramData": "C:\\ProgramData",
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramW6432": "C:\\Program Files",
+    "PROMPT": "$P$G",
+    "PSModulePath": "C:\\Program Files\\WindowsPowerShell\\Modules;C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules;C:\\Program Files (x86)\\Microsoft SQL Server\\140\\Tools\\PowerShell\\Modules\\",
+    "PT7HOME": "C:\\Program Files\\Cisco Packet Tracer 7.3.1",
+    "PUBLIC": "C:\\Users\\Public",
+    "QT_DEVICE_PIXEL_RATIO": "auto",
+    "SESSIONNAME": "Console",
+    "SystemDrive": "C:",
+    "SystemRoot": "C:\\WINDOWS",
+    "TEMP": "C:\\Users\\sakshi\\AppData\\Local\\Temp",
+    "TMP": "C:\\Users\\sakshi\\AppData\\Local\\Temp",
+    "USERDOMAIN": "LAPTOP-ACTPT79E",
+    "USERDOMAIN_ROAMINGPROFILE": "LAPTOP-ACTPT79E",
+    "USERNAME": "sakshi",
+    "USERPROFILE": "C:\\Users\\sakshi",
+    "WEBPACK_DEV_SERVER": "true",
+    "windir": "C:\\WINDOWS",
+    "YARN_WRAP_OUTPUT": "false",
+    "_prog": "node"
+  },
+  "sharedObjects": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+    "C:\\WINDOWS\\System32\\KERNEL32.DLL",
+    "C:\\WINDOWS\\System32\\KERNELBASE.dll",
+    "C:\\WINDOWS\\System32\\WS2_32.dll",
+    "C:\\WINDOWS\\System32\\RPCRT4.dll",
+    "C:\\WINDOWS\\SYSTEM32\\dbghelp.dll",
+    "C:\\WINDOWS\\System32\\ucrtbase.dll",
+    "C:\\WINDOWS\\System32\\PSAPI.DLL",
+    "C:\\WINDOWS\\System32\\ADVAPI32.dll",
+    "C:\\WINDOWS\\System32\\msvcrt.dll",
+    "C:\\WINDOWS\\System32\\sechost.dll",
+    "C:\\WINDOWS\\SYSTEM32\\IPHLPAPI.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\USERENV.dll",
+    "C:\\WINDOWS\\System32\\USER32.dll",
+    "C:\\WINDOWS\\System32\\win32u.dll",
+    "C:\\WINDOWS\\System32\\GDI32.dll",
+    "C:\\WINDOWS\\System32\\gdi32full.dll",
+    "C:\\WINDOWS\\System32\\msvcp_win.dll",
+    "C:\\WINDOWS\\System32\\CRYPT32.dll",
+    "C:\\WINDOWS\\SYSTEM32\\bcrypt.dll",
+    "C:\\WINDOWS\\SYSTEM32\\WINMM.dll",
+    "C:\\WINDOWS\\System32\\IMM32.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\powrprof.dll",
+    "C:\\WINDOWS\\SYSTEM32\\UMPDC.dll",
+    "C:\\WINDOWS\\SYSTEM32\\CRYPTBASE.DLL",
+    "C:\\WINDOWS\\system32\\uxtheme.dll",
+    "C:\\WINDOWS\\System32\\combase.dll",
+    "C:\\WINDOWS\\system32\\mswsock.dll",
+    "C:\\WINDOWS\\SYSTEM32\\kernel.appcore.dll",
+    "C:\\WINDOWS\\System32\\bcryptprimitives.dll",
+    "C:\\WINDOWS\\System32\\NSI.dll",
+    "C:\\WINDOWS\\SYSTEM32\\dhcpcsvc6.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\dhcpcsvc.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\DNSAPI.dll",
+    "C:\\WINDOWS\\system32\\napinsp.dll",
+    "C:\\WINDOWS\\system32\\pnrpnsp.dll",
+    "C:\\WINDOWS\\System32\\winrnr.dll",
+    "C:\\WINDOWS\\system32\\wshbth.dll",
+    "C:\\WINDOWS\\system32\\nlansp_c.dll",
+    "C:\\Windows\\System32\\rasadhlp.dll",
+    "C:\\WINDOWS\\System32\\fwpuclnt.dll"
+  ]
+}
