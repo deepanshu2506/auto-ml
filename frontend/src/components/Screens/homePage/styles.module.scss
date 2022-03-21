@@ -109,14 +109,16 @@
     }
   }
   nav {
-    .navbarToggle {
-      &:hover {
-        background-color: #fff;
-        border-color: #608dfd;
-        > .iconBar {
-          background-color: #608dfd;
-        }
-      }
+    flex-grow: 1;
+    .navbarToggle
+     {
+      // justify-content: end;
+      // display: flex;
+      // flex-direction: row;
+      // &:hover {
+      //     background-color: #608dfd;
+        
+      // }
       &:focus {
         background-color: #fff;
         border-color: #608dfd;

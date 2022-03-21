@@ -1,12 +1,12 @@
 {
     "Header": {
 
-        "title": "DataGenie : A No Code Data Analysis Platform",
-        "paragraph": "DataGenie is here to grant all your data related wishes. Perform aggregation, imputation, visualization, model selection etc. without writing any code"
+        "title": "Data genie : A No Code Data Analysis Platform",
+        "paragraph": "Data genie is here to grant all your data related wishes. Perform aggregation, imputation, visualization, model selection etc. without writing any code"
 
     },
     "About": {
-        "paragraph": "Not everyone has knowledge of ML and their models to recognize certain types of patterns within a huge dataset. To an ordinary user, it would be very difficult training a model over a set of data and also perform operations like preprocessing, imputation, aggregation ,visualization etc. Here is when datagenie comes into picture which just takes data as input and shows appropriate diagnosis along with an auto selected model without writing any code.",
+        "paragraph": "Not everyone has knowledge of ML and their models to recognize certain types of patterns within a huge dataset. To an ordinary user, it would be very difficult training a model over a set of data and also perform operations like preprocessing, imputation, aggregation ,visualization etc. Here is when data  genie comes into picture which just takes data as input and shows appropriate diagnosis along with an auto selected model without writing any code.",
         "social":[
             {
               "name":"facebook",

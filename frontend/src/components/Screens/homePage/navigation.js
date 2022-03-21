@@ -4,23 +4,21 @@ import { useSelector } from 'react-redux';
 export const Navigation = (props) => {
   const { loggedIn } = useSelector(state => state.authentication);
   return (
-
     <div id="menu" className={`navbar navbar-expand-lg ${styles.menu} ${styles.navbarDefault} fixed-top`}>
-      <nav className="navbar navbar-light ">
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-controls="bs-example-navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
+      <nav className="navbar navbar-light">
         <a className={`${styles.navbarBrand} page-scroll`} href='#header'>
           Data Genie
         </a>{' '}
+        <button className={`${styles.navbarToggle} navbar-toggler`} type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-controls="bs-example-navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
       </nav>
-
       <div
         className='collapse navbar-collapse'
         id='bs-example-navbar-collapse-1'
       >
         <ul className={`${styles.navbarNav} navbar-nav ml-auto`}>
-         
+
           <li>
             <a href='#services' className='page-scroll'>
               Services
@@ -32,10 +30,10 @@ export const Navigation = (props) => {
             </a>
           </li>
           <li>
-              <a href='#features' className='page-scroll'>
-                Features
-              </a>
-            </li>
+            <a href='#features' className='page-scroll'>
+              Features
+            </a>
+          </li>
           <li>
             <a href='#about' className='page-scroll'>
               About
