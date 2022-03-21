@@ -13,3 +13,5 @@ class Config:
     UPLOAD_DIRECTORY = os.environ.get("UPLOAD_DIR") or "./uploads"
 
     MODEL_SAVE_DIRECTORY = os.environ.get("MODEL_SAVE_DIR") or "./models"
+
+    README_SAVE_DIRECTORY = os.environ.get("README_SAVE_DIR") or "./readme"

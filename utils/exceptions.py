@@ -33,6 +33,9 @@ class ModelNotFound(APIError):
     description = "Model Not found"
     code = 404
 
+class JobsNotFound(APIError):
+    description = "No jobs have been created yet"
+    code = 404
 
 class InvalidInputFormatForModelError(APIError):
     description = "input is not well formed according to the model"

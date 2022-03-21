@@ -104,6 +104,7 @@ const QueryBuilder = ({ features, discreteCols, onChange,clear }) => {
             onClick={openAddFilterDialog}
             variant="outline-primary"
             size="sm"
+            className="filterbtn"
           >
             <FaPlus />
           </Button>
@@ -130,6 +131,7 @@ const QueryBuilder = ({ features, discreteCols, onChange,clear }) => {
               variant="outline-primary"
               size="sm"
               disabled={!!query.groupBy}
+              className="groupbybtn"
             >
               <FaPlus />
             </Button>
@@ -157,6 +159,7 @@ const QueryBuilder = ({ features, discreteCols, onChange,clear }) => {
               variant="outline-primary"
               size="sm"
               disabled={!!query.aggregate}
+              className="aggfnbtn"
             >
               <FaPlus />
             </Button>
