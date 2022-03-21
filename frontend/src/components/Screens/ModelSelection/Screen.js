@@ -28,8 +28,7 @@ export const ModelSelectionScreen = (props) => {
             console.log(err);
         }
     };
-    
-
+   
     useEffect(() => {
         getFeatures();
     }, []);
@@ -51,7 +50,7 @@ export const ModelSelectionScreen = (props) => {
         if (!state.col) {
             setValidated(true);
         } else {
-            try {    
+            try {
                 const {
                     data
                 } = await getResult();
@@ -108,19 +107,26 @@ export const ModelSelectionScreen = (props) => {
                         </Row>
                         <Row className="my-3">
                             <Col>
-                                
+                                <Button
+                                    disabled={!state.col}
+                                    block
+                                    variant="primary"
+                                    onClick={performModelSelection}
+                                >
+                                    Perform Automatic Model Selection
+                                </Button>
+                            </Col>
+                            <Col>
                                 <Link to={{ pathname: `/datasets/model_selection_jobs` }}>
                                     <Button
-                                        disabled={!state.col}
+                                        disabled={!result}
                                         block
                                         variant="primary"
-                                        onClick={performModelSelection}
-                                    >   
-                                        Perform Automatic Model Selection
+                                    >
+                                        View AMS Results
                                     </Button>
                                 </Link>
                             </Col>
-                            
                         </Row>
                     </Container>
 

@@ -24,17 +24,12 @@ const ModelSelectionJobsScreen = (props) => {
   const getJobsList = async () => {
     setLoading(true);
     try {
-        await sleep(1000);
         const pathname=await location.pathname;
-        console.log("pathname123",pathname);
         const response = await API.getRequest.get(
           pathname
         );
-        // console.log(response);
         temp = response.data;
-        // console.log(response.data);
         temp.sort(sortFunction);
-        // console.log(response.data);
         setInfo(response.data);
         
     } catch (err) {
@@ -66,7 +61,7 @@ const ModelSelectionJobsScreen = (props) => {
         className={`${styles.screen} ${styles.savedModelsScreen} py-2 `}
         fluid
       >
-            {loading ? (
+            {!info ? (
               <Row>
               <Spinner animation="border" variant="primary" />
             </Row>
