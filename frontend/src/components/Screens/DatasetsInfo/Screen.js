@@ -254,7 +254,7 @@ const DatasetInfoScreen = (props) => {
                 {info &&
                   info.datasetFields.map((column,i) => [
                     <tr key={i} >
-                      <td style={{ width: "10%" }}>{column.column_order +i}</td>
+                      <td style={{ width: "10%" }}>{i+1}</td>
                       <td  
                       onClick={(event) =>
                         handleExpandRow(event, column.column_order)

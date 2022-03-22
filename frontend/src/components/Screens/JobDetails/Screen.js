@@ -84,7 +84,7 @@ const JobDetailsScreen = (props) => {
               <Card.Body className={styles.modelCard}>
                 <Row>
                   <Col md={9}>
-                    <h3 className={styles.modelName}>Dataset Name</h3>
+                    <h3 className={styles.modelName}>{jobDetails.dataset_name}</h3>
                     <p className={styles.modelState}>{jobDetails.state}</p>
                     <p className={styles.modelType}>{jobDetails.target_col}</p>
                     <Row>
