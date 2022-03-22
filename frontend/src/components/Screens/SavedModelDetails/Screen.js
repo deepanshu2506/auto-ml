@@ -93,9 +93,7 @@ const SavedModelDetailsScreen = (props) => {
                     </p>
                   </Col>
                   <Col className={styles.buttonContainer}>
-                    <Link
-                      to={`/jobDetails/${model.model_selection_job_id}`}
-                    >
+                    <Link to={`/jobDetails/${model.model_selection_job_id}`}>
                       <Button block variant="outline-primary">
                         View Model Selection Job
                       </Button>
@@ -153,12 +151,14 @@ const SavedModelDetailsScreen = (props) => {
                 </Row>
               </Card.Body>
               <Card.Footer className="d-flex justify-content-end">
-                <Button
-                  disabled={model.state !== "completed"}
-                  variant="outline-primary"
-                >
-                  Perform Prediction
-                </Button>
+                <Link to={`/savedModels/${model.id}/inference`}>
+                  <Button
+                    disabled={model.state !== "completed"}
+                    variant="outline-primary"
+                  >
+                    Perform Prediction
+                  </Button>
+                </Link>
                 <Button
                   disabled={model.state !== "completed"}
                   className="ml-2"

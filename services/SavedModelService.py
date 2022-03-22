@@ -15,13 +15,13 @@ class SavedModelService:
         self.fileService = fileService
         pass
 
-    def findById(self, id,user_id) -> SavedModel:
-        models = SavedModel.objects(id=id,created_by=user_id)
+    def findById(self, id, user_id) -> SavedModel:
+        models = SavedModel.objects(id=id, created_by=user_id)
         if len(models) == 0:
             raise ModelNotFound
         return models[0]
 
-    def get_models_by_user(self,user_id):
+    def get_models_by_user(self, user_id):
         models = SavedModel.objects(created_by=user_id)
         return models
 
@@ -81,7 +81,7 @@ class SavedModelService:
         return tensor
 
     def perform_inference(self, model_id, user_id, input, **kwargs):
-        model_meta = self.findById(model_id,user_id)
+        model_meta = self.findById(model_id, user_id)
         model = self._load_model(model_meta)
         sanitized_inputs = self._verify_sanitize_inputs(model_meta, input)
         tensor = self._convert_to_tensor(sanitized_inputs)
@@ -92,4 +92,6 @@ class SavedModelService:
                 dict(zip(model_meta.classes, [round(float(x), 3) for x in result]))
                 for result in predictions
             ]
+        else:
+            predictions = results.tolist()
         return predictions

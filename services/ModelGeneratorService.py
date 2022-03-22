@@ -164,7 +164,7 @@ class ModelGeneratorService:
                 state=TrainingStates.SUBMITTED,
                 features=features,
                 architecture=model.model_arch,
-                param_count = model.trainable_params,
+                param_count=model.trainable_params,
                 classes=classes,
                 ProblemType=job.problemType,
                 created_by=user_id,
@@ -241,9 +241,11 @@ class ModelGeneratorService:
         )
 
         train, test = train_test_split(dataset, test_size=0.1)
-        train_ds = df_to_dataset(train, problemType=problem_type, target_variable=job.target_col
+        train_ds = df_to_dataset(
+            train, problemType=problem_type, target_variable=job.target_col
         )
-        test_ds = df_to_dataset(test, problemType=problem_type, target_variable=job.target_col
+        test_ds = df_to_dataset(
+            test, problemType=problem_type, target_variable=job.target_col
         )
         epochs = kwargs.get("epochs") or 20
         print(epochs)
@@ -251,7 +253,7 @@ class ModelGeneratorService:
         scores = train_model.evaluate(
             test_ds,
         )
-        
+
         print(scores)
         metrics = ModelMetrics(error=scores[0])
         if savedModel.ProblemType is ProblemType.Classification:
@@ -274,12 +276,12 @@ class ModelGeneratorService:
         savedModel.save()
 
     def findById(self, dataset_id, user_id) -> ModelSelectionJob:
-        jobs = ModelSelectionJob.objects(dataset=dataset_id,created_by=user_id)
+        jobs = ModelSelectionJob.objects(dataset=dataset_id, created_by=user_id)
         if len(jobs) == 0:
             raise JobsNotFound
         return jobs[0]
 
-    def get_jobs_by_user(self,user_id):
+    def get_jobs_by_user(self, user_id):
         jobs = ModelSelectionJob.objects(created_by=user_id)
         if len(jobs) == 0:
             raise JobsNotFound

@@ -37,6 +37,9 @@ const renderInference = (modelType, inference = {}) => {
         </tbody>
       </Table>
     );
+  } else {
+    console.log(inference);
+    return <p>{inference[0]}</p>;
   }
 };
 
@@ -117,9 +120,7 @@ const ModelInferenceScreen = (props) => {
                     </p>
                   </Col>
                   <Col className={styles.buttonContainer}>
-                    <Link
-                      to={`/jobDetails/${model.model_selection_job_id}`}
-                    >
+                    <Link to={`/jobDetails/${model.model_selection_job_id}`}>
                       <Button block variant="outline-primary">
                         View Model Selection Job
                       </Button>
@@ -159,6 +160,9 @@ const ModelInferenceScreen = (props) => {
                             {feature.allowed_Values.map((value) => (
                               <option value={value}>{value}</option>
                             ))}
+                            <Form.Control.Feedback type="invalid">
+                              This field is required.
+                            </Form.Control.Feedback>
                           </Form.Control>
                         ) : (
                           <Form.Control
