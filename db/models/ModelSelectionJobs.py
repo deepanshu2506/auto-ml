@@ -82,7 +82,7 @@ class GeneratedModel(DynamicEmbeddedDocument):
             "model_arch": fields.Raw(),
             "trainable_params": fields.Integer(),
             "error": fields.Float(),
-            "model_id": fields.String(attribute="model.id"),
+            "model_id": fields.String(),
         }
 
 
