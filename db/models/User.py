@@ -1,5 +1,5 @@
 from mongoengine import Document
-from mongoengine.fields import DateTimeField, EmailField, StringField
+from mongoengine.fields import DateTimeField, EmailField, StringField, BooleanField
 import datetime
 import bcrypt
 
@@ -9,6 +9,8 @@ class User(Document):
     email = EmailField()
     password = StringField(required=True)
     dateCreated = DateTimeField(default=datetime.datetime.utcnow)
+    confirmed= BooleanField(default=False)
+    confirmedOn= DateTimeField()
 
     def hash_password(self):
         salt = bcrypt.gensalt()
@@ -22,3 +24,11 @@ class User(Document):
             password=password.encode("utf-8"),
             hashed_password=self.password.encode("utf-8"),
         )
+        
+        
+    def confirm_email(self):
+            
+            print(self.confirmed)
+            self.confirmed=True
+        
+

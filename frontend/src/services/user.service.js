@@ -26,7 +26,11 @@ async function login(form) {
         if(err.response.status===401){
             logout();
         }
-        const error="Email or password invalid" ;
+        var error="Email or password invalid" ;
+        if(err.response.status===403){
+            logout();
+            error="Email is not verified" ;
+        }
         return Promise.reject(error);
     });
 };
