@@ -179,6 +179,37 @@ class deepeye(object):
         print("please rank first by " + rank_method_string)
         sys.exit(0)
 
+    def from_dataframe(self, df: pd.DataFrame, file_name):
+        data = df.iloc[:, :].values
+        self.csv_dataframe = pd.DataFrame(data).dropna(axis=0, how="any")
+        test = pd.DataFrame(df).dropna(axis=0, how="any")
+        types = [0 for i in range(len(test.dtypes))]
+        x = df.columns.values.tolist()
+        print(x)
+        # type transformation
+        for i in range(len(test.dtypes)):
+            if test.dtypes[i].name[0:3] == "int" or test.dtypes[i].name[0:5] == "float":
+                if x[i][0] == "'" or x[i][0] == '"':
+                    x[i] = x[i].replace("'", "").replace('"', "")
+                for j in test[x[i]]:
+                    if not (j > 1000 and j < 2100):
+                        types[i] = test.dtypes[i].name[0:5]
+                        break
+                    else:
+                        types[i] = "year"
+            elif test.dtypes[i].name[0:6] == "object":
+                if x[i][0] == "'" or x[i][0] == '"':
+                    x[i] = x[i].replace("'", "").replace('"', "")
+                for j in test[x[i]]:
+                    if j != 0 and not (re.search(r"\d+[/-]\d+[/-]\d+", j)):
+                        types[i] = "varchar"
+                        break
+                    else:
+                        types[i] = "date"
+
+        self.table_info(file_name, x, types)
+        self.import_method = methods_of_import[2]
+
     ##### data import function
     def from_csv(self, path):
         """
