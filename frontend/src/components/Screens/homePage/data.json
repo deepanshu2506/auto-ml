@@ -135,11 +135,6 @@
             "icon": "fa fa-arrows ",
             "title": "360° Visibility"    ,
             "text": "A single workspace for data processing, visualization, and modelling."
-        },
-        {
-            "icon": "fa fa-hourglass",
-            "title": "24 X 7",
-            "text": "Our website is available 24 X 7 for our users ."
         }
     ]
 }
