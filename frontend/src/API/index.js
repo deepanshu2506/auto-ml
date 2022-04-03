@@ -1,4 +1,6 @@
 import axios from "axios";
+import { userActions } from "../actions";
+import { history, store } from "../helpers";
 
 const endpoint = "http://localhost:5000";
 export const apiURLs = {
@@ -8,21 +10,23 @@ export const apiURLs = {
     getDatasetPreview: (datasetID) => `/datasets/${datasetID}/preview`,
     performAggregation: (datasetID) =>
       `/datasets/${datasetID}/perform_aggregation`,
-    performAutoimputation: (datasetID) =>
-      `/datasets/${datasetID}/auto_impute`,
+    performAutoimputation: (datasetID) => `/datasets/${datasetID}/auto_impute`,
     performAutovisualization: (datasetID) =>
       `/datasets/${datasetID}/visualization`,
     getDatasetDetails: (datasetID) => `/datasets/${datasetID}`,
     deleteDataset: (datasetID) => `/datasets/${datasetID}`,
-    singleColImputation: (datasetID) => `/datasets/${datasetID}/impute_advanced`,
-    modelSelection:(datasetID)=>`/dataset/model_selection/${datasetID}`,
+    singleColImputation: (datasetID) =>
+      `/datasets/${datasetID}/impute_advanced`,
+    modelSelection: (datasetID) => `/dataset/model_selection/${datasetID}`,
   },
   modelSelectionJob: {
-    getJobs:"/datasets/model_selection_jobs",
+    getJobs: "/datasets/model_selection_jobs",
   },
-  visualize:{
-    performAutoVisualization: (datasetID) => `/visualization/${datasetID}/auto_visualize`,
-    performAdvanceVisualization: (datasetID) => `/visualization/${datasetID}/advance_visualize`,
+  visualize: {
+    performAutoVisualization: (datasetID) =>
+      `/visualization/${datasetID}/auto_visualize`,
+    performAdvanceVisualization: (datasetID) =>
+      `/visualization/${datasetID}/advance_visualize`,
     getCorrelation: (datasetID) => `/visualization/${datasetID}/correlate`,
   },
   misc: {
@@ -34,26 +38,38 @@ export const apiURLs = {
     modelDetails: (model_id) => `/saved_model/${model_id}`,
     infer: (model_id) => `/saved_model/${model_id}/infer`,
   },
-  modelSelectionJob:{
-    jobDetails:(model_selection_job_id)=>`/dataset/model_selection/${model_selection_job_id}`,
-    exportModel:(model_selection_job_id,model_id)=>`/dataset/model_selection/${model_selection_job_id}/export/${model_id}`
+  modelSelectionJob: {
+    jobDetails: (model_selection_job_id) =>
+      `/dataset/model_selection/${model_selection_job_id}`,
+    exportModel: (model_selection_job_id, model_id) =>
+      `/dataset/model_selection/${model_selection_job_id}/export/${model_id}`,
   },
-  user:{
-    register:"/auth/register",
-    login:"/auth/login"
-  }
+  user: {
+    register: "/auth/register",
+    login: "/auth/login",
+  },
 };
 
 const addTokenToConfig = (config) => {
   // let user = JSON.parse(localStorage.getItem('user'));
   // const Token=user.auth_token;
 
-  let redux_store = JSON.parse(localStorage.getItem('persist:root'));
-  let user = JSON.parse(redux_store.user)
+  let redux_store = JSON.parse(localStorage.getItem("persist:root"));
+  let user = JSON.parse(redux_store.user);
   const Token = user["auth_token"];
   if (Token) config.headers["Authorization"] = "Bearer " + Token;
 
   return config;
+};
+
+const successResponseInterceptor = (response) => response;
+
+const failureResponseInterceptor = (error) => {
+  if (error.response.status === 401) {
+    store.dispatch(userActions.logout());
+    history.push("/login");
+  }
+  return error;
 };
 
 const jsonAPI = axios.create({
@@ -91,10 +107,19 @@ formDataAPI.interceptors.request.use(addTokenToConfig, function (error) {
   return Promise.reject(error);
 });
 
+jsonAPI.interceptors.response.use(
+  successResponseInterceptor,
+  failureResponseInterceptor
+);
+formDataAPI.interceptors.response.use(
+  successResponseInterceptor,
+  failureResponseInterceptor
+);
+
 const API = {
   json: jsonAPI,
   formData: formDataAPI,
   getRequest: getRequestAPI,
-  authData: authDataAPI
+  authData: authDataAPI,
 };
 export default API;
