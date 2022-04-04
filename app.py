@@ -9,7 +9,6 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
-print("abc")
 app = Flask(__name__)
 CORS(app, expose_headers=["x-suggested-filename"])
 
