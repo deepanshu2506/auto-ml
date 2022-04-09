@@ -193,7 +193,7 @@ class ModelGeneratorService:
     def _train_model(
         self,
         model_arch,
-        dataset,
+        dataset: DataFrame,
         job: ModelSelectionJob,
         encoder: KerasPreProcessingEncoder,
         savedModel: SavedModel,
@@ -244,7 +244,7 @@ class ModelGeneratorService:
             prod=True,
         )
 
-        dataset_clone = dataset.clone()
+        dataset_clone = dataset.copy()
 
         target = dataset_clone.pop(job.target_col)
         target_values = (
@@ -257,7 +257,7 @@ class ModelGeneratorService:
         )
         train_ds = df_to_dataset(train_X, train_y)
         test_ds = df_to_dataset(test_X, test_y)
-        
+
         epochs = kwargs.get("epochs") or 20
         print(epochs)
         train_model.fit(train_ds, epochs=epochs)
