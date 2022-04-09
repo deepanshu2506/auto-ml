@@ -122,7 +122,7 @@ class ModelGeneratorService:
                 name=datasetFeature.columnName,
                 dataType=datasetFeature.dataType,
                 type=datasetFeature.colType,
-                columnDescription = datasetFeature.columnDescription
+                columnDescription=datasetFeature.columnDescription,
             )
             if datasetFeature.colType == Coltype.DISCRETE:
 
@@ -133,9 +133,9 @@ class ModelGeneratorService:
                     )
                 )
             else:
-                modelFeature.minValue=datasetFeature.metrics.min
-                modelFeature.maxValue=datasetFeature.metrics.max      
-            return modelFeature 
+                modelFeature.minValue = datasetFeature.metrics.min
+                modelFeature.maxValue = datasetFeature.metrics.max
+            return modelFeature
 
         for model in job.results.models:
             if str(model.model_id) == model_id:
@@ -244,13 +244,20 @@ class ModelGeneratorService:
             prod=True,
         )
 
-        train, test = train_test_split(dataset, test_size=0.1)
-        train_ds = df_to_dataset(
-            train, problemType=problem_type, target_variable=job.target_col
+        dataset_clone = dataset.clone()
+
+        target = dataset_clone.pop(job.target_col)
+        target_values = (
+            pd.get_dummies(target)
+            if problem_type == ProblemType.Classification
+            else target
         )
-        test_ds = df_to_dataset(
-            test, problemType=problem_type, target_variable=job.target_col
+        train_X, test_X, train_y, test_y = train_test_split(
+            dataset, target_values, test_size=0.1
         )
+        train_ds = df_to_dataset(train_X, train_y)
+        test_ds = df_to_dataset(test_X, test_y)
+        
         epochs = kwargs.get("epochs") or 20
         print(epochs)
         train_model.fit(train_ds, epochs=epochs)
