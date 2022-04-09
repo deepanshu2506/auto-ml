@@ -1,5 +1,4 @@
 from io import StringIO, BytesIO
-from msilib.schema import File
 import os
 import tempfile
 import zipfile
