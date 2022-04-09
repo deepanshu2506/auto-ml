@@ -19,6 +19,7 @@ export const apiURLs = {
       `/datasets/${datasetID}/impute_advanced`,
     modelSelection: (datasetID) => `/dataset/model_selection/${datasetID}`,
     colDescription: (datasetID) => `datasets/${datasetID}/col_description`,
+    readmeFile: (datasetID) => `datasets/${datasetID}/readme`,
   },
   modelSelectionJob: {
     getJobs: "/datasets/model_selection_jobs",

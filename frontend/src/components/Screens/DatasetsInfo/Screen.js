@@ -17,6 +17,7 @@ import ImputeModal from "../PerformSingleimputation/singleImpute";
 import DatasetInfoGuideScreen from "./hints";
 import { FaInfoCircle } from "react-icons/fa";
 import FormModal from "../../Content/FormModal/FormModal";
+import ReadmeComponent from "./Readme";
 
 const DatasetInfoScreen = (props) => {
   const [info, setInfo] = useState(null);
@@ -266,6 +267,11 @@ const DatasetInfoScreen = (props) => {
                   </Link>
                 </Col>
               </Row>
+
+              <Container className={`${styles.content} mt-2`} fluid>
+                Dataset Readme
+                <ReadmeComponent/>
+              </Container>
               <Container className={`${styles.content} mt-2`} fluid>
                 <h4 className={`${styles.headtable} pb-1`}>
                   Datasets Fields description :
