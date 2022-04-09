@@ -48,13 +48,16 @@ export const ModelSelectionScreen = (props) => {
             setValidated(true);
         } else {
             try {
-                const {
-                    data
-                } = await getResult();
-                setResult(data);
-                console.log(data);
-                console.log("hey");
+                const response
+                 = await getResult();
+                 console.log(response)
+                if(!response.data){
+                    alert("Dataset has null values!");
+                }else{
+                setResult(response.data); 
+                }
             } catch (err) {
+                alert("Dataset has null values!");
                 console.log(err);
             }
         }

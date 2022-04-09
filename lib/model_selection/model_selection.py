@@ -1,3 +1,4 @@
+import pandas as pd
 from lib.model_selection.Individual import Individual
 from lib.model_selection.fetch_to_keras import create_tunable_model
 from lib.model_selection.run_experiment import run_experiment
@@ -180,6 +181,13 @@ class ModelGenerator:
         scores = []
 
         for train_index, test_index in kf.split(self.raw_dataset):
+            dataset_copy = self.raw_dataset.copy()
+            target = dataset_copy.pop(self.target_feature)
+            target_values = (
+                pd.get_dummies(target)
+                if self.config.problem_type == ProblemType.Classification
+                else target
+            )
             best_model = create_tunable_model(
                 best.stringModel,
                 self.config.problem_type,
@@ -188,16 +196,14 @@ class ModelGenerator:
                 input_layer=self._input_layers,
                 preprocessing_layer=self._preprocessing_layer,
             )
-            train, test = (
-                self.raw_dataset.iloc[train_index],
-                self.raw_dataset.iloc[test_index],
+            train_X, test_X, train_Y, test_Y = (
+                dataset_copy.iloc[train_index],
+                dataset_copy.iloc[test_index],
+                target_values.iloc[train_index],
+                target_values.iloc[test_index],
             )
-            train_ds = df_to_dataset(
-                train, self.config.problem_type, target_variable=self.target_feature
-            )
-            test_ds = df_to_dataset(
-                test, self.config.problem_type, target_variable=self.target_feature
-            )
+            train_ds = df_to_dataset(train_X, train_Y)
+            test_ds = df_to_dataset(test_X, test_Y)
             history = best_model.fit(train_ds, epochs=20)
             score = best_model.evaluate(test_ds)
 

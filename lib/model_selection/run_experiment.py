@@ -19,10 +19,20 @@ def evaluate_population(
     generation_count: int = 0,
 ) -> Tuple[Individual, Individual, int]:
     best_model = nn_evolutionary.Individual(
-        configuration.pop_size * 2, configuration.problem_type, [], [], fitness=10 ** 8
+        configuration.pop_size * 2,
+        configuration.problem_type,
+        [],
+        [],
+        Configuration.output_shape,
+        fitness=10 ** 8,
     )  # Big score for the first comparisson
     worst_model = nn_evolutionary.Individual(
-        configuration.pop_size * 2 + 1, configuration.problem_type, [], [], fitness=0
+        configuration.pop_size * 2 + 1,
+        configuration.problem_type,
+        [],
+        [],
+        Configuration.output_shape,
+        fitness=0,
     )  # Small score for the first comparisson
     count = 0
     worst_index = 0
@@ -216,7 +226,7 @@ def run_experiment(
             # print("\nParent pool. Parent number {}\n".format(len(parent_pool)))
             # print_pop(parent_pool, logger=False)
 
-            offsprings = nn_evolutionary.population_crossover(parent_pool, logger=False)
+            offsprings = nn_evolutionary.population_crossover(parent_pool, logger=False,num_classes=configuration.output_shape)
             offspring_pop_size = len(offsprings)
 
         print("Applying Mutation")
