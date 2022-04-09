@@ -122,6 +122,7 @@ class ModelGeneratorService:
                 name=datasetFeature.columnName,
                 dataType=datasetFeature.dataType,
                 type=datasetFeature.colType,
+                columnDescription = datasetFeature.columnDescription
             )
             if datasetFeature.colType == Coltype.DISCRETE:
 
@@ -131,7 +132,10 @@ class ModelGeneratorService:
                         raw_dataset[datasetFeature.columnName].unique(),
                     )
                 )
-            return modelFeature
+            else:
+                modelFeature.minValue=datasetFeature.metrics.min
+                modelFeature.maxValue=datasetFeature.metrics.max      
+            return modelFeature 
 
         for model in job.results.models:
             if str(model.model_id) == model_id:
