@@ -32,6 +32,7 @@ const SavedModelDetailsScreen = (props) => {
     } catch (err) {}
     setLoading(false);
   };
+
   useEffect(() => {
     getModel(params.modelID);
   }, [params.modelID]);
@@ -41,15 +42,42 @@ const SavedModelDetailsScreen = (props) => {
       (acc, curr) => acc + curr,
       0
     );
+
+  const downloadModelWeights = async () => {
+    try {
+      const response = await API.json.get(
+        apiURLs.savedModels.export(params.modelID),
+        { responseType: "arraybuffer" }
+      );
+      const fileNameHeader = "x-suggested-filename";
+      const suggestedFileName = response.headers[fileNameHeader];
+      const effectiveFileName =
+        suggestedFileName === undefined ? "model.zip" : suggestedFileName;
+      console.log(
+        `Received header [${fileNameHeader}]: ${suggestedFileName}, effective fileName: ${effectiveFileName}`
+      );
+      console.log(response);
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/zip" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", effectiveFileName);
+      document.body.appendChild(link);
+      link.click();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const percentageImportance =
     model.feature_importance &&
     Object.keys(model.feature_importance)
       .map((key) => ({
-        y: model.feature_importance[key] / totalImportance,
+        y: ((model.feature_importance[key] / totalImportance)*100),
         label: key,
       }))
       .sort((a, b) => a.y - b.y);
-  console.log(percentageImportance);
   const featureImportanceChartOptions = model.feature_importance && {
     colorSet: "appTheme",
     height: 25 * Object.keys(model.feature_importance).length,
@@ -103,6 +131,13 @@ const SavedModelDetailsScreen = (props) => {
                         View Dataset
                       </Button>
                     </Link>
+                    <Button
+                      block
+                      variant="outline-primary"
+                      onClick={() => downloadModelWeights()}
+                    >
+                      Download weights
+                    </Button>
                   </Col>
                 </Row>
               </Card.Body>

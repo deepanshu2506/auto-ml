@@ -12,7 +12,7 @@ import styles from "./styles.module.scss";
 import papa from "papaparse";
 import API, { apiURLs } from "../../../API";
 import { useHistory } from "react-router";
-
+import { MdClose } from "react-icons/md";
 const CSVUploadForm = () => {
   const history = useHistory();
   const [state, setState] = useState({});
@@ -33,8 +33,9 @@ const CSVUploadForm = () => {
         formData
       );
       history.push(`/datasets/${data.datasetId}`);
-      alert("dataset created");
+      alert("Dataset created!");
     } catch (err) {
+      alert("Error. Please try again later!");
       console.log(err);
     }
   };
@@ -70,6 +71,11 @@ const CSVUploadForm = () => {
         setState((prev) => ({ ...prev, file }));
       },
     });
+  };
+
+  const cancelSelectedFile = () => {
+    setDatasetDetails({});
+    setState((prev) => ({ ...prev, file: undefined }));
   };
 
   const triggerFileUpload = () => {
@@ -129,6 +135,7 @@ const CSVUploadForm = () => {
               onChange={(e) => handleFileChange(e)}
               ref={fileRef}
               autoFocus
+              accept="text/csv"
               multiple={false}
             />
 
@@ -141,9 +148,16 @@ const CSVUploadForm = () => {
         )}
         {state.file && datasetDetails.fields && (
           <>
-            <p
-              className={styles.legend}
-            >{`${datasetDetails.fileName} (showing 20 of ${datasetDetails.rowCount})`}</p>
+            <Row>
+              <Col md={11}>
+                <p
+                  className={styles.legend}
+                >{`${datasetDetails.fileName} (showing 20 of ${datasetDetails.rowCount})`}</p>
+              </Col>
+              <Col className={styles.cancelSelectedFile}>
+                <MdClose onClick={() => cancelSelectedFile()} />
+              </Col>
+            </Row>
             <Row className={`${styles.tablecontainer} flex-grow-1 `}>
               <Col className=" table-containepx-0">
                 <Table hover className={styles.table}>

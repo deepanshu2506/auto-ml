@@ -18,6 +18,7 @@ export const apiURLs = {
     singleColImputation: (datasetID) =>
       `/datasets/${datasetID}/impute_advanced`,
     modelSelection: (datasetID) => `/dataset/model_selection/${datasetID}`,
+    colDescription: (datasetID) => `datasets/${datasetID}/col_description`,
   },
   modelSelectionJob: {
     getJobs: "/datasets/model_selection_jobs",
@@ -37,6 +38,7 @@ export const apiURLs = {
     getModels: "/saved_model/",
     modelDetails: (model_id) => `/saved_model/${model_id}`,
     infer: (model_id) => `/saved_model/${model_id}/infer`,
+    export: (model_id) => `/saved_model/${model_id}/export`,
   },
   modelSelectionJob: {
     jobDetails: (model_selection_job_id) =>
