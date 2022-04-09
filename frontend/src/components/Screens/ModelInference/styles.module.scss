@@ -3,6 +3,15 @@
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
 
+.warning{
+  color:red;
+  span {
+    span {
+      font-size: 15px;
+      font-weight: bold;
+    }
+  }
+}
 .inferenceScreen {
   overflow-y: auto;
 }
