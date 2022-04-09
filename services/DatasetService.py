@@ -96,6 +96,12 @@ class DatasetService:
 
     def _replace_nulls(self, df: DataFrame, place_holder):
         return df.replace({place_holder: None}, inplace=False)
+    
+    def _replace_boolean(self, df: DataFrame):
+        print(df.head())
+        mask = df.applymap(type) != bool
+        d = {True: 'T', False: 'F'}
+        return df.where(mask, df.replace(d))
 
     def _clean_col_names(self, dataset_raw: DataFrame):
         columns = dataset_raw.columns.values.tolist()
@@ -142,6 +148,8 @@ class DatasetService:
         if null_placeholder is not None:
             dataset_raw = self._replace_nulls(dataset_raw, null_placeholder)
         dataset_raw = self._clean_col_names(dataset_raw)
+        dataset_raw = self._replace_boolean(dataset_raw)
+        print(dataset_raw.head())
         dataset.datasetFields = self._extract_fields(dataset_raw)
 
         dataset_raw = self._replace_nulls(dataset_raw, numpy.nan)
@@ -163,10 +171,11 @@ class DatasetService:
 
     def getDataset(self, id, user_id) -> DataFrame:
         dataset = self.find_by_id(id, user_id)
+        print(dataset.name)
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
             dataset.datasetLocation
         )
-        return dataset_frame
+        return dataset_frame,dataset.name
 
     def find_by_id(self, id, user_id) -> Dataset:
         datasets = Dataset.objects(createdBy=user_id, id=id, isDeleted=False)
