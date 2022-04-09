@@ -5,28 +5,24 @@ import {
     Form,
     InputGroup,
     Row,
-    Spinner,
   } from "react-bootstrap";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import API, { apiURLs } from "../../../API";
-import { useHistory } from "react-router";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import ReactMarkdown from 'react-markdown'
 import FormModal from "../../Content/FormModal/FormModal";
+import remarkGfm from 'remark-gfm'
 
-
-const ReadmeComponent = () => {
+const ReadmeComponent = (props) => {
 
   const [info, setInfo] = useState(null);
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-  const [datasetId, setDatasetId] = useState("");
   const [ modalOpen, setModalOpen ] = useState(false);
   const [ fileDetails, setfileDetails] = useState("");
-    
-  const openModal = (datasetId, fileDetails) => {
-    console.log(fileDetails);
+  const {datasetId} = props;
+  const openModal = (fileDetails) => {
     setfileDetails(fileDetails);
     setModalOpen(true);
   };
@@ -34,130 +30,80 @@ const ReadmeComponent = () => {
   const getReadmeFile = async () => {
     setLoading(true);
     try {
-      const pathname = await location.pathname;
-      console.log("pathname", pathname);
-      setDatasetId(pathname.substring(10));
-    //   const response = await API.getRequest.get(pathname+"/readme");
-    //   setInfo(response.data);
-      const  data = await API.json.get(
+      const  {data} = await API.json.get(
         apiURLs.dataset.readmeFile(datasetId)
       );
       setInfo(data);
-      console.log("readme value",data);
-    //   var data = response.data;
       } catch (err) {
         console.log(err);
         }
         setLoading(false);
   };
-
-    // const onSubmit = async () => {
-    // const data = {
-    //     data: [
-    //     {
-    //         input: state.input,
-    //     },
-    //     ],
-    // };
-    // try {
-    //     await API.json.post(
-    //     apiURLs.dataset.readme(datasetId),
-    //     data
-    //     );
-    //     window.location.reload();
-    // } catch (err) {
-    //     console.log(err);
-    // }
-    // };
  
     useEffect(() => {
         getReadmeFile();
     },[]);
 
     return (
-        <Container>
+        <Container className={`${styles.content} mt-2`} fluid>
             <ReadmeModal
                 modalOpen={modalOpen}
                 datasetId={datasetId}
                 fileDetails={fileDetails}
                 onClose={() => setModalOpen(false)}
             />    
-            <Container>
+                <h4 className={`${styles.headtable} pb-1`}>
+                  Dataset Description:
+                  <span style={{ float: "right" }} className="pb-2">
+                    {" "}
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => openModal(info)}>
+                      Edit
+                    </Button> 
+                  </span>
+                </h4>
               <Row>
-
               <Col>
-                <Button
-                    style={{ padding: "0.1em 0.5rem" }}
-                    variant="primary"
-                    onClick={() => openModal(datasetId, info)}
-                >
-                    <i
-                    className="fa fa-pencil-square-o"
-                    aria-hidden="true"
-                    ></i>
-                </Button>
-                </Col>
-                <Col>
-                {
-                  info ? (
-                    <ReactMarkdown className='cfe-markdown' source={info}/>) : (
-                    <Col style={{ fontStyle: "italic", color: "#aaa" }}>
-                    No Readme file created for this dataset.
-                    </Col>
-                      )
-                }
-                </Col>
+              <Container className={`mt-2`} fluid>
+                <ReactMarkdown  children={info} remarkPlugins={[remarkGfm]}/> 
+              </Container>
+              </Col>
               </Row>
-            </Container>
         </Container>
-
     );
 };
 
 
 const ReadmeModal = ({ modalOpen, datasetId, fileDetails, ...props }) => {
     const [state, setState] = useState({});
-
-    const [isEditting, setEditting] = useState(!fileDetails);
-
+    const [isEditting, setEditting] = useState(true);
     const onClose = () => {
     props.onClose();
     };
 
     const onSubmit = async () => {
-    // const data = {
-    //     data: [
-    //     {
-    //         input: state.input,
-    //     },
-    //     ],
-    // };
-    // try {
-    //     await API.json.post(
-    //     apiURLs.dataset.readme(datasetId),
-    //     data
-    //     );
-    //     window.location.reload();
-    // } catch (err) {
-    //     console.log(err);
-    // }
+    const data = {
+        contents: state.input,
     };
-
-    const onEdit = () => {
-        setEditting(true);
-        if (fileDetails) {
-          setState((prev) => ({
-            ...prev,
-            input: fileDetails,
-          }));
-        }
+    try {
+        await API.json.post(
+          apiURLs.dataset.readmeFile(datasetId),
+        data
+        );
+        window.location.reload();
+    } catch (err) {
+        console.log(err);
+    }
     };
 
     useEffect(() => {
         setEditting(!fileDetails);
-      });
+        setState(prev=>({...prev,input:fileDetails}))
+      },[fileDetails]);
 
     return (
+      <Container>
         <FormModal
           show={modalOpen}
           onClose={onClose}
@@ -166,29 +112,13 @@ const ReadmeModal = ({ modalOpen, datasetId, fileDetails, ...props }) => {
           animation={false}
           closeOnSubmit={true}
           submitText={"Save"}
-          showSubmit={isEditting}
+          showSubmit={true}
         >
-          <Row>
-            {fileDetails ? (
-              <Col>{fileDetails}</Col>
-            ) : (
-              <Col style={{ fontStyle: "italic", color: "#aaa" }}>
-                No Readme file created for this dataset.
-              </Col>
-            )}
-          </Row>
-          {fileDetails && (
-            <Row className="mt-2">
-              <Col>
-                <Button onClick={onEdit}>Edit</Button>
-              </Col>
-            </Row>
-          )}
-          {isEditting && (
             <Row className="mt-2">
               <Form.Group as={Col} controlId="method">
                 <InputGroup hasValidation>
                   <Form.Control
+                    value={state.input}
                     onChange={(e) => {
                       setState((prev) => ({
                         ...prev,
@@ -201,11 +131,9 @@ const ReadmeModal = ({ modalOpen, datasetId, fileDetails, ...props }) => {
                 </InputGroup>
               </Form.Group>
             </Row>
-          )}
         </FormModal>
+        </Container>
       );
-
-
 };
 
 export default ReadmeComponent;

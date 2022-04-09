@@ -139,7 +139,7 @@ const DatasetInfoScreen = (props) => {
           setErrMsg(err.message);
         }
       } else {
-        setErrMsg("Sever not running!");
+        setErrMsg("Server not running!");
       }
     }
     setLoading(false);
@@ -268,10 +268,7 @@ const DatasetInfoScreen = (props) => {
                 </Col>
               </Row>
 
-              <Container className={`${styles.content} mt-2`} fluid>
-                Dataset Readme
-                <ReadmeComponent/>
-              </Container>
+              <ReadmeComponent datasetId={datasetId}/>
               <Container className={`${styles.content} mt-2`} fluid>
                 <h4 className={`${styles.headtable} pb-1`}>
                   Datasets Fields description :
