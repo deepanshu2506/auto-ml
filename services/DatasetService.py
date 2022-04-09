@@ -27,31 +27,33 @@ class DatasetService:
     ):
         featureMetrics = DatasetFeatureMetrics()
         if column_metrics is not None:
-            lower_quantile = column_values.quantile(0.25)
-            upper_quantile = column_values.quantile(0.75)
-            iqr = upper_quantile - lower_quantile
-            outlier_count = sum(
-                i < (lower_quantile - (1.5 * iqr)) for i in column_values.tolist()
-            ) + sum(i > (upper_quantile + (1.5 * iqr)) for i in column_values.tolist())
-            # print("Lower Q",lower_quantile)
-            # print("Upper Q",upper_quantile)
-            # print("IQR",iqr)
-            # print("Outliers count",outlier_count)
-            featureMetrics.outlier_count = outlier_count
-            featureMetrics.min = column_metrics["min"]
-            featureMetrics.max = column_metrics["max"]
-            featureMetrics.mean = column_metrics["mean"]
-            featureMetrics.stdDeviation = column_metrics["std"]
-            featureMetrics.median = numpy.nanmedian(column_values)
-        if colType == Coltype.DISCRETE:
-            column_values_clean = column_values.fillna("None", inplace=False)
-            featureMetrics.value_percentage = dict(
-                (column_values_clean.value_counts() / len(column_values_clean)) * 100
-            )
-            featureMetrics.value_percentage = {
-                str(key): value
-                for key, value in featureMetrics.value_percentage.items()
-            }
+            if colType == Coltype.CONTINOUS:
+                lower_quantile = column_values.quantile(0.25)
+                upper_quantile = column_values.quantile(0.75)
+                iqr = upper_quantile - lower_quantile
+                outlier_count = sum(
+                    i < (lower_quantile - (1.5 * iqr)) for i in column_values.tolist()
+                ) + sum(i > (upper_quantile + (1.5 * iqr)) for i in column_values.tolist())
+                # print("Lower Q",lower_quantile)
+                # print("Upper Q",upper_quantile)
+                # print("IQR",iqr)
+                # print("Outliers count",outlier_count)
+                featureMetrics.outlier_count = outlier_count
+                featureMetrics.min = column_metrics["min"]
+                featureMetrics.max = column_metrics["max"]
+                featureMetrics.mean = column_metrics["mean"]
+                featureMetrics.stdDeviation = column_metrics["std"]
+                featureMetrics.median = numpy.nanmedian(column_values)
+            elif colType == Coltype.DISCRETE:
+                column_values_clean = column_values.fillna("None", inplace=False)
+                featureMetrics.value_percentage = dict(
+                    (column_values_clean.value_counts() / len(column_values_clean)) * 100
+                )
+                featureMetrics.value_percentage = {
+                    str(key): value
+                    for key, value in featureMetrics.value_percentage.items()
+                }
+        
 
         unique_values = column_values.unique().tolist()
         featureMetrics.uniqueValues = len(unique_values)
