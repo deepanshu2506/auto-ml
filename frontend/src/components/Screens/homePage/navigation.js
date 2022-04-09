@@ -41,7 +41,7 @@ export const Navigation = (props) => {
           </li>
           {loggedIn ?
             <li>
-              <a href='/datasets' >
+              <a href='/datasets/' >
                 {/* <i className="fa fa-list"></i> */}
                 List datasets
               </a>

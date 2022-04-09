@@ -10,6 +10,7 @@ export const AutoimputeScreen = (props) => {
     const [state, setState] = useState({});
     const [validated, setValidated] = useState(false);
     const [featuresLoading, setFeaturesLoading] = useState(true);
+    const [resultsLoading, setResultsLoading] = useState(false);
     const [dataset, setDataset] = useState({});
     const [datasetPreview, setDatasetPreview] = useState(null);
     const [result, setResult] = useState(null);
@@ -50,6 +51,7 @@ export const AutoimputeScreen = (props) => {
     };
 
     const performAutoimputation = async () => {
+        setResultsLoading(true);
         if (!state.col) {
             setValidated(true);
         } else {
@@ -58,6 +60,7 @@ export const AutoimputeScreen = (props) => {
                     data
                 } = await getAutoimputationResult();
                 setResult(data);
+                setResultsLoading(false);
                 try {
                     const { data } = await getDatasetPreview();
                     setDatasetPreview(data);
@@ -74,10 +77,11 @@ export const AutoimputeScreen = (props) => {
 
     const getDatasetPreview = async (exportToFile = false) => {
         try {
-            const response = await API.json.get(apiURLs.dataset.getDatasetPreview(params.datasetID),{
+            const response = await API.json.get(apiURLs.dataset.getDatasetPreview(params.datasetID), {
                 params: {
-                  exportToFile:exportToFile
-                }});
+                    exportToFile: exportToFile
+                }
+            });
             return response;
         }
         catch (err) {
@@ -135,7 +139,7 @@ export const AutoimputeScreen = (props) => {
                                                 }));
                                             }}
                                             as="select"
-                                            //required
+                                        //required
                                         >
                                             <option value="">Select target Column</option>
                                             {dataset.datasetFields.map((column) => (
@@ -239,6 +243,10 @@ export const AutoimputeScreen = (props) => {
                                 )}
                             </Container>
                         </Col>
+                    ) : (<></>)
+                    }
+                    {resultsLoading ? (
+                        <Spinner animation="border" variant="primary" />
                     ) : (<></>)
                     }
 
