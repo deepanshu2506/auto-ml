@@ -22,7 +22,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
       </Container>
     </>
   ) : (
-    <Redirect to="/login" />
+    <Redirect to="/" />
   );
 };
 

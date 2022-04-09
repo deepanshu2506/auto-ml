@@ -10,14 +10,9 @@ const Appbar = (props) => {
   //const { loggedIn,user } = useSelector(state => state.authentication);
   return (
     <Navbar bg="primary" className={styles.Appbar} variant="dark">
-      {props.loggedIn ?
-        <Link to="/datasets/">
-          <Navbar.Brand>DATA GENIE</Navbar.Brand>
-        </Link>
-        : <Link to="/">
-          <Navbar.Brand>DATA GENIE</Navbar.Brand>
-        </Link>
-      }
+      <Link to="/">
+        <Navbar.Brand>DATA GENIE</Navbar.Brand>
+      </Link>
       <Nav className="mr-auto"></Nav>
       {props.loggedIn ?
         <Form inline>
