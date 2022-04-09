@@ -80,7 +80,7 @@ const AutovisualizationScreen = (props) => {
     }
 
     const getVisualizationResults = async () => {
-        //setFeaturesLoading(true);
+        setResultsLoading(true);
         var dropped=[];
         selectedValue.map((val)=>{
             dropped.push(dataList[val-1]['label']);
@@ -103,7 +103,7 @@ const AutovisualizationScreen = (props) => {
             //setKValues((prev) => [...prev, ...values]);
             setKValues(values);
             setTopKVisualizationResults(response.data.slice(0, 5))
-            setFeaturesLoading(false);
+            setResultsLoading(false);
 
         } catch (err) {
             console.log(err);
