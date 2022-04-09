@@ -19,7 +19,6 @@ const JobDetailsScreen = (props) => {
   const [jobDetails, setJobDetails] = useState({});
   const [loading, setLoading] = useState(true);
   const [modelSelectedId, setModelSelectedId] = useState(null);
-  const [modelSelectedIdx, setModelSelectedIdx] = useState(null);
   const history = useHistory();
   // const [exportModel,setExportModel]=useState(null);
   // const [exportModelState,setExportModelState]=useState({});
@@ -44,6 +43,10 @@ const JobDetailsScreen = (props) => {
   };
 
   const onExportButton = (state) => {
+    if (modelSelectedId === null) {
+      alert("Select a model to export");
+      return;
+    }
     setShowDialog(true);
   };
 
@@ -84,7 +87,9 @@ const JobDetailsScreen = (props) => {
               <Card.Body className={styles.modelCard}>
                 <Row>
                   <Col md={9}>
-                    <h3 className={styles.modelName}>{jobDetails.dataset_name}</h3>
+                    <h3 className={styles.modelName}>
+                      {jobDetails.dataset_name}
+                    </h3>
                     <p className={styles.modelState}>{jobDetails.state}</p>
                     <p className={styles.modelType}>{jobDetails.target_col}</p>
                     <Row>
@@ -113,35 +118,23 @@ const JobDetailsScreen = (props) => {
           </Row>
 
           <Row className="m-2">
-            <Card as={Col}>
+            <Col className="px-0">
               <Card.Header>Generated models</Card.Header>
-              <Card.Body className={styles.modelCard}>
-                <div>
+              <Card>
+                <Card.Body className={styles.modelCard}>
                   {jobDetails.results.models.map((model, idx) => (
-                    <div className={styles.models}>
-                      <input
-                        type="radio"
-                        name="models"
-                        id={`Model ${idx}`}
-                        value={`Model ${idx}`}
-                        label={`Model ${idx}`}
-                        checked={modelSelectedIdx === idx}
-                        onChange={() => {
-                          setModelSelectedIdx(idx);
-                          setModelSelectedId(model.model_id);
-                        }}
-                      />
-                      <label htmlFor={`Model ${idx}`}>{`Model ${idx}`}</label>
-                      <ModelDetails
-                        key={idx}
-                        model={model}
-                        problemType={jobDetails.problemType}
-                      />
-                    </div>
+                    <ModelDetails
+                      idx={idx}
+                      isSelected={modelSelectedId === model.model_id}
+                      key={model.model_id}
+                      model={model}
+                      problemType={jobDetails.problemType}
+                      onChange={setModelSelectedId}
+                    />
                   ))}
-                </div>
-              </Card.Body>
-            </Card>
+                </Card.Body>
+              </Card>
+            </Col>
           </Row>
           <div style={{ textAlign: "center" }}>
             {exportModelLoading ? (
@@ -167,7 +160,6 @@ const JobDetailsScreen = (props) => {
                 closeDialog();
               }}
               onAdd={performExportModel}
-              modelSelectedIdx={modelSelectedIdx}
             />
           </div>
         </>
@@ -176,66 +168,76 @@ const JobDetailsScreen = (props) => {
   );
 };
 
-const ModelDetails = ({ model, problemType }) => {
+const ModelDetails = ({
+  model,
+  problemType,
+  isSelected,
+  onChange,
+  ...props
+}) => {
+  const selectModel = () => {
+    onChange(model.model_id);
+  };
   return (
-    <Container>
-      <p>Model Id: {model.model_id}</p>
-
-      <Row pt={2} mt={2}>
-        <Col md={6}>
-          <Card>
-            <Card.Header>Architecture Diagram</Card.Header>
-            <Card.Body className={styles.modelCard}>
-              <ArchitectureDiagram architecture={model.model_arch} />
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={6}>
-          <Card style={{ width: "100%", height: "100%" }}>
-            <Card.Header>Model Parameters</Card.Header>
-            <Card.Body className={styles.modelCard}>
-              {problemType === 1 ? (
-                <div>
-                  <h6>
-                    <b>Error</b> - {model.error}
-                  </h6>
-                </div>
-              ) : (
-                <div>
-                  <h6>
-                    <b>Accuracy</b> - {model.accuracy}
-                  </h6>
-                  <h6>
-                    <b>Pprecision</b> - {model.precision}
-                  </h6>
-                  <h6>
-                    <b>Recall</b> - {model.recall}
-                  </h6>
-                  <h6>
-                    <b>Fitness Score</b> - {model.fitness_score}
-                  </h6>
-                  <h6>
-                    <b>Accuracy dev</b> - {model.accuracy_dev}
-                  </h6>
-                </div>
-              )}
-              <h6>
-                <b>Trainable Parameters</b> - {model.trainable_params}
-              </h6>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+    <Card
+      className={`${styles.genModelCard} ${
+        isSelected && styles.genModelCardSelected
+      }`}
+      onClick={selectModel}
+    >
+      <Card.Header className={isSelected && styles.genModelCardSelectedHeader}>
+        Model {props.idx + 1}
+      </Card.Header>
+      <Card.Body>
+        <Row>
+          <Col md={6}>
+            <Card>
+              <Card.Header>Architecture Diagram</Card.Header>
+              <Card.Body className={styles.modelCard}>
+                <ArchitectureDiagram architecture={model.model_arch} />
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card style={{ width: "100%", height: "100%" }}>
+              <Card.Header>Model Parameters</Card.Header>
+              <Card.Body className={styles.modelCard}>
+                {problemType === 1 ? (
+                  <div>
+                    <h6>
+                      <b>Error</b> - {Number(model.error).toFixed(2)}
+                    </h6>
+                  </div>
+                ) : (
+                  <div>
+                    <h6>
+                      <b>Accuracy</b> - {Number(model.accuracy).toFixed(2)}
+                    </h6>
+                    <h6>
+                      <b>Precision</b> - {Number(model.precision).toFixed(2)}
+                    </h6>
+                    <h6>
+                      <b>Recall</b> - {Number(model.recall).toFixed(2)}
+                    </h6>
+                    <h6>
+                      <b>Fitness Score</b> -{" "}
+                      {Number(model.fitness_score).toFixed(2)}
+                    </h6>
+                  </div>
+                )}
+                <h6>
+                  <b>Trainable Parameters</b> - {model.trainable_params}
+                </h6>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Card.Body>
+    </Card>
   );
 };
 
-export const AddExportModelDialog = ({
-  show,
-  onClose,
-  onAdd,
-  modelSelectedIdx,
-}) => {
+export const AddExportModelDialog = ({ show, onClose, onAdd }) => {
   const [state, setState] = useState({
     name: null,
     epochs: null,
@@ -252,7 +254,6 @@ export const AddExportModelDialog = ({
       closeOnSubmit={true}
     >
       <Row className={styles.rowStyle}>
-        <p>Model No. selected: {modelSelectedIdx}</p>
         <Col>
           <Form.Group as={Col} md="12" controlId="name">
             <Form.Label>Model Name</Form.Label>

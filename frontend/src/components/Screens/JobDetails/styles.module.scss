@@ -2,6 +2,7 @@
 @import "../../../../node_modules/bootstrap/scss/variables";
 @import "../../../../node_modules/bootstrap/scss/mixins";
 @import "../screenstyles.scss";
+@import "../../../colors.scss";
 
 .savedModelScreen {
   overflow-y: auto;
@@ -50,6 +51,18 @@
 .modelCard {
   padding-bottom: 0.3rem;
 }
-.models{
+.models {
   margin-top: 1rem;
+}
+
+.genModelCard {
+  margin: 1rem 0;
+}
+
+.genModelCardSelected {
+  border-color: $primary-color;
+  &Header {
+    background-color: $primary-color;
+    color: white;
+  }
 }
