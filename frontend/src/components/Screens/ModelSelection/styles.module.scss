@@ -44,3 +44,22 @@ span{
     opacity: 0.2;
   }
 }
+.content {
+  background-color: white;
+  // height: 100px;
+  // overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  width: 100%;
+  margin: 1rem 0 0.5rem;
+  padding: 1rem;
+}
+
+.datasetname{
+  //font-family:Rubik;
+  font-size:1.1rem ;
+  font-weight: bolder;
+  text-transform: uppercase;
+  color:rgb(9, 7, 97);
+  letter-spacing: 2px;
+}

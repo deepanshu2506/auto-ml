@@ -75,7 +75,10 @@ export const ModelSelectionScreen = (props) => {
 
                 <Col>
                     <Container className={styles.content} fluid>
-                        <Row className="my-2">
+                    <h4 className={styles.datasetname}>
+                            {dataset.dataset_name}
+                        </h4>
+                        <Row className=" mt-5 mb-0">
                             <Form
                                 noValidate
                                 validated={validated}
