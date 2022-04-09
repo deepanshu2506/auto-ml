@@ -33,8 +33,9 @@ const CSVUploadForm = () => {
         formData
       );
       history.push(`/datasets/${data.datasetId}`);
-      alert("dataset created");
+      alert("Dataset created!");
     } catch (err) {
+      alert("Error. Please try again later!");
       console.log(err);
     }
   };
