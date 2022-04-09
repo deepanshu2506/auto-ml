@@ -74,7 +74,7 @@ const SavedModelDetailsScreen = (props) => {
     model.feature_importance &&
     Object.keys(model.feature_importance)
       .map((key) => ({
-        y: model.feature_importance[key] / totalImportance,
+        y: ((model.feature_importance[key] / totalImportance)*100),
         label: key,
       }))
       .sort((a, b) => a.y - b.y);
