@@ -1,5 +1,4 @@
 from io import StringIO, BytesIO
-from msilib.schema import File
 import os
 import tempfile
 import zipfile
@@ -70,8 +69,13 @@ class FileService:
         return file_path
 
     def get_readme_file(self, path) -> StringIO:
-        f = open(path)
-        stream = StringIO(f.read())
+        readme_data = None
+        if path:
+            f = open(path)
+            readme_data = f.read()
+        else:
+            readme_data = "Readme does not exist for this Dataset."
+        stream = StringIO(readme_data)
         return stream
 
 
