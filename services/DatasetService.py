@@ -1,4 +1,6 @@
 from typing import Dict, List
+
+from h11 import Data
 from lib.integrations.DataSourceFactory import DatasourceFactory
 from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetType
 from utils.exceptions import DatasetNotFound
@@ -33,7 +35,9 @@ class DatasetService:
                 iqr = upper_quantile - lower_quantile
                 outlier_count = sum(
                     i < (lower_quantile - (1.5 * iqr)) for i in column_values.tolist()
-                ) + sum(i > (upper_quantile + (1.5 * iqr)) for i in column_values.tolist())
+                ) + sum(
+                    i > (upper_quantile + (1.5 * iqr)) for i in column_values.tolist()
+                )
                 # print("Lower Q",lower_quantile)
                 # print("Upper Q",upper_quantile)
                 # print("IQR",iqr)
@@ -47,13 +51,13 @@ class DatasetService:
             elif colType == Coltype.DISCRETE:
                 column_values_clean = column_values.fillna("None", inplace=False)
                 featureMetrics.value_percentage = dict(
-                    (column_values_clean.value_counts() / len(column_values_clean)) * 100
+                    (column_values_clean.value_counts() / len(column_values_clean))
+                    * 100
                 )
                 featureMetrics.value_percentage = {
                     str(key): value
                     for key, value in featureMetrics.value_percentage.items()
                 }
-        
 
         unique_values = column_values.unique().tolist()
         featureMetrics.uniqueValues = len(unique_values)
@@ -93,6 +97,17 @@ class DatasetService:
     def _replace_nulls(self, df: DataFrame, place_holder):
         return df.replace({place_holder: None}, inplace=False)
 
+    def _clean_col_names(self, dataset_raw: DataFrame):
+        columns = dataset_raw.columns.values.tolist()
+        map = {}
+        for column in columns:
+            column: str = column
+            map[column] = column.replace(" ", "_")
+            proccessed_dataset = dataset_raw.rename(columns=map)
+            print(map)
+            print(proccessed_dataset.columns.values.tolist())
+        return proccessed_dataset
+
     def createDataset(
         self,
         datasetName: str,
@@ -126,7 +141,7 @@ class DatasetService:
         null_placeholder = kwargs.get("null_placeholder")
         if null_placeholder is not None:
             dataset_raw = self._replace_nulls(dataset_raw, null_placeholder)
-
+        dataset_raw = self._clean_col_names(dataset_raw)
         dataset.datasetFields = self._extract_fields(dataset_raw)
 
         dataset_raw = self._replace_nulls(dataset_raw, numpy.nan)
