@@ -130,6 +130,7 @@ const CSVUploadForm = () => {
               onChange={(e) => handleFileChange(e)}
               ref={fileRef}
               autoFocus
+              accept="text/csv"
               multiple={false}
             />
 
