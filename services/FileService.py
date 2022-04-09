@@ -1,5 +1,8 @@
-from io import StringIO
+from io import StringIO, BytesIO
+from msilib.schema import File
 import os
+import tempfile
+import zipfile
 from pandas.core.frame import DataFrame
 from tensorflow.keras.models import Model, load_model
 from werkzeug.datastructures import FileStorage
@@ -10,6 +13,16 @@ import pandas as pd
 class FileService:
     def __init__(self) -> None:
         pass
+
+    def _get_all_file_paths(self, directory):
+        file_paths = []
+
+        for root, directories, files in os.walk(directory):
+            for filename in files:
+                filepath = os.path.join(root, filename)
+                file_paths.append(filepath)
+
+        return file_paths
 
     def convert_to_dataset(self, file: FileStorage):
         return pd.read_csv(file)
@@ -38,6 +51,17 @@ class FileService:
     def get_model(self, modelPath) -> Model:
         return load_model(modelPath)
 
+    def get_model_zipped(self, modelPath) -> BytesIO:
+        print(modelPath)
+        file_paths = self._get_all_file_paths(modelPath)
+        io = BytesIO()
+        with zipfile.ZipFile(io, "w") as zip:
+            # writing each file one by one
+            for file in file_paths:
+                zip.write(file)
+
+        return io
+
     def save_readme_file(self, content, dataset_id, path=None):
         file_path = os.path.join(Config.README_SAVE_DIRECTORY, f"{dataset_id}.md")
         f = open(path or file_path, mode="w")
@@ -46,8 +70,13 @@ class FileService:
         return file_path
 
     def get_readme_file(self, path) -> StringIO:
-        f = open(path)
-        stream = StringIO(f.read())
+        readme_data = None
+        if path:
+            f = open(path)
+            readme_data = f.read()
+        else:
+            readme_data = "Readme does not exist for this Dataset."
+        stream = StringIO(readme_data)
         return stream
 
 

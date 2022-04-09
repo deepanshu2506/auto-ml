@@ -50,10 +50,10 @@ const ModelInferenceScreen = (props) => {
   const [inferenceState, setInferenceState] = useState({});
   const [validated, setValidated] = useState(false);
   const [inference, setInference] = useState(null);
+  const [invalidCols,setInvalidCols]=useState([]);
   const params = props.rootParams.params;
 
   const handleSubmit = (event) => {
-    console.log("here");
     const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
@@ -81,6 +81,17 @@ const ModelInferenceScreen = (props) => {
     }
     setInferenceLoading(false);
   };
+  const isInvalidContinous=(v,minV,maxV,featureName)=>{
+    if(v) {
+      if(v<minV || v>maxV){
+        if(invalidCols.indexOf(featureName)<=-1)
+        {setInvalidCols(prev=>[...prev,featureName]);}
+    } 
+    else{
+      setInvalidCols(invalidCols.filter(item=>item!==featureName))
+    } 
+  }
+}
 
   const getModel = async (modelID) => {
     setLoading(true);
@@ -88,6 +99,7 @@ const ModelInferenceScreen = (props) => {
       const { data: modelDetails } = await API.json.get(
         apiURLs.savedModels.modelDetails(modelID)
       );
+      console.log(modelDetails)
       setModel(modelDetails);
     } catch (err) {
       console.log(err);
@@ -137,13 +149,24 @@ const ModelInferenceScreen = (props) => {
           </Row>
           <Card>
             <Card.Body>
+              {invalidCols.length>0 &&
+              <div className={styles.warning}>
+             Warning: Out of range values 
+              <span>
+                  {invalidCols.map((val)=>(
+                    <span>{" "}{val}{" , "}</span>
+                  ))}
+                </span>
+              </div>
+                }
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Row>
                   {model.features.map((feature) => (
-                    <Form.Group as={Col} md="4" controlId={feature.name}>
+                    <>
+                    {feature.type === "discrete" ? (
+                      <Form.Group as={Col} md="4" controlId={feature.name}>
                       <Form.Label>{feature.name}</Form.Label>
                       <InputGroup hasValidation>
-                        {feature.type === "discrete" ? (
                           <Form.Control
                             as="select"
                             value={inferenceState[feature.name]}
@@ -164,25 +187,38 @@ const ModelInferenceScreen = (props) => {
                               This field is required.
                             </Form.Control.Feedback>
                           </Form.Control>
+                          </InputGroup>
+                      <Form.Control.Feedback type="invalid">
+                        This field is required.
+                      </Form.Control.Feedback>
+                    </Form.Group>
                         ) : (
+                          <Form.Group as={Col} md="4" controlId={feature.name}>
+                      <Form.Label style={{width: "100%"}}>{feature.name}<span style={{float: "right",fontSize: "13px"}}>({feature.minValue} - {feature.maxValue})</span></Form.Label>
+                      <InputGroup hasValidation>
                           <Form.Control
                             type="text"
                             placeholder={`Enter ${feature.name}`}
                             value={inferenceState[feature.name]}
+                            // isInvalid={(e)=>isInvalidContinous(e.target.value,feature.minValue,feature.maxValue)}
                             onChange={(e) => {
                               setInferenceState((prev) => ({
                                 ...prev,
                                 [feature.name]: e.target.value,
                               }));
+                              isInvalidContinous(e.target.value,feature.minValue,feature.maxValue,feature.name);
                             }}
                             required
                           />
-                        )}
-                      </InputGroup>
+                          </InputGroup>
                       <Form.Control.Feedback type="invalid">
                         This field is required.
                       </Form.Control.Feedback>
                     </Form.Group>
+                        )
+                        }
+                        </>
+                      
                   ))}
                   <Col md="12">
                     <Button

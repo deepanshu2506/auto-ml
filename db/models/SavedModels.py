@@ -30,6 +30,9 @@ class ModelFeatures(EmbeddedDocument):
     dataType = EnumField(DataTypes)
     type = EnumField(Coltype)
     allowed_Values = ListField()
+    minValue=FloatField()
+    maxValue=FloatField()
+    columnDescription = StringField()
 
     @classmethod
     def to_output(cls):
@@ -38,6 +41,8 @@ class ModelFeatures(EmbeddedDocument):
             "dataType": OutputEnumField(enum=DataTypes),
             "type": OutputEnumField(enum=Coltype),
             "allowed_Values": fields.List(fields.String()),
+            "minValue":fields.Float(),
+            "maxValue":fields.Float()
         }
 
 

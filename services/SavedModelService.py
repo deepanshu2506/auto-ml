@@ -95,3 +95,8 @@ class SavedModelService:
         else:
             predictions = results.tolist()
         return predictions
+
+    def export_model(self, model_id, user_id):
+        model_meta = self.findById(model_id, user_id)
+        model_weights_zip = self.fileService.get_model_zipped(model_meta.model_location)
+        return model_weights_zip, model_meta.name + ".zip"
