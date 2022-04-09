@@ -537,6 +537,7 @@ const ColumnDescriptionModal = ({ column, modalOpen, ...props }) => {
                     col_description: e.target.value,
                   }));
                 }}
+                value={state.col_description}
                 required
                 as="textarea"
               />

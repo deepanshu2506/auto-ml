@@ -8,6 +8,7 @@ const MODEL_TYPES = { 1: "Regression", 2: "Classification" };
 const SavedModelScreen = (props) => {
   const [savedModels, setSavedModels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
 
   const fetchSavedModels = async () => {
     try {
@@ -28,14 +29,32 @@ const SavedModelScreen = (props) => {
   return (
     <Container
       className={`${styles.screen} ${styles.savedModelsScreen} py-2 `}
-      fluid
-    >
+      fluid>
+      <Container className={`${styles.nav} pt-3 pl-4 pb-3`} fluid>
+        <Row>
+          <Col>
+            <span>Saved Models</span>
+          </Col>
+          <Col>
+          <span className={styles.search}>
+            <input placeholder=" Search by the Dataset Name " onChange={event => setQuery(event.target.value)}/>
+          </span>
+          </Col>
+        </Row>
+      </Container>
       {loading ? (
         <Row>
           <Spinner animation="border" variant="primary" />
         </Row>
       ) : (
-        savedModels.map((model) => (
+        savedModels && savedModels.filter(model => {
+          if (query === '') {
+            return model;
+          }
+          else if (model.dataset_name.toLowerCase().includes(query.toLowerCase())) {
+            return model;
+          }
+        }).map((model) => (
           <Row className="m-2">
             <Card as={Col}>
               <Card.Body className={styles.modelCard}>
