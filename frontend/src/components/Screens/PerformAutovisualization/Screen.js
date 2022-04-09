@@ -81,9 +81,9 @@ const AutovisualizationScreen = (props) => {
 
     const getVisualizationResults = async () => {
         setResultsLoading(true);
-        var dropped=[];
-        selectedValue.map((val)=>{
-            dropped.push(dataList[val-1]['label']);
+        var dropped = [];
+        selectedValue.map((val) => {
+            dropped.push(dataList[val - 1]['label']);
         });
         console.log(dropped);
         const payload = {
@@ -125,7 +125,10 @@ const AutovisualizationScreen = (props) => {
             ) : (
                 <Col>
                     <Container className={styles.content} fluid>
-                        <Row className="my-2">
+                        <h4 className={styles.datasetname}>
+                            {dataset.dataset_name}
+                        </h4>
+                        <Row className=" mt-5 mb-0">
                             <Col>
                                 <Form
                                     noValidate
@@ -162,8 +165,8 @@ const AutovisualizationScreen = (props) => {
                                         className="dropdown"
                                         placeholder="Select Option"
                                         value={dataList.filter(obj => selectedValue.includes(obj.value))} // set selected values
-                                        options={dataList} 
-                                        onChange={handleChange} 
+                                        options={dataList}
+                                        onChange={handleChange}
                                         isMulti
                                         isClearable
                                     />

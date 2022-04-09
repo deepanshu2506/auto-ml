@@ -123,13 +123,16 @@ export const AutoimputeScreen = (props) => {
 
                 <Col>
                     <Container className={styles.content} fluid>
-                        <Row className="my-2">
+                        <h4 className={styles.datasetname}>
+                            {dataset.dataset_name}
+                        </h4>
+                        <Row className=" mt-5 mb-0">
                             <Form
                                 noValidate
                                 validated={validated}
                             >
                                 <Form.Group as={Col} controlId="col-name">
-                                    <Form.Label>Target Column Name</Form.Label>
+                                    {/* <Form.Label>Target Column Name</Form.Label> */}
                                     <InputGroup>
                                         <Form.Control
                                             onChange={(e) => {
@@ -153,7 +156,7 @@ export const AutoimputeScreen = (props) => {
                                 </Form.Group>
                             </Form>
                         </Row>
-                        <Row className="my-3">
+                        <Row className="mb-3 mt-1">
                             <Col>
                                 <Button
                                     disabled={!state.col}
