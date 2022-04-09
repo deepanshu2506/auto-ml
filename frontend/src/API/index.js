@@ -18,6 +18,7 @@ export const apiURLs = {
     singleColImputation: (datasetID) =>
       `/datasets/${datasetID}/impute_advanced`,
     modelSelection: (datasetID) => `/dataset/model_selection/${datasetID}`,
+    colDescription: (datasetID) => `datasets/${datasetID}/col_description`,
   },
   modelSelectionJob: {
     getJobs: "/datasets/model_selection_jobs",
