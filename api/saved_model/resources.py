@@ -73,7 +73,7 @@ class ExportSavedModelAPI(Resource):
         resp.headers["Content-Disposition"] = (
             "attachment; filename=%s" % suggested_file_name
         )
-        resp.headers["Content-Type"] = "text/csv"
+        resp.headers["Content-Type"] = "application/zip"
         resp.headers["x-suggested-filename"] = suggested_file_name
 
         return resp

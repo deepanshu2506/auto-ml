@@ -38,6 +38,7 @@ export const apiURLs = {
     getModels: "/saved_model/",
     modelDetails: (model_id) => `/saved_model/${model_id}`,
     infer: (model_id) => `/saved_model/${model_id}/infer`,
+    export: (model_id) => `/saved_model/${model_id}/export`,
   },
   modelSelectionJob: {
     jobDetails: (model_selection_job_id) =>
