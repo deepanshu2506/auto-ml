@@ -1,3 +1,4 @@
+import pandas as pd
 from lib.Preprocessor import df_to_dataset
 import numpy as np
 import math
@@ -13,6 +14,7 @@ class Individual:
         problem_type,
         stringModel,
         used_activations,
+        num_classes,
         tModel=None,
         raw_score=0,
         raw_size=0,
@@ -28,6 +30,7 @@ class Individual:
         self._individual_label = ind_label
         self._used_activations = used_activations
         self._checksum_vector = np.zeros(1)
+        self._num_classes = num_classes
 
     def compute_raw_scores(
         self,
@@ -118,10 +121,18 @@ class Individual:
         cross_validation_ratio=0.2,
         epochs=20,
     ):
-
-        train, test = train_test_split(dataset, test_size=cross_validation_ratio)
-        train_ds = df_to_dataset(train, self.problem_type, target_variable=target_var)
-        test_ds = df_to_dataset(test, self.problem_type, target_variable=target_var)
+        dataframe = dataset.copy()
+        target = dataframe.pop(target_var)
+        target_values = (
+            pd.get_dummies(target)
+            if self.problem_type == ann_encoding.ProblemType.Classification
+            else target
+        )
+        train_X, test_X, train_Y, test_Y = train_test_split(
+            dataframe, target_values, test_size=cross_validation_ratio
+        )
+        train_ds = df_to_dataset(train_X, train_Y)
+        test_ds = df_to_dataset(test_X, test_Y)
 
         # print(X_train.shape)
 
@@ -233,3 +244,11 @@ class Individual:
     @checksum_vector.setter
     def checksum_vector(self, checksum_vector):
         self._checksum_vector = checksum_vector
+
+    @property
+    def num_classes(self):
+        return self._num_classes
+
+    @num_classes.setter
+    def num_classes(self, num_classes):
+        self._num_classes = num_classes

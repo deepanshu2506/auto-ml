@@ -226,7 +226,7 @@ def find_match(parent, layer_prev, layer_next, first_layer, max_layers):
     return compatible_previuos, compatible_next
 
 
-def population_crossover(parent_pool, max_layers=3, logger=False):
+def population_crossover(parent_pool, max_layers=3, logger=False, num_classes=1):
 
     pop_size = len(parent_pool) // 2
     problem_type = parent_pool[0].problem_type
@@ -271,7 +271,11 @@ def population_crossover(parent_pool, max_layers=3, logger=False):
                 print(offspring_stringModel)
 
             offspring = Individual(
-                pop_size + i, problem_type, offspring_stringModel, used_activations
+                pop_size + i,
+                problem_type,
+                offspring_stringModel,
+                used_activations,
+                num_classes,
             )
             offsprings.append(offspring)
             i = i + 1
@@ -489,10 +493,10 @@ def initial_population(
         model_genotype.append(layer_last)
         model_genotype = [layer_first] + model_genotype
 
-        individual = Individual(i, problem_type, model_genotype, used_activations)
-
+        individual = Individual(
+            i, problem_type, model_genotype, used_activations, number_classes
+        )
         population.append(individual)
-
     return population
 
 
