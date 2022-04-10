@@ -91,7 +91,7 @@ class DatasetPreviewAPI(Resource):
         full_dataset_preview = request.args.get("fullDatasetPreview", None)
 
         try:
-            df = self.datasetService.getDataset(id, user_id)
+            df,datasetName = self.datasetService.getDataset(id, user_id)
             if full_dataset_preview == "true":
                 return Response(
                     df.to_json(orient="records"), mimetype="application/json"
@@ -101,7 +101,7 @@ class DatasetPreviewAPI(Resource):
             headers = list(df.columns.values)
             values = df.values.tolist()
             if export_to_file == "false":
-                return {"headers": headers, "values": values}
+                return {"dataset_name":datasetName,"headers": headers, "values": values}
             else:
                 # result_df = DataFrame(values, columns=headers)
                 csv_file = StringIO()
