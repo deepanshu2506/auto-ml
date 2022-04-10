@@ -106,6 +106,7 @@ const AutovisualizationScreen = (props) => {
             setResultsLoading(false);
 
         } catch (err) {
+            alert("You may need to drop certain columns E.g timestamp,address etc.!");
             console.log(err);
         }
     };
