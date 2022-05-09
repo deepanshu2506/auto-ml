@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Container, Row, Spinner, Col } from "react-bootstrap";
+import { useEffect, useState} from "react";
+import { Container, Row, Spinner,Col } from "react-bootstrap";
 import API, { apiURLs } from "../../../API";
 import styles from "./styles.module.scss";
 import CustomTable from "./CustomTable";
@@ -8,6 +8,7 @@ const DatasetPreview = (props) => {
   // const [columnNames, setColumnNames] = useState([]);
   const [columnFinal, setColumnFinal] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [dataset, setDataset] = useState({});
   const params = props.rootParams.params;
 
 
@@ -21,7 +22,7 @@ const DatasetPreview = (props) => {
       });
       console.log(data);
       const columnList = Object.keys(data[0]);
-      const columnObjList = [];
+      const columnObjList = []; 
       for (let column of columnList) {
         var x = {
           Header: column,
@@ -39,7 +40,21 @@ const DatasetPreview = (props) => {
       setLoading(false);
     }
   };
+
+  const getFeatures = async () => {
+    try {
+        const { data } = await API.json.get(
+            apiURLs.dataset.getDatasetDetails(params.datasetID)
+        );
+        setDataset(data);
+      
+    } catch (err) {
+        console.log(err);
+    }
+};
+
   useEffect(() => {
+    getFeatures();
     fetchDataset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -59,7 +74,7 @@ const DatasetPreview = (props) => {
         <Col>
           <Row className=" mt-2 mb-0">
             <h4 className={styles.datasetname}>
-              Dataset name{datasetDetails.dataset_name}
+              {dataset.dataset_name}
             </h4>
           </Row>
 
@@ -78,7 +93,7 @@ const DatasetPreview = (props) => {
       </Container>
 
     </Container>
-
+ 
   );
 };
 
