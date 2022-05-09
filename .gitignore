@@ -20,6 +20,7 @@ docs/_build/
 .vscode
 
 uploads
+readme
 html
 json
 lib/visualization/datasets
