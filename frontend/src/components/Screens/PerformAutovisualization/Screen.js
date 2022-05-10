@@ -176,7 +176,7 @@ const AutovisualizationScreen = (props) => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col>
+                            <Col className="mx-3">
                                 <Button
                                     block
                                     variant="primary"

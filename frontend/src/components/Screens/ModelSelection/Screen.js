@@ -69,16 +69,17 @@ export const ModelSelectionScreen = (props) => {
             <Container className={styles.nav} fluid>
                 <span>Model Selection</span>
             </Container>
+            <Container className={styles.content} fluid>
             {featuresLoading ? (
                 <Spinner animation="border" variant="primary" />
             ) : (
 
                 <Col>
-                    <Container className={styles.content} fluid>
+                    
                     <h4 className={styles.datasetname}>
                             {dataset.dataset_name}
                         </h4>
-                        <Row className=" mt-5 mb-0">
+                        <Row className=" mt-3 mb-0">
                             <Form
                                 noValidate
                                 validated={validated}
@@ -131,11 +132,12 @@ export const ModelSelectionScreen = (props) => {
                                 </Link>
                             </Col>
                         </Row>
-                    </Container>
+                   
 
                 </Col>
             )
             }
+            </Container>
         </Container >
     )
 }

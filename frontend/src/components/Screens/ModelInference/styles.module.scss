@@ -43,7 +43,13 @@
   font-size: 0.8rem;
   color: #888;
 }
-
+.target{
+  font-size: 0.9rem;
+  span{
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}
 .buttonContainer {
   display: flex;
   flex-direction: column;
