@@ -159,7 +159,7 @@ const AutovisualizationScreen = (props) => {
                             </Col>
                             <Col>
                                 <Row>
-                                    Select columns to be droppped
+                                    Select columns to be dropped
                                 </Row>
                                 <Row className="mt-2">
                                     <Select
