@@ -127,6 +127,9 @@ const ModelInferenceScreen = (props) => {
                     <p className={styles.modelType}>
                       {MODEL_TYPES[model.type]} Model
                     </p>
+                    <p className={styles.target}>
+                     Target Column: <span>{model.target_col} </span>
+                    </p>
                     <p className={styles.modelCreationDate}>
                       {model.created_at}
                     </p>
@@ -147,7 +150,7 @@ const ModelInferenceScreen = (props) => {
               </Card.Body>
             </Card>
           </Row>
-          <Card>
+          <Card className="m-2">
             <Card.Body>
               {invalidCols.length>0 &&
               <div className={styles.warning}>
@@ -235,7 +238,7 @@ const ModelInferenceScreen = (props) => {
               </Form>
             </Card.Body>
           </Card>
-          <Card className="my-2">
+          <Card className="m-2">
             <Card.Header>Prediction</Card.Header>
             <Card.Body>
               {inferenceLoading ? (

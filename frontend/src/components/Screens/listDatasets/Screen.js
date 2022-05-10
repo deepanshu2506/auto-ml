@@ -70,7 +70,7 @@ const ListDatasetScreen = (props) => {
           </Col>
         </Row>
       </Container>
-      <Container className={styles.content} fluid>
+      <Container className={`${styles.content} px-1`} fluid>
         <Table striped bordered hover size="md">
           <thead>
             <tr>
