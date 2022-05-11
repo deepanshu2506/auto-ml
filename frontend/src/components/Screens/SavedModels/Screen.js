@@ -10,12 +10,19 @@ const SavedModelScreen = (props) => {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
 
+  function sortFunction(a,b){ 
+    var dateA = new Date(a.created_at.slice(0, -5).trim()).getTime();
+    var dateB = new Date(b.created_at.slice(0, -5).trim()).getTime();
+    return dateA < dateB ? 1 : -1;  
+  }; 
+
   const fetchSavedModels = async () => {
     try {
       setLoading(true);
       const { data: models } = await API.json.get(
         apiURLs.savedModels.getModels
       );
+      models.sort(sortFunction);
       setSavedModels(models);
     } catch (err) {
       console.log(err);
