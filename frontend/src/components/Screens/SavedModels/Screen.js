@@ -8,6 +8,13 @@ const MODEL_TYPES = { 1: "Regression", 2: "Classification" };
 const SavedModelScreen = (props) => {
   const [savedModels, setSavedModels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+
+  function sortFunction(a,b){ 
+    var dateA = new Date(a.created_at.slice(0, -5).trim()).getTime();
+    var dateB = new Date(b.created_at.slice(0, -5).trim()).getTime();
+    return dateA < dateB ? 1 : -1;  
+  }; 
 
   const fetchSavedModels = async () => {
     try {
@@ -15,6 +22,7 @@ const SavedModelScreen = (props) => {
       const { data: models } = await API.json.get(
         apiURLs.savedModels.getModels
       );
+      models.sort(sortFunction);
       setSavedModels(models);
     } catch (err) {
       console.log(err);
@@ -28,14 +36,32 @@ const SavedModelScreen = (props) => {
   return (
     <Container
       className={`${styles.screen} ${styles.savedModelsScreen} py-2 `}
-      fluid
-    >
+      fluid>
+      <Container className={`${styles.nav} pt-3 pl-4 pb-3`} fluid>
+        <Row>
+          <Col>
+            <span>Saved Models</span>
+          </Col>
+          <Col>
+          <span className={styles.search}>
+            <input placeholder=" Search by the Dataset Name " onChange={event => setQuery(event.target.value)}/>
+          </span>
+          </Col>
+        </Row>
+      </Container>
       {loading ? (
         <Row>
           <Spinner animation="border" variant="primary" />
         </Row>
       ) : (
-        savedModels.map((model) => (
+        savedModels && savedModels.filter(model => {
+          if (query === '') {
+            return model;
+          }
+          else if (model.dataset_name.toLowerCase().includes(query.toLowerCase())) {
+            return model;
+          }
+        }).map((model) => (
           <Row className="m-2">
             <Card as={Col}>
               <Card.Body className={styles.modelCard}>

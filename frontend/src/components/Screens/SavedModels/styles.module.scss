@@ -33,3 +33,23 @@
 .modelCard {
   padding-bottom: 0.3rem;
 }
+
+
+.search{
+  input{
+    font-size: 17px;
+    background: transparent;
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: groove;
+    border-bottom-color:lightgray;
+    color: #44515e;
+    &:focus{
+      outline:none !important;
+      border-bottom-color:$primary-color;
+      opacity:1
+    }
+  }
+  
+}

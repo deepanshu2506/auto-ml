@@ -90,6 +90,8 @@ class SavedModel(Document):
             "num_classes": ArrayCountField(attribute="classes"),
             "type": OutputEnumField(ProblemType, attribute="ProblemType"),
             "id": fields.String(),
+            "dataset_id": fields.String(attribute="job.dataset.id"),
+            "dataset_name": fields.String(attribute="job.dataset.name"),
         }
         detailed_fields = {
             "classes": fields.List(fields.Raw()),
