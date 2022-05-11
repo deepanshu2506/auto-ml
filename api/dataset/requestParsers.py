@@ -44,7 +44,7 @@ aggregationRequestParser.add_argument("export_to_file", type=bool)
 
 
 colDetailsRequestParser = reqparse.RequestParser()
-colDetailsRequestParser.add_argument("num_samples", type=int, default=10)
+colDetailsRequestParser.add_argument("num_samples", type=int)
 
 
 singleColImputationRequestParser = reqparse.RequestParser()

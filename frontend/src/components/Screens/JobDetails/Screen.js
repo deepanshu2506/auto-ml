@@ -23,7 +23,8 @@ const JobDetailsScreen = (props) => {
   const history = useHistory();
   // const [exportModel,setExportModel]=useState(null);
   // const [exportModelState,setExportModelState]=useState({});
-
+  const [targetMean,setTargetMean]=useState(1);
+  const [targetCol,setTargetCol]=useState({})
   const [exportModelLoading, setExportModelLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
@@ -37,12 +38,34 @@ const JobDetailsScreen = (props) => {
       );
       console.log(jobDetails);
       setJobDetails(jobDetails);
+      getFeatures(jobDetails)
     } catch (err) {
       console.log(err);
     }
     setLoading(false);
   };
 
+  const getFeatures = async (jobDetails) => {
+    try {
+        const { data } = await API.json.get(
+            apiURLs.dataset.getDatasetDetails(jobDetails.dataset_id)
+        );
+        console.log(data)
+        const target_details=data.datasetFields.filter((col)=>col.column_name===jobDetails.target_col)[0]
+        console.log(target_details)
+        setTargetCol(target_details)
+        if(target_details.metrics.mean)
+        {
+          if(jobDetails.problemType===1){
+            setTargetMean(target_details.metrics.mean)
+          }
+        }
+
+      
+    } catch (err) {
+        console.log(err);
+    }
+};
   const onExportButton = (state) => {
     if (modelSelectedId === null) {
       alert("Select a model to export");
@@ -98,16 +121,17 @@ const JobDetailsScreen = (props) => {
                       {jobDetails.dataset_name}
                     </h3>
                     <p className={styles.modelState}>{jobDetails.state}</p>
-                    <p className={styles.modelType}>{jobDetails.target_col}</p>
+                    <p className={styles.modelType}>Target : {jobDetails.target_col}</p>
+                    <p className={styles.modelState}>{targetCol.column_descriptio}</p>
                     <Row>
                       <Col md={6}>
                         <p className={styles.modelCreationDate}>
-                          {jobDetails.started_at}
+                          {jobDetails.startedAt}
                         </p>
                       </Col>
                       <Col md={6}>
                         <p className={styles.modelCreationDate}>
-                          {jobDetails.jobEndTime}
+                          {jobDetails.jobEndtime}
                         </p>
                       </Col>
                     </Row>
@@ -137,6 +161,7 @@ const JobDetailsScreen = (props) => {
                       model={model}
                       problemType={jobDetails.problemType}
                       onChange={setModelSelectedId}
+                      targetMean={targetMean}
                     />
                   ))}
                 </Card.Body>
@@ -180,6 +205,7 @@ const ModelDetails = ({
   problemType,
   isSelected,
   onChange,
+  targetMean,
   ...props
 }) => {
   const selectModel = () => {
@@ -214,7 +240,11 @@ const ModelDetails = ({
                     <h6>
                       <b>Error</b> - {Number(model.error).toFixed(2)}
                     </h6>
-                  </div>
+                    <h6>
+                      <b>Normalised Error</b> - {(Number(model.error)/targetMean).toFixed(2)}
+                    </h6>
+                    
+                </div>
                 ) : (
                   <div>
                     <h6>

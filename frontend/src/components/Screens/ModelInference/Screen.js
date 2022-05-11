@@ -140,6 +140,11 @@ const ModelInferenceScreen = (props) => {
                         View Model Selection Job
                       </Button>
                     </Link>
+                    <Link to={`/savedModels/${model.id}`}>
+                      <Button block variant="outline-primary">
+                        View Model Details
+                      </Button>
+                    </Link>
                     <Link to={`/datasets/${model.dataset_id}`}>
                       <Button block variant="outline-primary">
                         View Dataset
@@ -186,9 +191,7 @@ const ModelInferenceScreen = (props) => {
                             {feature.allowed_Values.map((value) => (
                               <option value={value}>{value}</option>
                             ))}
-                            <Form.Control.Feedback type="invalid">
-                              This field is required.
-                            </Form.Control.Feedback>
+                   
                           </Form.Control>
                           </InputGroup>
                       <Form.Control.Feedback type="invalid">

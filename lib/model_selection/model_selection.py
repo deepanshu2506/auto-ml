@@ -167,7 +167,7 @@ class ModelGenerator:
             binary_selection=True,
             mutation_ratio=0.8,
             similarity_threshold=0.2,
-            more_layers_prob=0.5,
+            more_layers_prob=0.7,
             verbose_individuals=True,
             show_model=True,
             verbose_training=1,
