@@ -14,6 +14,7 @@ import { Link, useHistory } from "react-router-dom";
 import API, { apiURLs } from "../../../API";
 import ArchitectureDiagram from "../../Content/ArchitectureDiagram";
 import FormModal from "../../Content/FormModal/FormModal";
+import ModelParaInfoGuideScreen from "./hints";
 
 const JobDetailsScreen = (props) => {
   const [jobDetails, setJobDetails] = useState({});
@@ -76,6 +77,12 @@ const JobDetailsScreen = (props) => {
   console.log(modelSelectedId);
   return (
     <Container className={`${styles.screen}   pt-3 pl-4 `} fluid>
+       <Container className={styles.nav} fluid>
+        <span>Model job details screen</span>
+        <div className={styles.hintbtns}>
+          <ModelParaInfoGuideScreen />
+        </div>
+      </Container>
       {loading ? (
         <Row>
           <Spinner animation="border" size="lg" />

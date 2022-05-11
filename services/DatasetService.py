@@ -38,17 +38,13 @@ class DatasetService:
                 ) + sum(
                     i > (upper_quantile + (1.5 * iqr)) for i in column_values.tolist()
                 )
-                # print("Lower Q",lower_quantile)
-                # print("Upper Q",upper_quantile)
-                # print("IQR",iqr)
-                # print("Outliers count",outlier_count)
                 featureMetrics.outlier_count = outlier_count
                 featureMetrics.min = column_metrics["min"]
                 featureMetrics.max = column_metrics["max"]
                 featureMetrics.mean = column_metrics["mean"]
                 featureMetrics.stdDeviation = column_metrics["std"]
                 featureMetrics.median = numpy.nanmedian(column_values)
-            elif colType == Coltype.DISCRETE:
+            else: 
                 column_values_clean = column_values.fillna("None", inplace=False)
                 featureMetrics.value_percentage = dict(
                     (column_values_clean.value_counts() / len(column_values_clean))
@@ -58,7 +54,7 @@ class DatasetService:
                     str(key): value
                     for key, value in featureMetrics.value_percentage.items()
                 }
-
+                
         unique_values = column_values.unique().tolist()
         featureMetrics.uniqueValues = len(unique_values)
         featureMetrics.samples = [
@@ -85,8 +81,8 @@ class DatasetService:
             cols_with_metrics: list = dataset_metrics.columns.tolist()
             raw_column_metrics = (
                 dataset_metrics.iloc[:, cols_with_metrics.index(columnName)]
-                if columnName in cols_with_metrics
-                else None
+                if columnName in cols_with_metrics or colType==Coltype.CONTINOUS
+                else {}
             )
             datasetFeature.metrics = self._build_column_metrics(
                 raw_column_metrics, colData, colType
@@ -98,7 +94,6 @@ class DatasetService:
         return df.replace({place_holder: None}, inplace=False)
     
     def _replace_boolean(self, df: DataFrame):
-        print(df.head())
         mask = df.applymap(type) != bool
         d = {True: 'T', False: 'F'}
         return df.where(mask, df.replace(d))
@@ -110,8 +105,6 @@ class DatasetService:
             column: str = column
             map[column] = column.replace(" ", "_")
             proccessed_dataset = dataset_raw.rename(columns=map)
-            print(map)
-            print(proccessed_dataset.columns.values.tolist())
         return proccessed_dataset
 
     def createDataset(
@@ -149,7 +142,7 @@ class DatasetService:
             dataset_raw = self._replace_nulls(dataset_raw, null_placeholder)
         dataset_raw = self._clean_col_names(dataset_raw)
         dataset_raw = self._replace_boolean(dataset_raw)
-        print(dataset_raw.head())
+        # print(dataset_raw.head())
         dataset.datasetFields = self._extract_fields(dataset_raw)
 
         dataset_raw = self._replace_nulls(dataset_raw, numpy.nan)

@@ -11,7 +11,6 @@
   border: 1px solid #eee;
   border-radius: 5px;
   width: 100%;
-  margin: 1rem 0 0.5rem;
   padding: 1rem;
 }
 
@@ -26,14 +25,17 @@
   font-size: 1.1rem;
   font-weight:bolder;
 }
-
+.dropdown{
+  width:90%
+}
 .datasetname{
-  //font-family:Rubik;
-  font-size:1.1rem ;
-  font-weight: bolder;
-  text-transform: uppercase;
-  color:rgb(9, 7, 97);
+
+  font-family: Rubik;
+  font-size: 1.2rem;
+  color: rgb(9, 7, 97);
   letter-spacing: 2px;
+  text-transform: uppercase;
+  
 }
 
 .tablecontainer {

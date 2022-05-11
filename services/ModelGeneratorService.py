@@ -136,11 +136,9 @@ class ModelGeneratorService:
                 modelFeature.minValue = datasetFeature.metrics.min
                 modelFeature.maxValue = datasetFeature.metrics.max
             return modelFeature
-
-        for model in job.results.models:
-            if str(model.model_id) == model_id:
-                model = model
-
+        for m in job.results.models:
+            if str(m.model_id) == model_id:
+                model = m   
         if model:
             epochs = kwargs.get("epochs", 20)
             dataset: Dataset = job.dataset

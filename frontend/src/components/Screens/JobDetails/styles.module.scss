@@ -4,6 +4,39 @@
 @import "../screenstyles.scss";
 @import "../../../colors.scss";
 
+.hintbtns {
+  float: right;
+}
+.wrap {
+  overflow: hidden;
+  position: relative;
+
+  .bg {
+    opacity: 0.1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+  }
+  p {
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: 0.25px;
+    font-style: oblique;
+    color: $primary-color;
+  }
+  li {
+    background-color: transparent !important;
+  }
+}
+
+.bold {
+  font-weight: bold;
+}
+
+
+
 .savedModelScreen {
   overflow-y: auto;
 }

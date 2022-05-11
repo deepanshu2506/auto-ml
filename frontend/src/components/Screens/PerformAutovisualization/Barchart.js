@@ -21,7 +21,7 @@ const Barchart = (data) => {
         toolTipShared=true
         for (var i = 0; i < classify.length; i++) {
             let dataPoints = []
-            for (var j = 0; j < ydata.length; j++) {
+            for (var j = 0; j < ydata[0].length; j++) {
                 dataPoints.push({ label: classify[i], y: ydata[i][j] })
             }
             datapointsArr.push(dataPoints)
@@ -67,6 +67,10 @@ const Barchart = (data) => {
         },
         animationEnabled: true,
         exportEnabled: true,
+        axisX: {
+            interval: 1,
+            labelAngle: -40 
+        },
         axisY: {
             title: graphData['y_name'],
             titleFontColor: "#4F81BC",

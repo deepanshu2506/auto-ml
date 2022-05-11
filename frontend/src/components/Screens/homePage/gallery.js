@@ -18,7 +18,7 @@ export const Gallery = props => {
     { thumb: "img/portfolio/06-small.png", title: "Auto imputation" },
     { thumb: "img/portfolio/07-small.png", title: "Auto visualization" },
     { thumb: "img/portfolio/08-small.png", title: "Auto model selection" },
-    { thumb: "img/portfolio/07-small.jpg", title: "Generate Readme" },
+    { thumb: "img/portfolio/09-small.png", title: "Prediction" },
   ];
 
   const images = data.map(obj => obj.thumb.replace("-small", "-large"));

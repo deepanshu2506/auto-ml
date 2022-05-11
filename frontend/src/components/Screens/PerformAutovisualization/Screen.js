@@ -120,15 +120,16 @@ const AutovisualizationScreen = (props) => {
             <Container className={styles.nav} fluid>
                 <span>Auto visualization</span>
             </Container>
+            <Container className={styles.content} fluid>
             {featuresLoading ? (
                 <Spinner animation="border" variant="primary" />
             ) : (
                 <Col>
-                    <Container className={styles.content} fluid>
+                    
                         <h4 className={styles.datasetname}>
                             {dataset.dataset_name}
                         </h4>
-                        <Row className=" mt-5 mb-0">
+                        <Row className=" mt-3 mb-0">
                             <Col>
                                 <Form
                                     noValidate
@@ -158,11 +159,11 @@ const AutovisualizationScreen = (props) => {
                             </Col>
                             <Col>
                                 <Row>
-                                    Select columns to be droppped
+                                    Select columns to be dropped
                                 </Row>
-                                <Row>
+                                <Row className="mt-2">
                                     <Select
-                                        className="dropdown"
+                                        className={styles.dropdown}
                                         placeholder="Select Option"
                                         value={dataList.filter(obj => selectedValue.includes(obj.value))} // set selected values
                                         options={dataList}
@@ -175,7 +176,7 @@ const AutovisualizationScreen = (props) => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col>
+                            <Col className="mx-3">
                                 <Button
                                     block
                                     variant="primary"
@@ -186,7 +187,7 @@ const AutovisualizationScreen = (props) => {
                                 </Button>
                             </Col>
                         </Row>
-                    </Container>
+                  
 
                     {topKVisualizationResults && !resultsLoading ? (
                         <Col>
@@ -215,9 +216,10 @@ const AutovisualizationScreen = (props) => {
                         <Spinner animation="border" variant="primary" />
                     )}
                 </Col>
-            )
-            }
-        </Container >
+                
+            )}
+            </Container>
+            </Container>
     )
 }
 
