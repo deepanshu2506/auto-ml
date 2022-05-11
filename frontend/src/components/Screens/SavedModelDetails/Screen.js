@@ -20,6 +20,7 @@ const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const SavedModelDetailsScreen = (props) => {
   const [model, setModel] = useState({});
   const [loading, setLoading] = useState(true);
+  const [targetCol,setTargetCol]=useState({})
   const params = props.rootParams.params;
 
   const getModel = async (modelID) => {
@@ -29,12 +30,39 @@ const SavedModelDetailsScreen = (props) => {
         apiURLs.savedModels.modelDetails(modelID)
       );
       setModel(modelDetails);
+      getFeatures(modelDetails.dataset_id,modelDetails.target_col).then(()=>{
+        setLoading(false);
+      })
     } catch (err) {}
-    setLoading(false);
+    
   };
+  const getFeatures = async (datasetID,target_col) => {
+    try {
+        const { data } = await API.json.get(
+            apiURLs.dataset.getDatasetDetails(datasetID)
+        );
+        const target_details=data.datasetFields.filter((col)=>col.column_name===target_col)[0]
+        console.log(target_details)
+        setTargetCol(target_details)
+        if(target_details.metrics.mean)
+        {
+          if(model.type==1){
+            const normalErr=model.metrics.error/target_details.metrics.mean
+            setModel({...model,metrics:{
+              ...model.metrics,
+              "Normalised error":normalErr
+            }})
+          }
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
 
   useEffect(() => {
     getModel(params.modelID);
+    // getFeatures(model.dataset_id);
+
   }, [params.modelID]);
   const totalImportance =
     model.feature_importance &&
@@ -116,6 +144,8 @@ const SavedModelDetailsScreen = (props) => {
                     <p className={styles.modelType}>
                       {MODEL_TYPES[model.type]} Model
                     </p>
+                    <p className={styles.modelType}>Target Column : {model.target_col}</p>
+                    <p className={styles.modelState}>{targetCol.column_descriptio}</p>
                     <p className={styles.modelCreationDate}>
                       {model.created_at}
                     </p>
