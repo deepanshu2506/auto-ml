@@ -26,9 +26,9 @@ const InputDatasetScreen = (props) => {
           <Nav.Item>
             <Nav.Link eventKey={DATASET_INPUT_TYPES.CSV}>CSV</Nav.Link>
           </Nav.Item>
-          {/* <Nav.Item>
+           <Nav.Item>
             <Nav.Link eventKey={DATASET_INPUT_TYPES.DB}>Database</Nav.Link>
-          </Nav.Item> */}
+          </Nav.Item> 
         </Nav>
       </Row>
       <Row className={styles.content}>
