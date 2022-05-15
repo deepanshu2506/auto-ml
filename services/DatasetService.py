@@ -1,7 +1,14 @@
 from typing import Dict, List
 
-from h11 import Data
 from lib.integrations.DataSourceFactory import DatasourceFactory
+from lib.preprocessing import (
+    clean_col_names,
+    get_outlier_count,
+    get_samples,
+    get_value_percentage_dict,
+    replace_boolean,
+    replace_nulls,
+)
 from utils.enums import AggregationMethods, Coltype, DataTypes, DatasetType
 from utils.exceptions import DatasetNotFound
 import numpy
@@ -28,38 +35,21 @@ class DatasetService:
         self, column_metrics: Series, column_values: Series, colType: Coltype
     ):
         featureMetrics = DatasetFeatureMetrics()
-        if column_metrics is not None:
-            if colType == Coltype.CONTINOUS:
-                lower_quantile = column_values.quantile(0.25)
-                upper_quantile = column_values.quantile(0.75)
-                iqr = upper_quantile - lower_quantile
-                outlier_count = sum(
-                    i < (lower_quantile - (1.5 * iqr)) for i in column_values.tolist()
-                ) + sum(
-                    i > (upper_quantile + (1.5 * iqr)) for i in column_values.tolist()
-                )
-                featureMetrics.outlier_count = outlier_count
-                featureMetrics.min = column_metrics["min"]
-                featureMetrics.max = column_metrics["max"]
-                featureMetrics.mean = column_metrics["mean"]
-                featureMetrics.stdDeviation = column_metrics["std"]
-                featureMetrics.median = numpy.nanmedian(column_values)
-            else: 
-                column_values_clean = column_values.fillna("None", inplace=False)
-                featureMetrics.value_percentage = dict(
-                    (column_values_clean.value_counts() / len(column_values_clean))
-                    * 100
-                )
-                featureMetrics.value_percentage = {
-                    str(key): value
-                    for key, value in featureMetrics.value_percentage.items()
-                }
-                
+
+        if colType == Coltype.CONTINOUS:
+            featureMetrics.outlier_count = get_outlier_count(column_values)
+
+            featureMetrics.min = column_metrics["min"]
+            featureMetrics.max = column_metrics["max"]
+            featureMetrics.mean = column_metrics["mean"]
+            featureMetrics.stdDeviation = column_metrics["std"]
+            featureMetrics.median = numpy.nanmedian(column_values)
+        else:
+            featureMetrics.value_percentage = get_value_percentage_dict(column_values)
+
         unique_values = column_values.unique().tolist()
         featureMetrics.uniqueValues = len(unique_values)
-        featureMetrics.samples = [
-            str(x) for x in unique_values[: min(5, len(unique_values))]
-        ]
+        featureMetrics.samples = get_samples(unique_values, 5)
         featureMetrics.missingValues = column_values.isnull().sum()
         return featureMetrics
 
@@ -81,7 +71,7 @@ class DatasetService:
             cols_with_metrics: list = dataset_metrics.columns.tolist()
             raw_column_metrics = (
                 dataset_metrics.iloc[:, cols_with_metrics.index(columnName)]
-                if columnName in cols_with_metrics or colType==Coltype.CONTINOUS
+                if columnName in cols_with_metrics or colType == Coltype.CONTINOUS
                 else {}
             )
             datasetFeature.metrics = self._build_column_metrics(
@@ -90,23 +80,6 @@ class DatasetService:
             datasetFields.append(datasetFeature)
         return datasetFields
 
-    def _replace_nulls(self, df: DataFrame, place_holder):
-        return df.replace({place_holder: None}, inplace=False)
-    
-    def _replace_boolean(self, df: DataFrame):
-        mask = df.applymap(type) != bool
-        d = {True: 'T', False: 'F'}
-        return df.where(mask, df.replace(d))
-
-    def _clean_col_names(self, dataset_raw: DataFrame):
-        columns = dataset_raw.columns.values.tolist()
-        map = {}
-        for column in columns:
-            column: str = column
-            map[column] = column.replace(" ", "_")
-            proccessed_dataset = dataset_raw.rename(columns=map)
-        return proccessed_dataset
-
     def createDataset(
         self,
         datasetName: str,
@@ -114,38 +87,39 @@ class DatasetService:
         type: str = "file",
         **kwargs,
     ) -> Dataset:
+
         user_id = get_jwt_identity()
+
         dataset_raw = None
         dataset: Dataset = None
+        dataset_type = None
+        datasource_properties = None
+
         if type == "file":
             dataset_raw = self.fileService.convert_to_dataset(dataset_raw_file)
-            dataset = Dataset(
-                createdBy=user_id,
-                name=datasetName,
-                datasource_type=type,
-            )
+            dataset_type = DatasetType.CSV
         else:
             query = kwargs.get("query")
             datasource = DatasourceFactory.get_datasource(type, **kwargs)
-            print(datasource.host)
             dataset_raw = datasource.create_dataset(query)
             datasource_properties = datasource.get_datasource_properties()
-            dataset = Dataset(
-                createdBy=user_id,
-                name=datasetName,
-                type=DatasetType.SQL,
-                datasource_type=type,
-                datasource_properties=datasource_properties,
-            )
-        null_placeholder = kwargs.get("null_placeholder")
-        if null_placeholder is not None:
-            dataset_raw = self._replace_nulls(dataset_raw, null_placeholder)
-        dataset_raw = self._clean_col_names(dataset_raw)
-        dataset_raw = self._replace_boolean(dataset_raw)
-        # print(dataset_raw.head())
-        dataset.datasetFields = self._extract_fields(dataset_raw)
+            dataset_type = DatasetType.SQL
 
-        dataset_raw = self._replace_nulls(dataset_raw, numpy.nan)
+        dataset = Dataset(
+            createdBy=user_id,
+            name=datasetName,
+            type=dataset_type,
+            datasource_type=type,
+            datasource_properties=datasource_properties,
+        )
+
+        null_placeholder = kwargs.get("null_placeholder", numpy.nan)
+        dataset_raw = replace_nulls(dataset_raw, null_placeholder)
+
+        dataset_raw = clean_col_names(dataset_raw)
+        dataset_raw = replace_boolean(dataset_raw)
+
+        dataset.datasetFields = self._extract_fields(dataset_raw)
 
         dataset = dataset.save()
         file_path, file_size = self.fileService.save_dataset(
@@ -168,7 +142,7 @@ class DatasetService:
         dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
             dataset.datasetLocation
         )
-        return dataset_frame,dataset.name
+        return dataset_frame, dataset.name
 
     def find_by_id(self, id, user_id) -> Dataset:
         datasets = Dataset.objects(createdBy=user_id, id=id, isDeleted=False)
@@ -223,7 +197,6 @@ class DatasetService:
 
         if filter:
             filter_query = build_query(filter)
-            print(filter_query)
             dataset_frame: DataFrame = dataset_frame.query(filter_query)
         aggregated_df = dataset_frame
         is_aggregate = groupby_field and aggregate_method and aggregate_by_field

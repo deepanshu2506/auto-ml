@@ -59,41 +59,25 @@ def is_discrete_auto_impute(column_data):
 def perform_aggregation(df: DataFrame, aggregate_func: AggregationMethods) -> DataFrame:
     func = getattr(df, aggregate_func.value)
     return func()
-    pass
+
 
 def build_query(query: list) -> str:
-
     def reduce_func(acc, curr):
         rhs = curr["rhs"]
         try:
             rhs = float(rhs)
         except ValueError:
             rhs = '"' + rhs + '"'
-        if(acc):
+        if acc:
             return acc + f" and `{curr['lhs']}` {curr['op']} {rhs}"
         else:
             return acc + f"`{curr['lhs']}` {curr['op']} {rhs}"
 
     q = reduce(reduce_func, query, "")
-    print(q)
     return q
-
-    # if "lhs" in query and "rhs" in query:
-    #     rhs = query["rhs"]
-    #     try:
-    #         rhs = float(rhs)
-    #     except ValueError:
-    #         rhs = '"' + rhs + '"'
-
-    #     return f"`{query['lhs']}` {query['op']} {rhs}"
-    # else:
-    #     return f"{build_query(query['expr1'])} {(query.get('op') or '').lower()} {build_query(query['expr2']) if query.get('expr2') else ''}"
 
 
 def getCorrelation(df: DataFrame):
     # correlation matrix
     matrix = df.corr()
     return numpy.around(matrix, decimals=3)
-
- 
-    
