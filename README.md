@@ -57,7 +57,7 @@ A platform that eases the work of data and business analysts in generating infer
 ##### Edit Dataset Details
 ![product-datasetdesp](./screenshots/edit_readme.png)
 ##### Dataset Catalog
-![product-datasetinfo2](./screenshots/edit_catalog.png)
+![product-datasetinfo2](./screenshots/db_catalog.png)
  
 #### **Data Visualisation**
  
