@@ -1,7 +1,7 @@
 <div align="center">
  
 
-<h1 align="center">DataGenie</h1>
+![product-logo](./screenshots/Datagenie_logo.png) 
 
  
 [![](https://img.shields.io/badge/IDE-Visual_Studio_Code-purple?style=for-the-badge&logo=visual-studio-code)](https://code.visualstudio.com/  "Visual Studio Code")
@@ -24,9 +24,55 @@ A platform that eases the work of data and business analysts in generating infer
 - Prepare the input dataset by applying various preprocessing techniques like handling outlier, one hot encoding, feature scaling etc
 - Develop an algorithm for Automatic Model Selection, using a genetic approach that automatically and efficiently finds the most suitable neural network model for a given dataset.
 - Develop an auto data visualization algorithm to show top k data visualization for a given dataset.
-  
-## Demo ##
-  
+ 
+## Application Screenshots ##
+<div align="center">
+ 
+#### **Home Page**
+ 
+![product-home](./screenshots/homepg_full.png)
+
+#### **Signup**
+![product-signup](./screenshots/signup.PNG)
+ 
+#### **Login**
+
+![product-signin](./screenshots/signin.PNG)
+ 
+#### **Dataset Input**
+
+![product-datasetinput](./screenshots/input_dataset.PNG)
+ 
+#### **Displaying all the datasets created by the user**
+
+![product-datasetlist](./screenshots/list_datasets.PNG)
+ 
+#### **Data Imputation**
+ 
+![product-datasetimp](./screenshots/imputation.PNG)
+
+#### **Dataset Details**
+
+![product-datasetinfo1](./screenshots/db_info.png)
+##### Edit Dataset Details
+![product-datasetdesp](./screenshots/edit_readme.png)
+##### Dataset Catalog
+![product-datasetinfo2](./screenshots/edit_catalog.png)
+ 
+#### **Data Visualisation**
+ 
+![product-visualisation](./screenshots/visualisation.png)
+ 
+#### **Model Selection**
+
+![product-modelselection](./screenshots/model_select.PNG)
+
+##### After the model selection task is completed:
+
+![product-jobdetails](./screenshots/job_details.PNG)
+
+</div>
+
 ## How To Use
 #### Software Requirements
 - VSCode
@@ -36,7 +82,7 @@ A platform that eases the work of data and business analysts in generating infer
 
 Clone the repo
 ```html
-git clone https://github.com/hiral72/DataGenie.git
+git clone https://github.com/deepanshu2506/auto-ml.git
 ```
 
 Install the dependencies by running:
