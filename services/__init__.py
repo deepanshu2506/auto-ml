@@ -6,3 +6,4 @@ from .ModelGeneratorService import ModelGeneratorService
 from .ModelSelectionJobService import ModelSelectionJobService
 from .VisualizationService import VisualizationService
 from .ReadMeService import ReadmeService
+from .OperationService import OperationsService
