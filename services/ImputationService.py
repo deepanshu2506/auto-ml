@@ -1,10 +1,9 @@
 from datetime import datetime
 from typing import List
 from lib.Preprocessor import DataFrameOrdinalencoder, OrdinalEncoderProps
+from services.OperationService import OperationsService
 from utils.enums import (
-    AggregationMethods,
     Coltype,
-    DataTypes,
     DatasetStates,
     ImputationMethods,
     JobTypes,
@@ -13,77 +12,37 @@ from utils.pdUtils import is_discrete_auto_impute
 from flask_jwt_extended.utils import get_jwt_identity
 from services.FileService import FileService
 from pandas import DataFrame
-import random
 from services.DatasetService import DatasetService
-from lib.imputer import Imputer, ImputerFactory
 from lib.auto_imputer import AutoImputerFactory
-
-from numpy import nan
 
 
 from db.models.Dataset import Dataset, DatasetFeature, DatasetJob, JobStats
 
 
 class ImputationService:
-    def __init__(self, fileService: FileService, imputer_model) -> None:
+    def __init__(
+        self,
+        fileService: FileService,
+        operationService: OperationsService,
+        datasetService: DatasetService,
+        imputer_model,
+    ) -> None:
         self.fileService = fileService
-        self.datasetService = DatasetService(fileService=FileService())
+        self.operationService = operationService
+        self.datasetService = datasetService
         self.imputer_model = imputer_model
 
     def impute_col(
         self, dataset_id, col_name, impute_type: ImputationMethods, value=None
     ):
-        job_start_time = datetime.utcnow()
-        dataset: Dataset = self.datasetService.find_by_id(
-            dataset_id, get_jwt_identity()
-        )
-        dataset_frame: DataFrame = self.fileService.get_dataset_from_url(
-            dataset.datasetLocation
-        )
-        null_count = int(dataset_frame[col_name].isnull().sum())
-        if null_count == 0:
-            return {
-                "imputed": False,
-                "result": "No need of data imputation for column " + col_name + " !",
-            }
-        imputer: Imputer = ImputerFactory.get_imputer(
-            impute_type, dataset=dataset, column_name=col_name, value=value
-        )
-        imputed_dataset = imputer.impute(dataset_frame)
-        self.fileService.save_dataset(
-            imputed_dataset,
-            dataset_path=dataset.datasetLocation,
-        )
-        job_end_time = datetime.utcnow()
+        dataset = self.datasetService.find_by_id(dataset_id, get_jwt_identity())
 
-        dataset.datasetFields = self.datasetService._extract_fields(imputed_dataset)
-        imputed_col_stats = [
-            {
-                "col_name": col_name,
-                "imputed_count": null_count,
-            }
-        ]
-        job_stats = JobStats(jobStart=job_start_time, jobEnd=job_end_time)
-        job_stats.colsImputed = 1
-        job_stats.imputationType = impute_type.value
-        job_stats.cols = imputed_col_stats
-        imputation_job = DatasetJob(
-            jobType=JobTypes.SINGLE_COL_IMPUTATION, stats=job_stats
+        output = self.operationService.perform_operation(
+            dataset=dataset,
+            jobType=JobTypes.SINGLE_COL_IMPUTATION,
+            inputs={"impute_type": impute_type, "col_name": col_name, "value": value},
         )
-        dataset.jobs.append(imputation_job)
-        dataset.state = DatasetStates.PARTIALLY_IMPUTED
-        dataset.save()
-        return {"imputed": True, "result": imputed_col_stats[0]}
-
-    def add_null(self, df):
-        ix = [(row, col) for row in range(df.shape[0]) for col in range(df.shape[1])]
-        for row, col in random.sample(ix, int(round(0.1 * len(ix)))):
-            df.iat[row, col] = nan
-        return df
-
-    def calc_null(self, df):
-        null_val = df.isnull().sum().sum()
-        return null_val
+        return output
 
     def get_features(self, dataset: Dataset, dataset_frame, target_col_name):
         features = {}
