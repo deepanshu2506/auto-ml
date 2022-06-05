@@ -99,7 +99,7 @@ imputer_map: Dict[int, AutoImputer] = {
 
 class AutoImputerFactory:
     @staticmethod
-    def get_auto_imputer(features, df: DataFrame, loaded_model) -> DataFrame:
+    def get_auto_imputer(features, loaded_model) -> DataFrame:
         predicted_imputer_ind = loaded_model.predict(
             [
                 [
@@ -114,10 +114,8 @@ class AutoImputerFactory:
                 ]
             ]
         )
-        
+
         simplefilter("ignore", category=ConvergenceWarning)
         imputer = imputer_map.get(int(predicted_imputer_ind), MeanImputer)
         imputerInstance = imputer()
-        imputation_type = imputerInstance.__class__.__name__
-        imputed_df = imputerInstance.impute(df)
-        return imputed_df, imputation_type
+        return imputerInstance

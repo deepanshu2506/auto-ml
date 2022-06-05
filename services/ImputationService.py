@@ -116,9 +116,11 @@ class ImputationService:
         dataframe_encoded = encodingObj.fit(dataset_frame_null.copy(deep=True))
         # print("-----Encoded df------")
         # print(dataframe_encoded.head())
-        dataframe_imputed, impute_type = AutoImputerFactory.get_auto_imputer(
-            features, dataframe_encoded, loaded_model=self.imputer_model
+        imputer = AutoImputerFactory.get_auto_imputer(
+            features, loaded_model=self.imputer_model
         )
+        impute_type = imputer.__class__.__name__
+        dataframe_imputed = imputer.impute(dataframe_encoded)
         # dataframe_imputed=ExtraTreesRegressorImputer.impute(dataframe_encoded)
         # print("-----Encoded Imputed df------")
         # print(dataframe_imputed.head())
