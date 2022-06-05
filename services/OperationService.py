@@ -20,8 +20,9 @@ from .FileService import FileService
 
 
 class OperationsService:
-    def __init__(self, fileService: FileService) -> None:
+    def __init__(self, fileService: FileService, processor_kwargs) -> None:
         self.fileService = fileService
+        self.processor_kwargs = processor_kwargs
 
     def perform_operation(
         self, dataset: Dataset, jobType: JobTypes, inputs: Input
@@ -33,7 +34,7 @@ class OperationsService:
             lifecycle.get_input_validator(), jobType, inputs
         )
         output = self.process(
-            lifecycle.get_processor(),
+            lifecycle.get_processor(**self.processor_kwargs),
             dataset=dataset,
             raw_dataset=raw_dataset,
             jobType=jobType,

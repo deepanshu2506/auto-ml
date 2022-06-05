@@ -16,6 +16,20 @@ class SingleColImputationOutputBuilder(APIOutputBuilder):
             else "No need of data imputation for column " + col_name + " !"
         )
 
-        results = {"imputed": is_imputed, "result": imputation_result}
+        results = {"data": {"imputed": is_imputed, "result": imputation_result}}
+
+        return results
+
+
+class AutoImputationOutputBuilder(APIOutputBuilder):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__()
+
+    def get_operation_results(self, operationOutput: OperationOutput) -> dict:
+        imputation_stat = operationOutput.processStats.get(
+            "affected_col_stats", "No need of data imputation!!"
+        )
+        imputer_type = operationOutput.processStats.get("imputer_type", "Null")
+        results = {"Imputer selected": imputer_type, "data": imputation_stat}
 
         return results

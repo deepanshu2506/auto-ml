@@ -28,7 +28,9 @@ def initialize(api: Api) -> None:
     datasetService = DatasetService(fileService=fileService)
     filename = "randomforest_model.sav"
     imputer_model = pickle.load(open(filename, "rb"))
-    operationService = OperationsService(fileService=fileService)
+    operationService = OperationsService(
+        fileService=fileService, processor_kwargs={"imputer_model": imputer_model}
+    )
     imputationService = ImputationService(
         fileService=fileService,
         operationService=operationService,

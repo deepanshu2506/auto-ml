@@ -7,7 +7,7 @@ class APIOutputBuilder(ABC):
     def build_output(self, operationOutput: OperationOutput) -> dict:
         API_output = {
             "operation": operationOutput.operation_name.value,
-            "data": self.get_operation_results(operationOutput),
+            **self.get_operation_results(operationOutput),
         }
 
         return API_output

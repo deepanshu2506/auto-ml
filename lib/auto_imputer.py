@@ -51,7 +51,7 @@ class MedianImputer(AutoImputer):
         dataframe_np = dataframe.to_numpy()
         imp_median.fit(dataframe_np)
         imputed_np = imp_median.transform(dataframe_np)
-        df = pd.DataFrame(imputed_np)
+        df = pd.DataFrame(imputed_np, columns=dataframe.columns)
         return df
 
 

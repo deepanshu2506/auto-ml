@@ -2,7 +2,10 @@ from services.ImputationService import ImputationService
 from flask_jwt_extended.utils import get_jwt_identity
 from flask_jwt_extended.view_decorators import jwt_required
 from flask_restful import Resource
-from api.dataset.requestParsers import singleColImputationRequestParser,autoImputationRequestParser
+from api.dataset.requestParsers import (
+    singleColImputationRequestParser,
+    autoImputationRequestParser,
+)
 
 
 class DatasetSingleColImputation(Resource):
@@ -16,7 +19,7 @@ class DatasetSingleColImputation(Resource):
         user_id = get_jwt_identity()
         args = singleColImputationRequestParser.parse_args()
         imputation_result_stats = self.imputationService.impute_col(id, **args)
-        return {"data": imputation_result_stats}
+        return imputation_result_stats
 
 
 class DatasetAutoImputation(Resource):
@@ -29,5 +32,5 @@ class DatasetAutoImputation(Resource):
     def post(self, id):
         user_id = get_jwt_identity()
         args = autoImputationRequestParser.parse_args()
-        imputation_res=self.imputationService.impute_dataset(id, **args)
-        return {"Imputer selected":imputation_res[0],"data": imputation_res[1]}
+        imputation_res = self.imputationService.impute_dataset(id, **args)
+        return imputation_res

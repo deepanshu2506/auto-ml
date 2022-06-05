@@ -27,3 +27,20 @@ class SingleImputationInput(Input):
     def from_dict(dict):
         input = SingleImputationInput(**dict)
         return input
+
+
+class AutoImputationInput(Input):
+    def __init__(self, target_col_name: str) -> None:
+        super().__init__()
+        self.target_col_name = target_col_name
+
+    @staticmethod
+    def get_validation_schema():
+        return {
+            "target_col_name": {"required": True},
+        }
+
+    @staticmethod
+    def from_dict(dict):
+        input = AutoImputationInput(**dict)
+        return input

@@ -30,7 +30,7 @@ class DatasetMetricsExtractor:
         dataset: DataFrame,
         dataset_meta: Dataset = None,
         affected_columns: List[str] = None,
-    ):
+    ) -> List[DatasetFeature]:
         datasetFields: List[DatasetFeature] = []
         dataTypes = dataset.dtypes
         columnNames = dataset.columns.values.tolist()

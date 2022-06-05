@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from cerberus import Validator
-from lib.operations.inputTypes import SingleImputationInput
+from lib.operations.inputTypes import AutoImputationInput, SingleImputationInput
 from utils.exceptions import APIInputValidationError
 
 
@@ -32,3 +32,11 @@ class SingleImputationInputValidator(InputValidator):
 
     def to_obj(self, input) -> SingleImputationInput:
         return SingleImputationInput.from_dict(input)
+
+
+class AutoImputationInputValidator(InputValidator):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(AutoImputationInput.get_validation_schema())
+
+    def to_obj(self, input) -> AutoImputationInput:
+        return AutoImputationInput.from_dict(input)
