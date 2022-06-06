@@ -26,11 +26,9 @@ class DatasetMetricsExtractor:
     """
 
     def extract_feature_metrics(
-        self,
-        dataset: DataFrame,
-        dataset_meta: Dataset = None,
-        affected_columns: List[str] = None,
+        self, operationOutput: OperationOutput
     ) -> List[DatasetFeature]:
+        dataset = operationOutput.raw_dataset
         datasetFields: List[DatasetFeature] = []
         dataTypes = dataset.dtypes
         columnNames = dataset.columns.values.tolist()
@@ -39,9 +37,9 @@ class DatasetMetricsExtractor:
         for idx, (columnName, dataType) in enumerate(zip(columnNames, dataTypes)):
             datasetFeature = None
             if (
-                dataset_meta is None
-                or affected_columns is None
-                or columnName in affected_columns
+                operationOutput.dataset_meta is None
+                or operationOutput.affected_columns is None
+                or columnName in operationOutput.affected_columns
             ):
                 colDataType: DataTypes = get_datatype(dataType)
                 colData: Series = dataset.iloc[:, idx]
@@ -62,7 +60,7 @@ class DatasetMetricsExtractor:
                     raw_column_metrics, colData, colType
                 )
             else:
-                datasetFeature = dataset_meta.datasetFields[idx]
+                datasetFeature = operationOutput.dataset_meta.datasetFields[idx]
 
             datasetFields.append(datasetFeature)
 

@@ -88,11 +88,7 @@ class OperationsService:
         metricsExtractor: DatasetMetricsExtractor,
         operationOutput: OperationOutput,
     ):
-        feature_metrics = metricsExtractor.extract_feature_metrics(
-            dataset=operationOutput.raw_dataset,
-            dataset_meta=operationOutput.dataset_meta,
-            affected_columns=operationOutput.affected_columns,
-        )
+        feature_metrics = metricsExtractor.extract_feature_metrics(operationOutput)
         return feature_metrics
 
     def extract_job_metrics(
