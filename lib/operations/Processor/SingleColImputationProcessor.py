@@ -18,6 +18,7 @@ class SingleColImputationProcessor(BaseProcessor):
         jobType: JobTypes,
         dataset: DataFrame,
         inputs: SingleImputationInput,
+        **kwargs
     ) -> OperationOutput:
 
         output = OperationOutput(

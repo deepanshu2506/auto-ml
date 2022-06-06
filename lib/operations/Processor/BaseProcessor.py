@@ -15,5 +15,6 @@ class BaseProcessor:
         jobType: JobTypes,
         dataset: DataFrame,
         inputs: Input,
+        **kwargs
     ) -> OperationOutput:
         pass

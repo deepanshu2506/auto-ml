@@ -85,6 +85,7 @@ class AutoImputationProcessor(BaseProcessor):
         jobType: JobTypes,
         dataset: DataFrame,
         inputs: AutoImputationInput,
+        **kwargs
     ) -> OperationOutput:
 
         output = OperationOutput(
