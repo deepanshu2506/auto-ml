@@ -32,10 +32,8 @@ def initialize(api: Api) -> None:
         fileService=fileService, processor_kwargs={"imputer_model": imputer_model}
     )
     imputationService = ImputationService(
-        fileService=fileService,
         operationService=operationService,
         datasetService=datasetService,
-        imputer_model=imputer_model,
     )
 
     readmeService = ReadmeService(

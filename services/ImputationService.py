@@ -4,22 +4,17 @@ from utils.enums import (
     JobTypes,
 )
 from flask_jwt_extended.utils import get_jwt_identity
-from services.FileService import FileService
 from services.DatasetService import DatasetService
 
 
 class ImputationService:
     def __init__(
         self,
-        fileService: FileService,
         operationService: OperationsService,
         datasetService: DatasetService,
-        imputer_model,
     ) -> None:
-        self.fileService = fileService
         self.operationService = operationService
         self.datasetService = datasetService
-        self.imputer_model = imputer_model
 
     def _get_dataset(self, dataset_id):
         return self.datasetService.find_by_id(dataset_id, get_jwt_identity())
