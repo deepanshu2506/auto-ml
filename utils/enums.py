@@ -42,16 +42,25 @@ class DatasetStates(enum.Enum):
 class JobTypes(enum.Enum):
     SINGLE_COL_IMPUTATION = "single_col_impute"
     MULTI_COL_IMPUTATION = "multi_col_impute"
+    COL_RENAME = "col_rename"
+
 
 class ModelSelectionJobStates(enum.Enum):
-    SUBMITTED = 'submitted'
+    SUBMITTED = "submitted"
     RUNNING = "running"
     ERROR = "error"
     ABORTED = "aborted"
     COMPLETED = "completed"
-    
+
+
 class TrainingStates(enum.Enum):
-    SUBMITTED = 'submitted'
-    STARTED = 'started'
-    ANALYZING = 'analyzing'
-    COMPLETED = 'completed'
+    SUBMITTED = "submitted"
+    STARTED = "started"
+    ANALYZING = "analyzing"
+    COMPLETED = "completed"
+
+
+class DatasetOperationStatus(enum.Enum):
+    SUCCESS = "success"
+    PARTIAL_SUCCESS = "partial_success"
+    FAILED = "failed"

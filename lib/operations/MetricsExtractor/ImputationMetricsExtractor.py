@@ -15,7 +15,7 @@ class SingleColImputationJobMetricsExtractor(JobMetricsExtractor):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__()
 
-    def extract_job_metrics(self, operationOutput: OperationOutput):
+    def extract_job_metrics(self, operationOutput: OperationOutput) -> JobStats:
         inputs: SingleImputationInput = operationOutput.inputs
         job_stats = JobStats()
         imputed_col_stats = operationOutput.processStats
@@ -35,7 +35,7 @@ class AutoImputationJobMetricsExtractor(JobMetricsExtractor):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__()
 
-    def extract_job_metrics(self, operationOutput: OperationOutput):
+    def extract_job_metrics(self, operationOutput: OperationOutput) -> JobStats:
         job_stats = JobStats()
         imputed_col_stats = operationOutput.processStats["affected_col_stats"]
         job_stats.colsImputed = len(imputed_col_stats)

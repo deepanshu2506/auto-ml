@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 from cerberus import Validator
-from lib.operations.inputTypes import AutoImputationInput, SingleImputationInput
+from lib.operations.inputTypes import (
+    AutoImputationInput,
+    MultiColRenameInput,
+    SingleImputationInput,
+)
 from utils.exceptions import APIInputValidationError
 
 
@@ -40,3 +44,11 @@ class AutoImputationInputValidator(InputValidator):
 
     def to_obj(self, input) -> AutoImputationInput:
         return AutoImputationInput.from_dict(input)
+
+
+class ColRenameInputValidator(InputValidator):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(MultiColRenameInput.get_validation_schema())
+
+    def to_obj(self, input) -> MultiColRenameInput:
+        return MultiColRenameInput.from_dict(input)

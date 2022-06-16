@@ -16,6 +16,7 @@ class OperationOutput:
         affected_columns: List[str] = None,
         inputs: Input = None,
         processStats: dict = None,
+        metadata: dict = None,
     ) -> None:
         self.operation_name = operation_name
         self.dataset_meta = dataset_meta
@@ -23,3 +24,4 @@ class OperationOutput:
         self.affected_columns = affected_columns
         self.inputs = inputs
         self.processStats = processStats
+        self.metadata = metadata
