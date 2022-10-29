@@ -17,7 +17,7 @@ from api.dataset.resources import (
 from flask_restful import Api
 import pickle
 
-from services import ReadmeService
+from services import OperationService, OperationsService, ReadmeService
 
 
 API_PREFIX: str = "/datasets"
@@ -28,9 +28,14 @@ def initialize(api: Api) -> None:
     datasetService = DatasetService(fileService=fileService)
     filename = "randomforest_model.sav"
     imputer_model = pickle.load(open(filename, "rb"))
-    imputationService = ImputationService(
-        fileService=fileService, imputer_model=imputer_model
+    operationService = OperationsService(
+        fileService=fileService, processor_kwargs={"imputer_model": imputer_model}
     )
+    imputationService = ImputationService(
+        operationService=operationService,
+        datasetService=datasetService,
+    )
+
     readmeService = ReadmeService(
         datasetService=datasetService, fileService=fileService
     )
